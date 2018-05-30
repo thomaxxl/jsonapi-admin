@@ -1,13 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
 import CreateAction from '../actions/CreateAction';
 import EditAction from '../actions/EditAction';
 import DeleteAction from '../actions/DeleteAction';
 import AnalyzeAction from '../actions/AnalyzeAction'; 
-
 import * as ObjectAction from '../../action/ObjectAction';
+
+// TODO: remove this
+import * as BookAction from '../../action/BookAction'; 
+
 import * as ModalAction from '../../action/ModalAction';
 import * as FormAction from '../../action/FormAction';
 import toastr from 'toastr';
@@ -89,7 +91,7 @@ class ApiObjectListContainer extends React.Component {
     render_action(action,i){
 
         // TODO: use classes instead of strings (same comment as in App.js)
-        
+
         if(action == 'CreateAction')
             return <CreateAction onClick={this.handleAdd} key = {i}/>
         
@@ -140,6 +142,14 @@ class ApiRoute extends React.Component {
 
     render() {
         
+        // 
+        const action = ObjectAction 
+        const mapDispatchToProps = dispatch => ({
+            action: bindActionCreators(action, dispatch),
+            modalaction: bindActionCreators(ModalAction,dispatch),
+            formaction: bindActionCreators(FormAction,dispatch),
+        })
+
         // TODO: Create reducers based on props
 
         const mapStateToProps = state => ({
@@ -148,12 +158,6 @@ class ApiRoute extends React.Component {
             columns : this.props.columns,
             title : this.props.title,
             actions: this.props.actions
-        })
-
-        const mapDispatchToProps = dispatch => ({
-            action: bindActionCreators(ObjectAction, dispatch),
-            modalaction: bindActionCreators(ModalAction,dispatch),
-            formaction: bindActionCreators(FormAction,dispatch),
         })
 
         const Results = connect(mapStateToProps,mapDispatchToProps)(ApiObjectListContainer)

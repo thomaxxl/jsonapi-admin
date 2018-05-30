@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
 import CreateAction from '../actions/CreateAction';
 import EditAction from '../actions/EditAction';
 import DeleteAction from '../actions/DeleteAction';
 import AnalyzeAction from '../actions/AnalyzeAction'; 
 
-import * as BookAction from '../../action/BookAction';
+import * as ObjectAction from '../../action/BookAction'; 
+
 import * as ModalAction from '../../action/ModalAction';
 import * as FormAction from '../../action/FormAction';
 import toastr from 'toastr';
@@ -16,18 +16,15 @@ import List from '../Common/List';
 import DModal from '../Common/Modal';
 import Analyze from '../Common/Analyze';
 import * as Param from '../../config_ui';
+import { Route } from 'react-router-dom';
 
-
-export class BookListContainer extends React.Component {
+class ApiObjectListContainer extends React.Component {
 
     constructor() {
         super();
         this.state = {
             selectedId: 'No',
             ModalTitle: 'undefined',
-            column_names :Param.App_structure.Book.Column_names,
-            actions : Param.App_structure.Book.Actions,
-            // api_objects : this.props.api_objects
         }
         this.handleAdd = this.handleAdd.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
@@ -90,6 +87,9 @@ export class BookListContainer extends React.Component {
     }
 
     render_action(action,i){
+
+        // TODO: use classes instead of strings (same comment as in App.js)
+
         if(action == 'CreateAction')
             return <CreateAction onClick={this.handleAdd} key = {i}/>
         
@@ -110,14 +110,14 @@ export class BookListContainer extends React.Component {
             <div className="container-fluid">
                 <div className="row mt-3">
                     <div className="col">
-                        <h1>Books</h1>                        
+                        <h1>{this.props.title}</h1>                        
                     </div>
                 </div>
 
                 <div className="row mt-3">
                     <div className="col">
                         <div className="btn-group" role="group">
-                            {this.state.actions.map((action,i) => 
+                            {this.props.actions.map((action,i) => 
                                 this.render_action(action,i)
                             )}
                         </div>
@@ -126,25 +126,38 @@ export class BookListContainer extends React.Component {
 
                 <div className="row">
                     <div className="col">
-                        <List data={data} handleRowSelect={this.handleRowSelect} column_names={this.state.column_names}/>
+                        <List data={data} handleRowSelect={this.handleRowSelect} column_names={this.props.columns}/>
                     </div>
                 </div>
-                <DModal action={this.props.action} formdata={this.props.formdata} ModalTitle={this.state.ModalTitle} column_names={this.state.column_names}  />
-                <Analyze ModalTitle={this.state.ModalTitle} column_names={this.state.column_names}/>
+                <DModal action={this.props.action} formdata={this.props.formdata} ModalTitle={this.state.ModalTitle} column_names={this.props.columns}  />
+                <Analyze ModalTitle={this.state.ModalTitle} column_names={this.props.columns}/>
             </div>
         );
     }
 }
 
-const mapStateToProps = state => ({
-    api_objects: state.BooksReducer.datas,
-    formdata: state.selectedBookReducer.data,
-});
+class ApiRoute extends React.Component {
 
-const mapDispatchToProps = dispatch => ({
-    action: bindActionCreators(BookAction, dispatch),
-    modalaction: bindActionCreators(ModalAction,dispatch),
-    formaction: bindActionCreators(FormAction,dispatch),
-});
+    render() {
+        
+        // TODO: Create reducers based on props
 
-export default connect(mapStateToProps,mapDispatchToProps)(BookListContainer);
+        const mapStateToProps = state => ({
+            api_objects: state.BooksReducer.datas,
+            formdata: state.selectedBookReducer.data,
+        });
+
+        const mapDispatchToProps = dispatch => ({
+            action: bindActionCreators(ObjectAction, dispatch),
+            modalaction: bindActionCreators(ModalAction,dispatch),
+            formaction: bindActionCreators(FormAction,dispatch),
+        })
+
+        const Results = connect(mapStateToProps,mapDispatchToProps)(ApiObjectListContainer)
+
+        return <Route path={this.props.path} component={Results} />
+    }
+}
+
+
+export default ApiRoute

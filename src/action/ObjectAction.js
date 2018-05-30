@@ -1,6 +1,9 @@
 import * as ActionType from './ActionType';
 import ObjectApi from '../api/ObjectApi';
 
+
+// TODO: make the ActionTypes generic
+
 export const getResponse = data => ({
     type: ActionType.GET_USERS_RESPONSE,
     data
