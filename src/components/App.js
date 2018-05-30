@@ -25,6 +25,7 @@ class App extends Component {
   render() {
 
     // TODO: use get_routes
+    // TODO: generate HeaderNavContainer with App_structure props
 
     return (
       <div>
