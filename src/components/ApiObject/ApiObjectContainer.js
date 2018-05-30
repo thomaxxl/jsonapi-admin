@@ -25,8 +25,6 @@ class ApiObjectListContainer extends React.Component {
         this.state = {
             selectedId: 'No',
             ModalTitle: 'undefined',
-            actions : Param.App_structure.User.Actions,
-            // api_objects : this.props.api_objects
         }
         this.handleAdd = this.handleAdd.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
@@ -89,6 +87,9 @@ class ApiObjectListContainer extends React.Component {
     }
 
     render_action(action,i){
+
+        // TODO: use classes instead of strings (same comment as in App.js)
+        
         if(action == 'CreateAction')
             return <CreateAction onClick={this.handleAdd} key = {i}/>
         
@@ -109,14 +110,14 @@ class ApiObjectListContainer extends React.Component {
             <div className="container-fluid">
                 <div className="row mt-3">
                     <div className="col">
-                        <h1>Users</h1>                        
+                        <h1>{this.props.title}</h1>                        
                     </div>
                 </div>
 
                 <div className="row mt-3">
                     <div className="col">
                         <div className="btn-group" role="group">
-                            {this.state.actions.map((action,i) => 
+                            {this.props.actions.map((action,i) => 
                                 this.render_action(action,i)
                             )}
                         </div>
@@ -135,41 +136,29 @@ class ApiObjectListContainer extends React.Component {
     }
 }
 
-const mapStateToProps = state => ({
-    api_objects: state.UsersReducer.datas,
-    formdata: state.selectedUserReducer.data,
-});
-
-const mapDispatchToProps = dispatch => ({
-    action: bindActionCreators(ObjectAction, dispatch),
-    modalaction: bindActionCreators(ModalAction,dispatch),
-    formaction: bindActionCreators(FormAction,dispatch),
-});
-
-function get_ApiObjectList(collection, columns){
-
-    const mapStateToProps = state => ({
-        api_objects: state.UsersReducer.datas,
-        formdata: state.selectedUserReducer.data,
-        columns : columns
-    });
-
-    const mapDispatchToProps = dispatch => ({
-        action: bindActionCreators(ObjectAction, dispatch),
-        modalaction: bindActionCreators(ModalAction,dispatch),
-        formaction: bindActionCreators(FormAction,dispatch),
-    });
-
-    const Results = connect(mapStateToProps,mapDispatchToProps)(ApiObjectListContainer);
-    return Results
-}
-
-
 class ApiRoute extends React.Component {
 
     render() {
-        const ApiObjectContainer = get_ApiObjectList(this.props.collection, this.props.columns)
-        return <Route path={this.props.path} component={ApiObjectContainer} />
+        
+        // TODO: Create reducers based on props
+
+        const mapStateToProps = state => ({
+            api_objects: state.UsersReducer.datas,
+            formdata: state.selectedUserReducer.data,
+            columns : this.props.columns,
+            title : this.props.title,
+            actions: this.props.actions
+        })
+
+        const mapDispatchToProps = dispatch => ({
+            action: bindActionCreators(ObjectAction, dispatch),
+            modalaction: bindActionCreators(ModalAction,dispatch),
+            formaction: bindActionCreators(FormAction,dispatch),
+        })
+
+        const Results = connect(mapStateToProps,mapDispatchToProps)(ApiObjectListContainer)
+
+        return <Route path={this.props.path} component={Results} />
     }
 }
 
