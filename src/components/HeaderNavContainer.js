@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import * as Param from '.././config_ui';
 
+
+// TODO: use the App_structure items (not the "menu" )
 export const HeaderNavContainer = () => {
     return (
         <nav className="navbar navbar-toggleable-sm bg-info navbar-inverse">
