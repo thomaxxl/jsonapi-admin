@@ -1,6 +1,9 @@
 import React from 'react';
 import { Button } from 'reactstrap';
 
+
+// TODO: handle onCLick with parent in props... 
+
 class AnalyzeAction extends React.Component {  
     constructor(){
         super()

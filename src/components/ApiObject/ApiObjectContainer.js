@@ -20,6 +20,9 @@ import Analyze from '../Common/Analyze';
 import * as Param from '../../config_ui';
 import { Route } from 'react-router-dom';
 
+
+// TODO: move the modals to the "actions" component, see EditAction.js
+
 class ApiObjectListContainer extends React.Component {
 
     constructor() {
@@ -88,22 +91,9 @@ class ApiObjectListContainer extends React.Component {
             });
     }
 
-    render_action(action,i){
-
-        // TODO: use classes instead of strings (same comment as in App.js)
-
-        if(action == 'CreateAction')
-            return <CreateAction onClick={this.handleAdd} key = {i}/>
-        
-        else if(action == 'EditAction'){
-            return <EditAction onClick={this.handleEdit} key = {i} />            
-        }
-        else if(action == 'DeleteAction'){
-            return <DeleteAction onClick={this.handleDelete} key = {i} />          
-        }
-        else if(action == 'AnalyzeAction'){
-            return <AnalyzeAction onClick={this.handleAnalyze} key = {i} />            
-        }
+    render_action(action, i){
+        const Action = action
+        return <Action object={this.props.api_object} key={i} table={this} parent={this}/>
     }
 
     render() {
@@ -143,7 +133,9 @@ class ApiRoute extends React.Component {
     render() {
         
         // 
-        const action = ObjectAction 
+        let action = ObjectAction 
+
+
         const mapDispatchToProps = dispatch => ({
             action: bindActionCreators(action, dispatch),
             modalaction: bindActionCreators(ModalAction,dispatch),
