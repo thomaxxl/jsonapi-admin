@@ -3,7 +3,6 @@ import initialState from '../initialState';
 import _ from 'lodash';
 
 const analyzeReducer = (state = initialState.analyzeReducer, action) => {
-
     switch(action.type) {
         case ActionType.GET_ANALYZE_RESPONSE: {
             // '...' spread operator clones the state

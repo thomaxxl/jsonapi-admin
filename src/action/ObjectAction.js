@@ -5,16 +5,16 @@ import ObjectApi from '../api/ObjectApi';
 // TODO: make the ActionTypes generic
 
 export const getResponse = data => ({
-    type: ActionType.GET_USERS_RESPONSE,
+    type: ActionType.GET_RESPONSE,
     data
 });
 
 
-export function getAction() {
-    return (dispatch) => {
-        return ObjectApi.getAllDatas()
+export function getAction(objectKey) {
+    return (dispatch) => {        
+        return ObjectApi.getAllDatas( objectKey )
             .then(data => {
-                dispatch(getResponse(data));
+                dispatch({...getResponse(data)});
             }).catch(error => {
                 throw error;
             });
@@ -22,17 +22,17 @@ export function getAction() {
 };
 
 export const updateExistingResponse = () => ({
-    type: ActionType.UPDATE_EXISTING_USER_RESPONSE
+    type: ActionType.UPDATE_EXISTING_RESPONSE
 });
 
 export const addNewResponse = () => ({
-    type: ActionType.ADD_NEW_USER_RESPONSE
+    type: ActionType.ADD_NEW_RESPONSE
 });
 
 
-export function saveAction(BeingAddedOrEdited) {
+export function saveAction(objectKey, BeingAddedOrEdited) {
     return function (dispatch) {
-        return ObjectApi.saveData(BeingAddedOrEdited)
+        return ObjectApi.saveData(objectKey, BeingAddedOrEdited)
             .then(() => {
                 if (BeingAddedOrEdited.id) {
                     dispatch(updateExistingResponse());
@@ -40,7 +40,7 @@ export function saveAction(BeingAddedOrEdited) {
                     dispatch(addNewResponse());
                 }
             }).then(() => {
-                dispatch(getAction());
+                dispatch(getAction(objectKey));
             });
     };
 }
@@ -50,9 +50,9 @@ export const getSingleResponse = data => ({
     data: data
 });
 
-export function getSingleAction(Id) {
+export function getSingleAction(objectKey, Id) {
     return (dispatch) => {
-        return ObjectApi.getData(Id)
+        return ObjectApi.getData(objectKey, Id)
             .then(data => {
                 dispatch(getSingleResponse(data));
             }).catch(error => {
@@ -62,16 +62,16 @@ export function getSingleAction(Id) {
 }
 
 export const deleteResponse = () => ({
-    type: ActionType.DELETE_USER_RESPONSE
+    type: ActionType.DELETE_RESPONSE
 });
 
-export function deleteAction(Id) {
+export function deleteAction(objectKey, Id) {
     return (dispatch) => {
-        return ObjectApi.deleteData(Id)
+        return ObjectApi.deleteData(objectKey, Id)
             .then(() => {
                 dispatch(deleteResponse());
             }).then(() => {
-                dispatch(getAction());
+                dispatch(getAction(objectKey));
             });
     };
 }

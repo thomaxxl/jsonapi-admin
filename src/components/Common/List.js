@@ -44,17 +44,17 @@ class List extends React.Component {
         return (
             <BootstrapTable data={this.props.data}  selectRow={this.selectRowProp}  options={this.options} bordered={false}  pagination={true}  striped hover condensed>
                 <TableHeaderColumn  dataField="id" isKey hidden>Id</TableHeaderColumn>    
-                {this.props.column_names.map((col_name,i) => 
+                {this.props.columns.map((col,i) => 
                     <TableHeaderColumn 
                         key={i}
-                        dataField={col_name}
+                        dataField={col.name}
                         dataFormat={titleFormatter} 
                         dataSort={true}
                         caretRender={getCaret}
                         filter={{type: 'TextFilter', delay: 0 }}
                         columnTitle
                     >
-                    {col_name}
+                    {col.name}
                     </TableHeaderColumn>
                 )}       
             </BootstrapTable>

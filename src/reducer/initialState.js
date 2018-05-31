@@ -10,27 +10,4 @@ export default {
     analyzeReducer:{
         showmodal:false
     },
-
-    UsersReducer: {
-        datas: []
-    },
-    selectedUserReducer: {
-        data: {
-            id:'',
-            Name:'',
-            Comment:'',
-            Number:'',
-            Email:'',
-        }
-    },
-    BooksReducer: {
-        datas: []
-    },
-    selectedBookReducer: {
-        data: {
-            id:'',
-            Name:'',
-            User_id:'',
-        }
-    },
 };

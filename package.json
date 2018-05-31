@@ -1,0 +1,44 @@
+{
+  "name": "react-redux-flask-admin",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "availity-reactstrap-validation": "^2.0.2",
+    "bootstrap": "4.0.0-alpha.6",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.2.1",
+    "lodash": "^4.17.4",
+    "react": "^15.6.1",
+    "react-bootstrap-table": "^3.4.1",
+    "react-bootstrap-table-plus": "^1.0.3",
+    "react-dom": "^15.6.1",
+    "react-redux": "^5.0.5",
+    "react-router-dom": "^4.1.1",
+    "react-transition-group": "^1.1.2",
+    "react-validation": "^3.0.7",
+    "reactstrap": "^4.8.0",
+    "redux": "^3.7.0",
+    "redux-bees": "^0.1.9",
+    "redux-form": "^6.8.0",
+    "redux-json-api": "^2.0.0-beta.5",
+    "redux-thunk": "^2.2.0",
+    "tether": "^1.4.0",
+    "toastr": "^2.1.4"
+  },
+  "devDependencies": {
+    "coveralls": "^2.13.1",
+    "enzyme": "^2.8.2",
+    "enzyme-to-json": "^1.5.1",
+    "nock": "^9.0.13",
+    "react-addons-test-utils": "^15.4.2",
+    "react-scripts": "0.9.5",
+    "redux-mock-store": "^1.2.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "coverage": "react-scripts test --env=jsdom --coverage",
+    "eject": "react-scripts eject"
+  }
+}

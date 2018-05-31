@@ -1,8 +1,7 @@
 import React from 'react';
-
 import { Button } from 'reactstrap';
 
-class CreateAction extends React.Component {  
+class CreateAction extends React.Component {
     constructor(){
         super()
     }
@@ -10,7 +9,6 @@ class CreateAction extends React.Component {
     render(){
         return <Button color = "primary"
                     onClick={this.props.onClick}
-                    key = {this.props.key}
                 >
                     <i className="fa fa-plus" aria-hidden="true"/> New
                 </Button>

@@ -9,7 +9,6 @@ class DeleteAction extends React.Component {
     render(){
         return <Button color = "danger"
                     onClick={this.props.onClick}
-                    key = {this.props.key}
                 >
                     <i className="fa fa-trash-o" aria-hidden="true"/> Delete
                 </Button>
