@@ -54,25 +54,8 @@ const APP = {
 //        'path' : '/books',
 //        'menu' : 'Book Menu',
 //        'Title' : 'My Books',
-    },
-    Test: {
-        'column': [
-            {
-                name: 'Test1',
-                api: 'test',
-                type: 'text',
-                placeholder: 'Type name.',
-            },
-            {
-                name: 'Test2',
-                api: 'testi',
-                type: 'text',
-                placeholder: 'Type user_id.',
-            }],
-        'actions': [CreateAction, EditAction, DeleteAction, AnalyzeAction],
-        'API_TYPE': 'Test',
-    },
-};
+    }
+}
 
 
 const getInitialObject = () => {
