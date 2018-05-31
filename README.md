@@ -1,6 +1,6 @@
 # jsonapi-admin
 
-Interface configuration is declared in [src/Config.js] :
+Interface configuration is declared in [src/Config.js]([src/Config.js) :
 
 ```javascript
 const BaseUrl = 'http://thomaxxl.pythonanywhere.com'
