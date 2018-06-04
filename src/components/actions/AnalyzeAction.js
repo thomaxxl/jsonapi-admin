@@ -21,8 +21,10 @@ class AnalyzeModal extends React.Component {
     }
 
     render() {
+        
+
         return (
-            <Modal isOpen={this.state.modalview} toggle={this.toggle}>
+            <Modal isOpen={this.state.modalview} toggle={this.toggle} size="lg" >
                 <ModalHeader toggle={this.toggle}>Analyze</ModalHeader>
                 <ModalBody>
                     <pre>{JSON.stringify(this.props.selectedItem)}</pre>
@@ -41,14 +43,13 @@ class AnalyzeAction extends BaseAction {
 
     onClick(){
         let parent = this.props.parent
-        console.log(parent.props)
         let selected_item = parent.getSelectedItem()
-
-        if(parent.state.selectedId === null){
-            toastr.error('No ID')
+        console.log(parent.state.modal)
+        if(parent.state.modal){
+            console.log(parent.state.modal.state)
         }
-        else
-        {
+        
+        if(selected_item !== null) {
             let modal = <AnalyzeModal selectedItem={selected_item}
                                     objectKey={this.props.objectKey}/>
             parent.setState({modal: modal})
@@ -57,9 +58,9 @@ class AnalyzeAction extends BaseAction {
 
     render(){
         return <Button color="black" onClick={this.onClick} >
-                    <span ><FontAwesomeIcon className="fa-fw" icon={faPlay}></FontAwesomeIcon>Analyze</span>
+                    <span><FontAwesomeIcon className="fa-fw" icon={faPlay}></FontAwesomeIcon>Analyze</span>
                 </Button>
     }   
 }
 
-export default AnalyzeAction;
+export default AnalyzeAction

@@ -9,6 +9,15 @@ import { Route } from 'react-router-dom';
 import Alert from 'react-bootstrap/lib/Alert'
 import ActionList from '../../action/ActionList'
 
+
+class ModalContainer extends React.Component {
+
+
+    render(){
+        return <div>{this.props.modal}</div>
+    }
+}
+
 class ApiObjectListContainer extends React.Component {
 
     constructor(props) {
@@ -18,16 +27,15 @@ class ApiObjectListContainer extends React.Component {
             selectedId: null,
             modal : null,
         }
-
     }
 
     handleRowSelect(row, isSelected) {
-
+        // TODO: doesn't work for multiselect
         if (isSelected) {
-            this.setState({selectedId: row.id});
+            this.setState({selectedId: row.id})
         }
         else {
-            this.setState({selectedId: null});
+            this.setState({selectedId: null})
         }
     }
 
@@ -40,52 +48,45 @@ class ApiObjectListContainer extends React.Component {
 
     getSelectedItem(){
         let items = this.props.datas[this.props.objectKey]
-        let result = null
+        if(this.state.selectedId === null){
+            toastr.error('No item selected')
+        }
         for (var item of items){
             if(item.id === this.state.selectedId){
                 return item
             }
         }
         toastr.error('Item not found')
-
     }
 
     renderAction(action_name){
         const Action = ActionList[action_name]
         return <Action key={action_name} 
-                    objectKey={this.props.objectKey}
-                    parent={this} />
+                       objectKey={this.props.objectKey}
+                       parent={this} />
     }
 
     render() {        
         return (
             <div className="container-fluid">
-                <div className="row mt-3">
-                    <div className="col">
-                        <h1>{this.props.item.Title}</h1>
-                    </div>
+                <div className="row">
+                    <h1>{this.props.item.Title}</h1>
                 </div>
 
-                <div className="row mt-3">
-                    <div className="col">
-                        <div className="btn-group" role="group">
-                            {this.props.item.actions.map((action, index) => 
-                                this.renderAction(action)
-                            )}
-                        </div>
-                    </div>
+                <div className="row btn-group" role="group">
+                    {this.props.item.actions.map((action_name) => 
+                        this.renderAction(action_name)
+                    )}
                 </div>
 
                 <div className="row">
-                    <div className="col">
-                        <List data={this.props.datas [this.props.objectKey]} 
-                              handleRowSelect={this.handleRowSelect.bind(this)} 
-                              columns={this.props.item.column}/>
-                    </div>
+                    <List data={this.props.datas[this.props.objectKey]} 
+                          handleRowSelect={this.handleRowSelect.bind(this)} 
+                          columns={this.props.item.column}/>
                 </div>
-                {this.state.modal}
+                <ModalContainer modal={this.state.modal} />
             </div>
-        );
+        )
     }
 }
 

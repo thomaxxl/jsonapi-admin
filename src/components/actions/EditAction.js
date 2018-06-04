@@ -15,39 +15,46 @@ class EditModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-          modal: true
-        };
-
+            visible: true
+        }
         this.toggle = this.toggle.bind(this)
-        this.render_attributes = this.render_attributes.bind(this)
+        this.show = this.show.bind(this)
+        this.renderAttributes = this.renderAttributes.bind(this)
+        console.log('constr')
     }
 
     toggle() {
         this.setState({
-          modal: !this.state.modal
+            visible: !this.state.visible
         })
     }
 
-    render_attributes(){
+    show(){
+        this.setState({
+            visible: true
+        })   
+    }
+
+    renderAttributes(){
 
         return <Form>
-                    {
-                        Config.APP[this.props.objectKey].column.map(function(item, index) {
+                    { Config.APP[this.props.objectKey].column.map(function(item, index) {
                             return (<Field 
                                     key={index} 
                                     column={item} 
                                     placeholder={'TODO ' + item.name} //{this.props.formdata [item.name]}
                                     onChange={(event) => {
-                                        this.state [item.name] = event.target.value}}/>);
+                                        this.state[item.name] = event.target.value}}/>)
                         }, this)
                       }
                 </Form>        
     }
 
     render() {
-        let attributes = this.render_attributes();
 
-        return  <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+        let attributes = this.renderAttributes()
+
+        return  <Modal isOpen={this.state.visible} toggle={this.toggle} className={this.props.className}>
                     <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
                     <ModalBody>
                         {attributes}
@@ -68,13 +75,12 @@ class EditAction extends BaseAction {
     }
 
     onClick(){
-        
+
         let parent = this.props.parent
-        console.log(parent.data)
         if(parent.state.selectedId != null)
         {
             //parent.props.modalaction.getAnalyzeAction(true);
-            const modal = <EditModal objectKey={this.props.objectKey} selectedId={parent.state.selectedId} />
+            var modal = <EditModal objectKey={this.props.objectKey} selectedId={parent.state.selectedId} />
             parent.setState({modal: modal})
             // TODO
             //parent.props.action.getSingleAction(parent.props.objectKey, parent.state.selectedId);

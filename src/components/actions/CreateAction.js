@@ -10,8 +10,8 @@ class CreateAction extends BaseAction {
     onClick(){
         let parent = this.props.parent;
         parent.setState({ModalTitle: 'New'});
-        parent.props.modalaction.getModalAction(true);
-        parent.props.formaction.getFormAction(true);
+        //parent.props.modalaction.getModalAction(true);
+        //parent.props.formaction.getFormAction(true);
     }
 
     render(){
