@@ -43,6 +43,7 @@ class List extends React.Component {
     render() {
 
         let options = this.options;
+        // TODO: value don't show yet
         options['sizePerPageList'] = [ {
                                         text: '10', value: 10
                                       }, {
@@ -51,22 +52,29 @@ class List extends React.Component {
                                         text: '100', value: 100
                                       } ] ;
         options['sizePerPage'] = 50;
-        console.log(options)
+
+        var datas = []
+        var length = this.props.data.length;
+        for ( var i = 0 ; i < length ; i++){
+            let item = this.props.data[i]
+            let data = Object.assign({}, item.attributes, { id : item.id })
+            datas.push(data)
+        }
 
         return (
-            <BootstrapTable data={this.props.data}  selectRow={this.selectRowProp} options={options} bordered={false}  pagination={true}  striped hover condensed>
+            <BootstrapTable data={datas}  selectRow={this.selectRowProp} options={options} bordered={false}  pagination={true}  striped hover condensed>
                 <TableHeaderColumn  dataField="id" isKey hidden>Id</TableHeaderColumn>    
                 {this.props.columns.map((col,i) => 
                     <TableHeaderColumn 
                         key={i}
-                        dataField={col.name}
+                        dataField={col.api}
                         dataFormat={titleFormatter} 
                         dataSort={true}
                         caretRender={getCaret}
                         filter={{type: 'TextFilter', delay: 0 }}
                         columnTitle
                     >
-                    {col.name}
+                    {col.name ? col.name : col.api}
                     </TableHeaderColumn>
                 )}       
             </BootstrapTable>

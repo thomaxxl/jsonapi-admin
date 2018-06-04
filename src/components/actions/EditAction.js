@@ -36,8 +36,7 @@ class EditModal extends React.Component {
                             return (<Field 
                                     key={index} 
                                     column={item} 
-                                    //placeholder={this.props.formdata [item.name]}
-                                    placeholder="TODO"
+                                    placeholder={'TODO ' + item.name} //{this.props.formdata [item.name]}
                                     onChange={(event) => {
                                         this.state [item.name] = event.target.value}}/>);
                         }, this)
@@ -48,15 +47,15 @@ class EditModal extends React.Component {
     render() {
         let attributes = this.render_attributes();
 
-        return <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                  <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
-                  <ModalBody>
-                    {attributes}
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button color="primary" onClick={this.toggle}>Do Something</Button>{' '}
-                    <Button color="secondary" onClick={this.toggle}>Cancel</Button>
-                  </ModalFooter>
+        return  <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+                    <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
+                    <ModalBody>
+                        {attributes}
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="primary" onClick={this.toggle}>Do Something</Button>{' '}
+                        <Button color="secondary" onClick={this.toggle}>Cancel</Button>
+                    </ModalFooter>
                 </Modal>
     }
 }
@@ -71,7 +70,7 @@ class EditAction extends BaseAction {
     onClick(){
         
         let parent = this.props.parent
-
+        console.log(parent.data)
         if(parent.state.selectedId != null)
         {
             //parent.props.modalaction.getAnalyzeAction(true);

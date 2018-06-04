@@ -4,10 +4,10 @@ import { bindActionCreators } from 'redux';
 import toastr from 'toastr';
 import { Button } from 'reactstrap';
 import List from '../Common/List';
-import Analyze from '../Common/Analyze';
 import * as Param from '../../Config';
 import { Route } from 'react-router-dom';
 import Alert from 'react-bootstrap/lib/Alert'
+import ActionList from '../../action/ActionList'
 
 class ApiObjectListContainer extends React.Component {
 
@@ -16,9 +16,9 @@ class ApiObjectListContainer extends React.Component {
         this.state = {
             data: [],
             selectedId: null,
-            ModalTitle: 'undefined',
             modal : null,
         }
+
     }
 
     handleRowSelect(row, isSelected) {
@@ -34,13 +34,30 @@ class ApiObjectListContainer extends React.Component {
     componentDidMount() {
         this.props.action.getAction(this.props.objectKey)
             .catch(error => {
-                toastr.error(error);
-            });
+                toastr.error(error)
+            })
     }
 
-    render() {
+    getSelectedItem(){
+        let items = this.props.datas[this.props.objectKey]
+        let result = null
+        for (var item of items){
+            if(item.id === this.state.selectedId){
+                return item
+            }
+        }
+        toastr.error('Item not found')
 
-        
+    }
+
+    renderAction(action_name){
+        const Action = ActionList[action_name]
+        return <Action key={action_name} 
+                    objectKey={this.props.objectKey}
+                    parent={this} />
+    }
+
+    render() {        
         return (
             <div className="container-fluid">
                 <div className="row mt-3">
@@ -52,10 +69,8 @@ class ApiObjectListContainer extends React.Component {
                 <div className="row mt-3">
                     <div className="col">
                         <div className="btn-group" role="group">
-                            {this.props.item.actions.map((Action, index) => 
-                                <Action key={index} 
-                                        objectKey={this.props.objectKey}
-                                        parent={this} />
+                            {this.props.item.actions.map((action, index) => 
+                                this.renderAction(action)
                             )}
                         </div>
                     </div>

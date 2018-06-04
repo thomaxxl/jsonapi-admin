@@ -6,7 +6,7 @@ import { faCog, faTrashAlt, faCoffee, faBullseye, faPlay, faSearchEngin, faEdit,
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import toastr from 'toastr'
 
-class Analyze extends React.Component {    
+class AnalyzeModal extends React.Component {    
     
     constructor() {
         super()
@@ -25,13 +25,12 @@ class Analyze extends React.Component {
             <Modal isOpen={this.state.modalview} toggle={this.toggle}>
                 <ModalHeader toggle={this.toggle}>Analyze</ModalHeader>
                 <ModalBody>
-                    <div>{this.props.selectedId}</div>
+                    <pre>{JSON.stringify(this.props.selectedItem)}</pre>
                 </ModalBody>
             </Modal>
         )
     }
 }
-
 
 class AnalyzeAction extends BaseAction { 
 
@@ -42,20 +41,22 @@ class AnalyzeAction extends BaseAction {
 
     onClick(){
         let parent = this.props.parent
-        
+        console.log(parent.props)
+        let selected_item = parent.getSelectedItem()
+
         if(parent.state.selectedId === null){
             toastr.error('No ID')
         }
         else
         {
-            let modal = <Analyze selectedId={parent.state.selectedId}
+            let modal = <AnalyzeModal selectedItem={selected_item}
                                     objectKey={this.props.objectKey}/>
             parent.setState({modal: modal})
         }
     }
 
     render(){
-        return <Button color = "blue" onClick={this.onClick} >
+        return <Button color="black" onClick={this.onClick} >
                     <span ><FontAwesomeIcon className="fa-fw" icon={faPlay}></FontAwesomeIcon>Analyze</span>
                 </Button>
     }   

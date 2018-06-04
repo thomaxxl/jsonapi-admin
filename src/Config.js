@@ -1,12 +1,4 @@
-
-
-import CreateAction from "./components/actions/CreateAction";
-import EditAction from "./components/actions/EditAction";
-import DeleteAction from "./components/actions/DeleteAction";
-import AnalyzeAction from "./components/actions/AnalyzeAction";
-
 const BaseUrl = 'http://jsonapi.pythonanywhere.com'
-
 const APP = {
     User: {
         'column': [
@@ -23,12 +15,13 @@ const APP = {
                 placeholder: 'Type email.',
             },
             {
-                name: 'Comment',
+                name: 'comment',
+                display_name: 'Comment',
                 api: 'comment',
                 type: 'textarea',
                 placeholder: 'Type comment.',
             }],
-        'actions': [CreateAction, EditAction, DeleteAction, AnalyzeAction],
+        'actions': ['CreateAction', 'EditAction', 'DeleteAction', 'AnalyzeAction'],
         'path' : '/users',
         'API' : 'Users',
         'API_TYPE': 'User',
@@ -37,9 +30,8 @@ const APP = {
     },
     Books: {
         'column': [
-            
             {
-                name: 'This is Name',
+                name: 'Book display name',
                 api: 'name',
                 type: 'text',
                 placeholder: 'Type name.',
@@ -50,12 +42,8 @@ const APP = {
                 type: 'text',
                 placeholder: 'Type user_id.',
             }],
-        'actions': [CreateAction, EditAction, DeleteAction, AnalyzeAction],
-//        'API' : 'Books',
+        'actions': ['CreateAction', 'EditAction', 'DeleteAction', 'AnalyzeAction'],
         'API_TYPE': 'Book',
-//        'path' : '/books',
-//        'menu' : 'Book Menu',
-//        'Title' : 'My Books',
     }
 }
 
@@ -72,7 +60,7 @@ const getInitialObject = () => {
 Object.keys(APP).map(function(key, index) {
     var initVal = {
         column: [],
-        actions: [CreateAction, EditAction, DeleteAction, AnalyzeAction],
+        actions: ['CreateAction', 'EditAction', 'DeleteAction', 'AnalyzeAction'],
         API: key,
         API_TYPE: key,
         path: "/" + key.toLocaleLowerCase(),
@@ -83,14 +71,6 @@ Object.keys(APP).map(function(key, index) {
 });
 
 console.log(APP);
-
-
 exports.APP = APP
-exports.URL = BaseUrl
-exports.InitObject = getInitialObject
-
-
-exports.APP = APP
-exports.Config = APP
 exports.URL = BaseUrl
 exports.InitObject = getInitialObject

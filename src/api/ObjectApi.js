@@ -33,14 +33,15 @@ var datas = Param.InitObject();
 class ObjectApi {
     static getAllDatas( objectKey ) {
         return new Promise ((resolve)=>{
-            var data = [];
+            //var data = [];
             if(datas [objectKey].length == 0)
                 api.getDatas({key: Param.APP [objectKey].API})
                 .then((result)=>{
-                    datas [objectKey] = [];
+                    datas[objectKey] = result.body.data;
+                    /*datas [objectKey] = [];
                     var length = result.body.data.length;
                     for ( var i = 0 ; i < length ; i++){
-                        data = {};
+                        let data = {};
                         data['id'] = result.body.data[i].id;
 
                         Param.APP[objectKey].column.map((item, index) => {
@@ -48,7 +49,7 @@ class ObjectApi {
                             console.log(item)
                         })
                         datas [objectKey].push(data);
-                    }
+                    }*/
                     resolve(Object.assign({}, datas));
                 });
             else {
