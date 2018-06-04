@@ -1,9 +1,11 @@
+
+
 import CreateAction from "./components/actions/CreateAction";
 import EditAction from "./components/actions/EditAction";
 import DeleteAction from "./components/actions/DeleteAction";
 import AnalyzeAction from "./components/actions/AnalyzeAction";
 
-const BaseUrl = 'http://thomaxxl.pythonanywhere.com'
+const BaseUrl = 'http://jsonapi.pythonanywhere.com'
 
 const APP = {
     User: {
@@ -88,3 +90,7 @@ exports.URL = BaseUrl
 exports.InitObject = getInitialObject
 
 
+exports.APP = APP
+exports.Config = APP
+exports.URL = BaseUrl
+exports.InitObject = getInitialObject

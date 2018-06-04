@@ -3,36 +3,33 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import toastr from 'toastr';
 import { Button } from 'reactstrap';
-
 import List from '../Common/List';
-import DModal from '../Common/Modal';
 import Analyze from '../Common/Analyze';
 import * as Param from '../../Config';
 import { Route } from 'react-router-dom';
-
-import ActionProc from '../actions/ActionProc';
-
+import Alert from 'react-bootstrap/lib/Alert'
 
 class ApiObjectListContainer extends React.Component {
 
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
             data: [],
-            selectedId: 'No',
+            selectedId: null,
             ModalTitle: 'undefined',
+            modal : null,
         }
     }
 
     handleRowSelect(row, isSelected) {
+
         if (isSelected) {
             this.setState({selectedId: row.id});
         }
-        else{
-            this.setState({selectedId: 'No'});
+        else {
+            this.setState({selectedId: null});
         }
     }
-
 
     componentDidMount() {
         this.props.action.getAction(this.props.objectKey)
@@ -41,11 +38,9 @@ class ApiObjectListContainer extends React.Component {
             });
     }
 
-    onHandleAction(action) {
-        ActionProc [action](this);
-    }
-
     render() {
+
+        
         return (
             <div className="container-fluid">
                 <div className="row mt-3">
@@ -58,7 +53,9 @@ class ApiObjectListContainer extends React.Component {
                     <div className="col">
                         <div className="btn-group" role="group">
                             {this.props.item.actions.map((Action, index) => 
-                                <Action key={index} onClick={() => this.onHandleAction(Action.name)}/>
+                                <Action key={index} 
+                                        objectKey={this.props.objectKey}
+                                        parent={this} />
                             )}
                         </div>
                     </div>
@@ -66,18 +63,15 @@ class ApiObjectListContainer extends React.Component {
 
                 <div className="row">
                     <div className="col">
-                        <List data={this.props.datas [this.props.objectKey]} handleRowSelect={this.handleRowSelect.bind(this)} columns={this.props.item.column}/>
+                        <List data={this.props.datas [this.props.objectKey]} 
+                              handleRowSelect={this.handleRowSelect.bind(this)} 
+                              columns={this.props.item.column}/>
                     </div>
                 </div>
-                <DModal ModalTitle={this.state.ModalTitle} 
-                        objectKey={this.props.objectKey}
-                        action={this.props.action}/>
-                <Analyze ModalTitle={this.state.ModalTitle} 
-                        objectKey={this.props.objectKey}/>
+                {this.state.modal}
             </div>
         );
     }
 }
-
 
 export default ApiObjectListContainer

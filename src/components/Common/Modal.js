@@ -1,13 +1,9 @@
 import React from 'react';
-
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import toastr from 'toastr';
-
-
 import * as Param from '../../Config';
 import Field from '../fields/Field';
-
 import * as ModalAction from '../../action/ModalAction';
 import * as ObjectAction from '../../action/ObjectAction';
 import * as FormAction from '../../action/FormAction';
@@ -49,6 +45,10 @@ class DModal extends React.Component {
                 else
                     toastr.success('Saved');
             });
+    }
+
+    render_attributes(){
+
     }
     
     render() {

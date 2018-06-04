@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 
 const getCaret = direction => {
@@ -37,12 +36,25 @@ class List extends React.Component {
             bgColor: '#c1f291',
             onSelect: props.handleRowSelect,
             clickToSelect: true, 
-            hideSelectColumn: true            
+            //hideSelectColumn: true,
+            mode: 'checkbox',  
         };
     }
     render() {
+
+        let options = this.options;
+        options['sizePerPageList'] = [ {
+                                        text: '10', value: 10
+                                      }, {
+                                        text: '50', value: 50
+                                      }, {
+                                        text: '100', value: 100
+                                      } ] ;
+        options['sizePerPage'] = 50;
+        console.log(options)
+
         return (
-            <BootstrapTable data={this.props.data}  selectRow={this.selectRowProp}  options={this.options} bordered={false}  pagination={true}  striped hover condensed>
+            <BootstrapTable data={this.props.data}  selectRow={this.selectRowProp} options={options} bordered={false}  pagination={true}  striped hover condensed>
                 <TableHeaderColumn  dataField="id" isKey hidden>Id</TableHeaderColumn>    
                 {this.props.columns.map((col,i) => 
                     <TableHeaderColumn 

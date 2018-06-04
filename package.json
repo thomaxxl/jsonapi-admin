@@ -3,12 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome": "^1.1.8",
+    "@fortawesome/react-fontawesome": "^0.0.20",
     "availity-reactstrap-validation": "^2.0.2",
     "bootstrap": "4.0.0-alpha.6",
     "font-awesome": "^4.7.0",
     "jquery": "^3.2.1",
     "lodash": "^4.17.4",
     "react": "^15.6.1",
+    "react-bootstrap": "^0.32.1",
     "react-bootstrap-table": "^3.4.1",
     "react-bootstrap-table-plus": "^1.0.3",
     "react-dom": "^15.6.1",
@@ -26,6 +29,7 @@
     "toastr": "^2.1.4"
   },
   "devDependencies": {
+    "@fortawesome/fontawesome-free-solid": "^5.0.13",
     "coveralls": "^2.13.1",
     "enzyme": "^2.8.2",
     "enzyme-to-json": "^1.5.1",

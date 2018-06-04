@@ -7,11 +7,10 @@ import configureStoreapi from '../configureStore';
 
 const store = configureStoreapi();
 
- 
 const apiEndpoints = {
   getDatas:      { method: get,     path: '/:key/?page[limit]=50' },
   createData:    { method: post,    path: '/:key' },
-  updateData:    { method: post,    path: '/:key/:id' },
+  updateData:    { method: patch,   path: '/:key/:id' },
   destroyData:   { method: destroy, path: '/:key/:id' },
 };
 
@@ -46,6 +45,7 @@ class ObjectApi {
 
                         Param.APP[objectKey].column.map((item, index) => {
                             data [item.name] = result.body.data[i].attributes [item.api];
+                            console.log(item)
                         })
                         datas [objectKey].push(data);
                     }
