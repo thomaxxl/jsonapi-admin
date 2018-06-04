@@ -43,7 +43,7 @@ class TODOHeaderNavContainer extends React.Component {
     return (
      <div>
         <Navbar color="faded" light expand="md" className="navbar-dark navbar-inverse bg-dark">
-        <NavbarBrand href="/">Automat C&C</NavbarBrand>
+        <NavbarBrand href="/">C&C</NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav navbar>
