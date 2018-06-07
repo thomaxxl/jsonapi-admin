@@ -10,9 +10,9 @@ export const getResponse = data => ({
 });
 
 
-export function getAction(objectKey) {
+export function getAction(objectKey, offset, limit) {
     return (dispatch) => {        
-        return ObjectApi.getAllDatas( objectKey )
+        return ObjectApi.getAllDatas( objectKey, offset, limit )
             .then(data => {
                 dispatch({...getResponse(data)});
             }).catch(error => {
@@ -30,7 +30,7 @@ export const addNewResponse = () => ({
 });
 
 
-export function saveAction(objectKey, BeingAddedOrEdited) {
+export function saveAction(objectKey, BeingAddedOrEdited, offset, limit) {
     return function (dispatch) {
         return ObjectApi.saveData(objectKey, BeingAddedOrEdited)
             .then(() => {
@@ -40,7 +40,7 @@ export function saveAction(objectKey, BeingAddedOrEdited) {
                     dispatch(addNewResponse());
                 }
             }).then(() => {
-                dispatch(getAction(objectKey));
+                dispatch(getAction(objectKey, offset, limit));
             });
     };
 }
@@ -65,13 +65,13 @@ export const deleteResponse = () => ({
     type: ActionType.DELETE_RESPONSE
 });
 
-export function deleteAction(objectKey, Id) {
+export function deleteAction(objectKey, Ids, offset, limit) {
     return (dispatch) => {
-        return ObjectApi.deleteData(objectKey, Id)
+        return ObjectApi.deleteData(objectKey, Ids)
             .then(() => {
                 dispatch(deleteResponse());
             }).then(() => {
-                dispatch(getAction(objectKey));
+                dispatch(getAction(objectKey, offset, limit));
             });
     };
 }

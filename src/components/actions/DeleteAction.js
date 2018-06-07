@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux'
 import { Button } from 'reactstrap';
 import BaseAction from './BaseAction'
 import toastr from 'toastr';
@@ -11,12 +12,16 @@ class DeleteAction extends BaseAction{
     onClick(){
         let parent = this.props.parent
         parent.setState({ModalTitle: 'Delete'});
-        if(parent.state.selectedId!='No'){
-            parent.props.action.deleteAction(parent.props.objectKey, parent.state.selectedId)
+        if(parent.state.selectedIds.length != 0){
+            if (!confirm("Do you want to delete selected items?"))  return;
+            
+            var offset = this.props.datas [this.props.objectKey].offset;
+            var limit = this.props.datas [this.props.objectKey].limit;
+            parent.props.action.deleteAction(parent.props.objectKey, parent.state.selectedIds, offset, limit)
                 .then(()=>{
-                    toastr.warning('Deleted');
+                    toastr.warning('Deleted', '', {positionClass: "toast-top-center"});
                 });
-                parent.state.selectedId = 'No';
+                parent.state.selectedIds = [];
         }
     }
 
@@ -29,4 +34,7 @@ class DeleteAction extends BaseAction{
     }
 }
 
-export default DeleteAction;
+const mapStateToProps = state => ({
+    datas: state.object
+}); 
+export default connect(mapStateToProps)( DeleteAction);

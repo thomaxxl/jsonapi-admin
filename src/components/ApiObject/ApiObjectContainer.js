@@ -11,52 +11,60 @@ import ActionList from '../../action/ActionList'
 
 
 class ModalContainer extends React.Component {
-
-
     render(){
         return <div>{this.props.modal}</div>
     }
 }
-
 class ApiObjectListContainer extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            data: [],
-            selectedId: null,
+            selectedIds: [],
             modal : null,
         }
     }
 
-    handleRowSelect(row, isSelected) {
-        // TODO: doesn't work for multiselect
-        if (isSelected) {
-            this.setState({selectedId: row.id})
-        }
-        else {
-            this.setState({selectedId: null})
-        }
+    handleRowSelect(itemData, state, index) {
+        var orgIndex = this.state.selectedIds.indexOf(itemData.id);
+
+        if (state && orgIndex == -1)
+            this.state.selectedIds.push(itemData.id);
+        else if (!state && orgIndex != -1)
+            this.state.selectedIds.splice(orgIndex, 1);
     }
 
     componentDidMount() {
-        this.props.action.getAction(this.props.objectKey)
+        this.props.action.getAction(this.props.objectKey, 0, 10)
             .catch(error => {
-                toastr.error(error)
+                toastr.error(error, '', {positionClass: "toast-top-center"})
             })
+    }
+
+    onTableChange(page,sizePerPage){
+        var newOffset = (page-1) * sizePerPage;
+        this.props.action.getAction(this.props.objectKey,newOffset,sizePerPage)
+        .catch((error)=>{
+            toastr.error(error,'',{positionClass:'toast-top-center'})
+        })
     }
 
     getSelectedItem(){
         let items = this.props.datas[this.props.objectKey]
-        if(this.state.selectedId === null){
-            toastr.error('No item selected')
+        if(this.state.selectedIds.length == 0){
+            toastr.error('No item selected', '', {positionClass: "toast-top-center"})
         }
-        for (var item of items){
-            if(item.id === this.state.selectedId){
-                return item
+
+        var selItems = [];
+        for (var item of items) {
+            if(this.state.selectedIds.indexOf(item.id)) {
+                selItems.push(item);
             }
         }
-        toastr.error('Item not found')
+        if (selItems.length == 0)
+            toastr.error('Item not found', '', {positionClass: "toast-top-center"})
+        else
+            return selItems;
     }
 
     renderAction(action_name){
@@ -66,23 +74,27 @@ class ApiObjectListContainer extends React.Component {
                        parent={this} />
     }
 
-    render() {        
+    render() {       
         return (
             <div className="container-fluid">
                 <div className="row">
-                    <h1>{this.props.item.Title}</h1>
-                </div>
+                    <div className="col-md-12">
+                        <h1>{this.props.item.Title}</h1>
+                        <hr/>
 
-                <div className="row btn-group" role="group">
-                    {this.props.item.actions.map((action_name) => 
-                        this.renderAction(action_name)
-                    )}
-                </div>
+                        <div className="btn-group" role="group">
+                            {this.props.item.actions.map((action_name) => 
+                                this.renderAction(action_name)
+                            )}
+                        </div>
 
-                <div className="row">
-                    <List data={this.props.datas[this.props.objectKey]} 
-                          handleRowSelect={this.handleRowSelect.bind(this)} 
-                          columns={this.props.item.column}/>
+                        <List data={this.props.datas[this.props.objectKey]} 
+                            handleRowSelect={this.handleRowSelect.bind(this)} 
+                            columns={this.props.item.column}
+                            selectedIds={this.state.selectedIds}
+                            filter={this.props.datas[this.props.objectKey].filter}
+                            onTableChange={this.onTableChange.bind(this)}/>
+                    </div>
                 </div>
                 <ModalContainer modal={this.state.modal} />
             </div>
@@ -90,4 +102,6 @@ class ApiObjectListContainer extends React.Component {
     }
 }
 
-export default ApiObjectListContainer
+
+
+export default  ApiObjectListContainer

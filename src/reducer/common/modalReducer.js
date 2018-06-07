@@ -3,8 +3,8 @@ import initialState from '../initialState';
 import _ from 'lodash';
 
 const modalReducer = (state = initialState.modalReducer, action) => {
-
     switch(action.type) {
+        
         case ActionType.GET_MODAL_RESPONSE: {
             // '...' spread operator clones the state
             // lodash Object assign simply clones action.courses into a new array.
@@ -13,6 +13,7 @@ const modalReducer = (state = initialState.modalReducer, action) => {
                 ...state, showmodal: action.Modal
             };
         }
+        
 
         default: { return state; }
     }

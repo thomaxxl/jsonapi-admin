@@ -8,7 +8,7 @@ import configureStoreapi from '../configureStore';
 const store = configureStoreapi();
 
 const apiEndpoints = {
-  getDatas:      { method: get,     path: '/:key/?page[limit]=50' },
+  getDatas:      { method: post,     path: '/:key/startswith' },
   createData:    { method: post,    path: '/:key' },
   updateData:    { method: patch,   path: '/:key/:id' },
   destroyData:   { method: destroy, path: '/:key/:id' },
@@ -20,64 +20,60 @@ const config = {
  
 const api = buildApi(apiEndpoints, config);
 
-function replaceAll(str, find, replace) {
-    return str;
-}
-
-const generateId = (data) => {
-    return replaceAll(data.Name, ' ', '-');
-};
-
 var datas = Param.InitObject();
 
 class ObjectApi {
-    static getAllDatas( objectKey ) {
+    static getAllDatas( objectKey, offset, limit ) {
         return new Promise ((resolve)=>{
-            //var data = [];
-            if(datas [objectKey].length == 0)
-                api.getDatas({key: Param.APP [objectKey].API})
+                var filter = datas[objectKey].filter;
+                if(Object.keys(filter).length == 0){
+                    Param.APP[objectKey].column.map((item,i)=>{
+                        filter[item.dataField] = "";
+                    })
+                }
+                api.getDatas(
+                    {
+                        key: Param.APP [objectKey].API,
+                        "page[offset]": offset,
+                        "page[limit]": limit
+                    },
+                    {
+                        "meta":{
+                            "method":"startswith",
+                            "args":filter
+                        }
+                    }
+                )
                 .then((result)=>{
-                    datas[objectKey] = result.body.data;
-                    /*datas [objectKey] = [];
-                    var length = result.body.data.length;
-                    for ( var i = 0 ; i < length ; i++){
-                        let data = {};
-                        data['id'] = result.body.data[i].id;
-
-                        Param.APP[objectKey].column.map((item, index) => {
-                            data [item.name] = result.body.data[i].attributes [item.api];
-                            console.log(item)
-                        })
-                        datas [objectKey].push(data);
-                    }*/
+                    datas[objectKey] = {
+                        offset: offset,
+                        limit: limit,
+                        data: result.body.data,
+                        total: result.body.meta.count,
+                        filter: datas [objectKey].filter
+                    };
                     resolve(Object.assign({}, datas));
                 });
-            else {
-                resolve(Object.assign({}, datas));
-            }
         });
     }
 
     static saveData(objectKey, data) {
         return new Promise((resolve, reject) => {
-            // Simulate server-side validation
             var attributes = {};
             Param.APP [objectKey].column.map(function(item, index) {
-                attributes [item.api] = data [item.name];
+                attributes [item.dataField] = data [item.text];
             });
-
             if (data.id) {
-                const existingDataIndex = datas [objectKey].findIndex(a => a.id === data.id);
-                datas [objectKey].splice(existingDataIndex, 1, data);
-
                 api.updateData({
                         id: data.id,
                         key: Param.APP [objectKey].API},
                     {data:{
                         id: data.id, 
                         type: Param.APP [objectKey].API_TYPE, 
-                        attributes: attributes}});
-                resolve(data);
+                        attributes: attributes}}).then(()=>{
+                            resolve(data);
+                        });
+                
             } else {
                 api.createData({
                         key: Param.APP [objectKey].API},
@@ -85,10 +81,7 @@ class ObjectApi {
                         type: Param.APP [objectKey].API_TYPE,
                         attributes: attributes}})
                     .then((result)=>{
-                        console.log(result);
-                        data.id = result.body.data.id;
-                        datas [objectKey].push(data);
-                        resolve(data);
+                        resolve();
                     })
             }
         });
@@ -96,22 +89,22 @@ class ObjectApi {
 
     static getData(objectKey, dataId) {
         return new Promise((resolve) => {
-            const existingDataIndex = datas [objectKey].findIndex(data => data.id === dataId);
-            const dataFound = Object.assign({}, datas [objectKey][existingDataIndex]);
+            const existingDataIndex = datas [objectKey].data.findIndex(data => data.id === dataId);
+            const dataFound = Object.assign({}, datas [objectKey].data[existingDataIndex]);
             resolve(dataFound);
         });
     }
 
-    static deleteData(objectKey, dataId) {
-        console.log("delete");
-        console.log(objectKey);
+    static deleteData(objectKey, dataIds) {
         return new Promise((resolve) => {
-            const indexOfDataToDelete = datas [objectKey].findIndex(data => data.id === dataId);
-            datas [objectKey].splice(indexOfDataToDelete, 1);
-            api.destroyData({ 
-                id: dataId,
-                key: Param.APP [objectKey].API});
-            resolve();
+            dataIds.map((dataId, index) => {
+                api.destroyData({
+                    id: dataId,
+                    key: Param.APP [objectKey].API})
+                .then(() => {
+                    resolve();
+                });
+            });
         });
     }
 }

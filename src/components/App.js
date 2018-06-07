@@ -10,6 +10,7 @@ import ApiObjectListContainer from './ApiObject/ApiObjectContainer'
 import * as ObjectAction from '../action/ObjectAction'
 import * as ModalAction from '../action/ModalAction'
 import * as FormAction from '../action/FormAction'
+import './style.css';
 
 const history = createBrowserHistory()
 
@@ -36,7 +37,7 @@ class App extends Component {
     render() {
         const routes = Object.keys(Param.APP).map((key) => genRoute(key) )
         return <Router history={history}>
-                  <div>
+                  <div className="container">
                       <HeaderNavContainer />
                       <Switch>
                           <Route exact path="/" component={Home} />

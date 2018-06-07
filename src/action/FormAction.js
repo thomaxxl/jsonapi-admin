@@ -6,9 +6,8 @@ export const getFormResponse = form => ({
 });
 
 export function getFormAction(form) {
+    
     return (dispatch) => {
-        setTimeout(()=>{
             dispatch(getFormResponse(form));
-        },50);
     };
 }

@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { NavLink } from 'react-router-dom';
 import * as Param from '.././Config';
 import ReactDOM from 'react-dom';
 import { browserHistory } from 'react-router'
@@ -11,7 +10,7 @@ import {
   NavbarBrand,
   Nav,
   NavItem,
-//  NavLink,
+  NavLink,
   NavDropdown,
   MenuItem,
   UncontrolledDropdown,
@@ -23,10 +22,7 @@ import { faCog, faTrashAlt, faCoffee, faBullseye, faPlay, faSearchEngin  } from 
 import fontawesome from '@fortawesome/fontawesome'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import './style.css'
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-
-class TODOHeaderNavContainer extends React.Component {
+class HeaderNavContainer extends React.Component {
   constructor(props) {
     super(props)
     this.toggle = this.toggle.bind(this)
@@ -47,12 +43,15 @@ class TODOHeaderNavContainer extends React.Component {
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav navbar>
-              <NavItem>
-                <NavLink href="/images/">Images</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink href="/analyses/">Analyses</NavLink>
-              </NavItem>
+              {
+                Object.keys(Param.APP).map(function(key, index) {
+                    return (<NavItem key = {index}>
+                        <NavLink href={Param.APP [key].path} >
+                            {Param.APP [key].menu}
+                        </NavLink>
+                    </NavItem>)
+                })
+              }
             </Nav>
 
             <Nav className="ml-auto" navbar>
@@ -87,32 +86,5 @@ class TODOHeaderNavContainer extends React.Component {
     )
   }
 }
-
-
-export const HeaderNavContainer = () => {
-    return (
-        <nav className="navbar navbar-toggleable-sm bg-info navbar-inverse">
-            <div className="container">
-                <button className="navbar-toggler" data-toggle="collapse" data-target="#mainNav">
-                    <span className="navbar-toggler-icon" />
-                </button>
-
-                <div className="collapse navbar-collapse" id="mainNav">
-                    <div className="navbar-nav">
-                        <h4><NavLink className="nav-item nav-link" exact activeClassName="active" to="/">Home</NavLink></h4>
-                        {
-                        Object.keys(Param.APP).map(function(key, index) {
-                            return (<h4 key = {index}>
-                                <NavLink className="nav-item nav-link" activeClassName="active" to={Param.APP [key].path} >
-                                    {Param.APP [key].menu}
-                                </NavLink>
-                            </h4>)
-                        })}
-                    </div>
-                </div>
-            </div>
-        </nav>
-    );
-};
 
 export default HeaderNavContainer;

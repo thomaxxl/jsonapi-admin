@@ -10,11 +10,12 @@ class Field extends React.Component {
     render(){
         var item = this.props.column;
         return <FormGroup>
-                    <Label for="name">{item.name}</Label>
+                    <Label for="name">{item.text}</Label>
                     <Input value={this.props.value}
                             type={item.type}
-                            name={item.api}
-                            placeholder= {this.props.placeholder != undefined ? this.props.placeholder : item.placeholder}
+                            disabled={this.props.disabled}
+                            name={item.dataField}
+                            placeholder= {this.props.placeholder != undefined && this.props.disabled == undefined? this.props.placeholder : ''}
                             onChange={this.props.onChange}/>
                 </FormGroup>
     }
