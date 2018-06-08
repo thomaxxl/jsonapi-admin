@@ -1,8 +1,7 @@
 import * as ActionType from '../../action/ActionType';
-import initialState from '../initialState';
 import _ from 'lodash';
 
-const formReducer = (state = initialState.formReducer, action) => {
+const formReducer = (state = {form:true}, action) => {
 
     switch(action.type) {
         case ActionType.GET_FORM_RESPONSE: {

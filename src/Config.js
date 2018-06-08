@@ -1,26 +1,13 @@
 import APP from './Config.json';
+import ActionList from './action/ActionList';
+import './style.css'
 
 const BaseUrl = 'http://jsonapi.pythonanywhere.com'
-
-const getInitialObject = () => {
-    var initObj = {};
-    Object.keys(APP).map(function(key, index) {
-        initObj [key] = {
-            offset: 0,
-            limit: 10,
-            data: [],
-            total: 0,
-            filter:{},
-        };
-    });
-    return initObj;
-}
-
 
 Object.keys(APP).map(function(key, index) {
     var initVal = {
         column: [],
-        actions: ['CreateAction', 'EditAction', 'DeleteAction', 'AnalyzeAction'],
+        actions: ActionList,
         API: key,
         API_TYPE: key,
         path: "/" + key.toLocaleLowerCase(),
@@ -32,4 +19,4 @@ Object.keys(APP).map(function(key, index) {
 
 exports.APP = APP
 exports.URL = BaseUrl
-exports.InitObject = getInitialObject
+exports.ActionList = ActionList

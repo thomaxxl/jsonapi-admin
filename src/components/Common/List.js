@@ -16,7 +16,7 @@ class List extends React.Component {
             this.state.columns.push({
                 dataField: value.dataField,
                 text: value.text,
-                filter:textFilter()
+                filter: textFilter()
             });
         }, this);
 
@@ -72,14 +72,14 @@ class List extends React.Component {
 
         return (
             <BootstrapTable 
-                    remote = {{pagination: true}}
+                    remote={ { pagination: true } }
                     keyField='id'
                     data={ datas }
                     columns={ this.state.columns }
                     selectRow={ selectRow }
                     pagination={ pager }
                     onTableChange={ this.handleTableChange.bind(this) }
-                    filter={filterFactory()}/>
+                    filter={ filterFactory() }/>
         );
     }
 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import createBrowserHistory from 'history/createBrowserHistory'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { Router, Route, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as Param from '../Config'
@@ -37,7 +37,7 @@ class App extends Component {
     render() {
         const routes = Object.keys(Param.APP).map((key) => genRoute(key) )
         return <Router history={history}>
-                  <div className="container">
+                  <div>
                       <HeaderNavContainer />
                       <Switch>
                           <Route exact path="/" component={Home} />

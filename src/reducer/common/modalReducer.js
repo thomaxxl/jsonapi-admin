@@ -1,8 +1,7 @@
 import * as ActionType from '../../action/ActionType';
-import initialState from '../initialState';
 import _ from 'lodash';
 
-const modalReducer = (state = initialState.modalReducer, action) => {
+const modalReducer = (state = {showmodal:false}, action) => {
     switch(action.type) {
         
         case ActionType.GET_MODAL_RESPONSE: {

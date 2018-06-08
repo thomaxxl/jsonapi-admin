@@ -1,10 +1,8 @@
 import * as ActionType from '../../action/ActionType';
-import initialState from '../initialState';
 import _ from 'lodash';
+import { getInitialObject } from '../../api/ObjectApi';
 
-import * as Param from '../../Config';
-
-const SelectedReducer = (state = Param.InitObject(), action) => {
+const SelectedReducer = (state = getInitialObject, action) => {
     switch(action.type) {
         case ActionType.GET_SINGLE_RESPONSE: {
             return {...state, ...action.data};
@@ -12,6 +10,5 @@ const SelectedReducer = (state = Param.InitObject(), action) => {
         default: { return state; }
     }
 };
-
 
 export default SelectedReducer;

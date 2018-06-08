@@ -1,8 +1,7 @@
 import * as ActionType from '../../action/ActionType';
-import initialState from '../initialState';
 import _ from 'lodash';
 
-const analyzeReducer = (state = initialState.analyzeReducer, action) => {
+const analyzeReducer = (state = {showmodal:false}, action) => {
     switch(action.type) {
         case ActionType.GET_ANALYZE_RESPONSE: {
             // '...' spread operator clones the state

@@ -1,14 +1,12 @@
+//import APP from '../Config.json';
 import * as Param from '../Config';
-import configureStore from '../configureStore';
 import { setAxiosConfig } from 'redux-json-api';
 import { readEndpoint } from 'redux-json-api';
 import { buildApi, get, post, patch, destroy } from 'redux-bees';
-import configureStoreapi from '../configureStore';
 
-const store = configureStoreapi();
-
-const apiEndpoints = {
-  getDatas:      { method: post,     path: '/:key/startswith' },
+const apiEndpoints = {  
+  getDatas:      { method: get,     path: '/:key' },
+  getSearch:     { method: post,    path: '/:key/startswith' },
   createData:    { method: post,    path: '/:key' },
   updateData:    { method: patch,   path: '/:key/:id' },
   destroyData:   { method: destroy, path: '/:key/:id' },
@@ -20,30 +18,41 @@ const config = {
  
 const api = buildApi(apiEndpoints, config);
 
-var datas = Param.InitObject();
+const getInitialObject = () => {
+    var initObj = {};
+    Object.keys(Param.APP).map(function(key, index) {
+        initObj [key] = {
+            offset: 0,
+            limit: 10,
+            data: [],
+            total: 0,
+            filter: {}
+        };
+    });
+    return initObj;
+}
+
+var datas = getInitialObject();
 
 class ObjectApi {
     static getAllDatas( objectKey, offset, limit ) {
         return new Promise ((resolve)=>{
-                var filter = datas[objectKey].filter;
-                if(Object.keys(filter).length == 0){
-                    Param.APP[objectKey].column.map((item,i)=>{
-                        filter[item.dataField] = "";
-                    })
+                var filter = datas [objectKey].filter;
+                var func = api.getSearch;
+                if (Object.keys(filter).length == 0) {
+                    func = api.getDatas;
                 }
-                api.getDatas(
-                    {
-                        key: Param.APP [objectKey].API,
-                        "page[offset]": offset,
-                        "page[limit]": limit
-                    },
+
+                func({
+                    key: Param.APP [objectKey].API,
+                    "page[offset]": offset,
+                    "page[limit]": limit},
                     {
                         "meta":{
                             "method":"startswith",
-                            "args":filter
+                            "args": filter
                         }
-                    }
-                )
+                    })
                 .then((result)=>{
                     datas[objectKey] = {
                         offset: offset,
@@ -110,3 +119,4 @@ class ObjectApi {
 }
 
 export default ObjectApi;
+exports.getInitialObject = datas;

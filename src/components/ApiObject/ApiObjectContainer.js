@@ -7,7 +7,7 @@ import List from '../Common/List';
 import * as Param from '../../Config';
 import { Route } from 'react-router-dom';
 import Alert from 'react-bootstrap/lib/Alert'
-import ActionList from '../../action/ActionList'
+//import ActionList from '../../action/ActionList'
 
 
 class ModalContainer extends React.Component {
@@ -68,7 +68,7 @@ class ApiObjectListContainer extends React.Component {
     }
 
     renderAction(action_name){
-        const Action = ActionList[action_name]
+        const Action = Param.ActionList[action_name]
         return <Action key={action_name} 
                        objectKey={this.props.objectKey}
                        parent={this} />
@@ -79,8 +79,7 @@ class ApiObjectListContainer extends React.Component {
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-md-12">
-                        <h1>{this.props.item.Title}</h1>
-                        <hr/>
+                        <div class="title"><h2> {this.props.item.Title} </h2></div>
 
                         <div className="btn-group" role="group">
                             {this.props.item.actions.map((action_name) => 
@@ -92,7 +91,7 @@ class ApiObjectListContainer extends React.Component {
                             handleRowSelect={this.handleRowSelect.bind(this)} 
                             columns={this.props.item.column}
                             selectedIds={this.state.selectedIds}
-                            filter={this.props.datas[this.props.objectKey].filter}
+                            filter={ this.props.datas[this.props.objectKey].filter }
                             onTableChange={this.onTableChange.bind(this)}/>
                     </div>
                 </div>

@@ -13,7 +13,6 @@ import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import * as ObjectAction from '../../action/ObjectAction'
 import * as ModalAction from '../../action/ModalAction'
 
-
 class EditModal extends React.Component {
 
     constructor(props) {
