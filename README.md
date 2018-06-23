@@ -1,57 +1,79 @@
 # jsonapi-admin
 
-[LIVE DEMO](www.blackbirdbits.com)
+reactjs based frontend for [jsonapi](http://jsonapi.org)
+[LIVE DEMO](http://www.blackbirdbits.com)
 
-Interface configuration is declared in [src/Config.js](src/Config.js) :
+Interface configuration is declared in [src/Config.js](src/Config.js)  
 
 ```javascript
 const BaseUrl = 'http://thomaxxl.pythonanywhere.com'
-
-const APP = {
-    User: {
-        'column': [
-            {
-                name: 'Name',
-                api: 'name',
-                type: 'text',
-                placeholder: 'Type name.',
-            },
-            {
-                name: 'Email',
-                api: 'email',
-                type: 'email',
-                placeholder: 'Type email.',
-            },
-            {
-                name: 'Comment',
-                api: 'comment',
-                type: 'textarea',
-                placeholder: 'Type comment.',
-            }],
-        'actions': [CreateAction, EditAction, DeleteAction, AnalyzeAction],
-        'path' : '/users',
-        'API' : 'Users',
-        'API_TYPE': 'User',
-        'menu' : 'MyUsers',
-        'Title' : 'My Users',
-    },
-    Books: {
-        'column': [
-            
-            {
-                name: 'This is Name',
-                api: 'name',
-                type: 'text',
-                placeholder: 'Type name.',
-            },
-            {
-                name: 'User_id',
-                api: 'user_id',
-                type: 'text',
-                placeholder: 'Type user_id.',
-            }],
-        'actions': [CreateAction, EditAction, DeleteAction, AnalyzeAction],
-        'API_TYPE': 'Book',
-    }
+```and [src/Config.json](src/Config.json)
+```javascript
+{
+  "Users": {
+    "column": [
+      {
+        "text": "Name",
+        "dataField": "name",
+        "type": "text"
+      },
+      {
+        "text": "Email",
+        "dataField" : "email"
+      },
+      {
+        "text": "Books",
+        "dataField": "books",
+        "type": "text",
+        "formatter" : "toManyFormatter",
+        "relationship" : "books",
+        "editorRenderer" : "ToManyRelationshipEditor"
+      }
+    ],
+    "actions": [
+      "CreateAction",
+      "EditAction",
+      "DeleteAction",
+      "CustomAction"
+    ],
+    "path": "/cases",
+    "API": "Users",
+    "API_TYPE": "User",
+    "menu": "Users",
+    "Title": "Users",
+    "request_args" : { "include" : "books" }
+  },
+  "Books": {
+    "column": [
+      {
+        "text": "Name",
+        "dataField": "name",
+        "type": "text",
+        "placeholder": "Type name.",
+        "sort": true,
+        "formatter" : "imageNameFormatter"
+      },
+      {
+        "text": "User",
+        "dataField": "user_id",
+        "type": "text",
+        "formatter" : "toOneFormatter",
+        "relationship" : "user",
+        "editorRenderer" : "toOneEditor"
+      }
+    ],
+    "actions": [
+      "CreateAction",
+      "EditAction",
+      "DeleteAction",
+      "InfoAction"
+    ],
+    "path": "/books",
+    "API": "Books",
+    "API_TYPE": "Book",
+    "menu": "Books",
+    "Title": "Books",
+    "request_args" : { "include" : "user" }
+  }
 }
 ```
