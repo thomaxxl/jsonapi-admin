@@ -1,8 +1,10 @@
 # jsonapi-admin
 
+[LIVE DEMO](http://www.blackbirdbits.com)
+
+
 (beta) reactjs+redux frontend for [jsonapi](http://jsonapi.org)
 
-[LIVE DEMO](http://www.blackbirdbits.com)
 
 Interface configuration is declared in [src/Config.js](src/Config.js)  
 
