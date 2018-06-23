@@ -1,13 +1,17 @@
 # jsonapi-admin
 
-reactjs based frontend for [jsonapi](http://jsonapi.org)
+(beta) reactjs based frontend for [jsonapi](http://jsonapi.org)
+
 [LIVE DEMO](http://www.blackbirdbits.com)
 
 Interface configuration is declared in [src/Config.js](src/Config.js)  
 
 ```javascript
 const BaseUrl = 'http://thomaxxl.pythonanywhere.com'
-```and [src/Config.json](src/Config.json)
+```
+
+and [src/Config.json](src/Config.json)
+
 ```javascript
 {
   "Users": {
