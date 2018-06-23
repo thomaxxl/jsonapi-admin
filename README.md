@@ -1,5 +1,7 @@
 # jsonapi-admin
 
+[LIVE DEMO](www.blackbirdbits.com)
+
 Interface configuration is declared in [src/Config.js](src/Config.js) :
 
 ```javascript
