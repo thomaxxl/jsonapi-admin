@@ -32,16 +32,19 @@ class CreateModal extends React.Component {
 
     create() {
         var post = {};
+        console.log(this.state)
         Config.APP [this.props.objectKey].column.map(function(item, index) {
-            post [item.text] = this.state [item.text] != undefined 
-                            ? this.state [item.text] 
-                            : this.props.formdata [item.text];
+            if(item.dataField && this.state [item.dataField] != undefined){
+                post [item.dataField] = this.state [item.dataField]
+            }
         }, this);
+
         this.props.modalaction.getModalAction(false)
         
         var offset = this.props.datas [this.props.objectKey].offset;
         var limit = this.props.datas [this.props.objectKey].limit;
 
+        console.log(post)
         this.props.action.saveAction(this.props.objectKey, post, offset, limit)
             .then(()=>{
                 toastr.success('Saved', '', {positionClass: "toast-top-center"});
@@ -57,13 +60,17 @@ class CreateModal extends React.Component {
     renderAttributes(){
 
         return <Form>
-                    { Config.APP[this.props.objectKey].column.map(function(item, index) {
+                    { Config.APP[this.props.objectKey].column.map(function(column, index) {
+                            if(column.readonly || column.relationship){
+                                //return <div>{column.text}</div>
+                                return <div/>
+                            }
                             return (<Field 
                                     key={index} 
-                                    column={item} 
-                                    placeholder={item.placeholder}
+                                    column={column} 
+                                    placeholder={column.placeholder}
                                     onChange={(event) => {
-                                        this.state[item.text] = event.target.value}}/>)
+                                        this.state[column.dataField] = event.target.value}}/>)
                         }, this)
                       }
                 </Form>        
@@ -111,7 +118,7 @@ class CreateAction extends BaseAction {
 
     render(){
         
-        return <Button color = "primary"
+        return <Button color="none"
                     onClick={this.onClick}
                 >
                     <i className="fa fa-plus" aria-hidden="true"/> New

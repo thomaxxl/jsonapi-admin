@@ -37,18 +37,19 @@ class EditModal extends React.Component {
     }
 
     submit() {
+        
         var post = {};
         post.id = this.props.selectedId;
         Config.APP [this.props.objectKey].column.map(function(item, index) {
-            post [item.text] = this.state [item.text] != undefined 
-                            ? this.state [item.text] 
-                            : this.props.formdata.attributes [item.dataField];
+            if(item.dataField && this.state [item.dataField] != undefined){
+                post [item.dataField] = this.state [item.dataField]
+            }
         }, this);
         this.props.modalaction.getModalAction(false)
 
         var offset = this.props.datas [this.props.objectKey].offset;
         var limit = this.props.datas [this.props.objectKey].limit;
-
+        
         this.props.action.saveAction(this.props.objectKey, post, offset, limit)
             .then(()=>{
                 toastr.success('Saved', '', {positionClass: "toast-top-center"});
@@ -56,26 +57,37 @@ class EditModal extends React.Component {
     }
 
     renderAttributes(){
-        let data = this.props.formdata.attributes;
+        let data = this.props.formdata
         return <Form>
                     { Config.APP[this.props.objectKey].column.map(function(item, index) {
+                            if( !data || item.dataField === undefined ){
+                                return <div key={index} />
+                            }
+                            let value = (data === undefined || data[item.dataField] === "") ? item.placeholder : data[item.dataField]
                             return (<Field 
-                                    key={index} 
-                                    column={item} 
-                                    placeholder={ (data == undefined || data [item.dataField] == "") 
-                                            ? item.placeholder : data [item.dataField] }
+                                    row={data}
+                                    key={index}
+                                    data={data}
+                                    column={item}
+                                    value={value}
+                                    placeholder={value}
                                     onChange={(event) => {
-                                        this.state[item.text] = event.target.value}}/>)
+                                            if(event && event.target){
+                                                this.state[item.dataField] = event.target.value
+                                            }
+                                        }
+                                    }/>)
                         }, this)
                       }
                 </Form>        
     }
 
     render() {
+
         let attributes = this.renderAttributes()
 
         return  <Modal isOpen={this.props.modalview} toggle={this.toggle} className={this.props.className}>
-                    <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
+                    <ModalHeader toggle={this.toggle}>Edit </ModalHeader>
                     <ModalBody>
                         {attributes}
                     </ModalBody>
@@ -101,7 +113,6 @@ class EditAction extends BaseAction {
         if(parent.state.selectedIds.length == 1)
         {
             parent.props.modalaction.getModalAction(true)
-
             parent.props.action.getSingleAction(parent.props.objectKey, parent.state.selectedIds[0]);
             
             const mapStateToProps = state => ({
@@ -114,7 +125,7 @@ class EditAction extends BaseAction {
                 modalaction: bindActionCreators(ModalAction,dispatch),
             })
 
-            let EditModalWithConnect = connect(mapStateToProps, mapDispatchToProps)( EditModal);
+            let EditModalWithConnect = connect(mapStateToProps, mapDispatchToProps)(EditModal);
 
             var modal = <EditModalWithConnect objectKey={this.props.objectKey} 
                                 selectedId={parent.state.selectedIds [0]} 
@@ -129,10 +140,10 @@ class EditAction extends BaseAction {
     }
 
     render(){
-        return <Button color = "success"
+        return <Button color = "none"
                     onClick={this.onClick}           
                 >
-                    <span><FontAwesomeIcon className="fa-fw" icon={faPencilAlt}></FontAwesomeIcon>Edit</span>
+                    <FontAwesomeIcon icon={faPencilAlt}></FontAwesomeIcon> Edit
                 </Button>
     }
 }

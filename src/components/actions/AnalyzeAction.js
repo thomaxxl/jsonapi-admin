@@ -11,7 +11,7 @@ import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import toastr from 'toastr'
 import Config from '../../Config'
 
-class AnalyzeModal extends React.Component {    
+class CustomModal extends React.Component {    
     
     constructor() {
         super()
@@ -49,7 +49,7 @@ class AnalyzeModal extends React.Component {
 
         return (
             <Modal isOpen={this.props.modalview}  toggle={this.toggle} size="lg" >
-                <ModalHeader toggle={this.toggle}>Analyze</ModalHeader>
+                <ModalHeader toggle={this.toggle}>Custom</ModalHeader>
                 <ModalBody>
                     {attributes}
                 </ModalBody>
@@ -58,7 +58,7 @@ class AnalyzeModal extends React.Component {
     }
 }
 
-class AnalyzeAction extends BaseAction { 
+class CustomAction extends BaseAction { 
 
     constructor(props){
         super(props)
@@ -82,9 +82,9 @@ class AnalyzeAction extends BaseAction {
                 modalaction: bindActionCreators(ModalAction,dispatch),
             })
 
-            let AnalyzeModalWithConnect = connect(mapStateToProps, mapDispatchToProps)( AnalyzeModal);
+            let CustomModalWithConnect = connect(mapStateToProps, mapDispatchToProps)( CustomModal);
 
-            var modal = <AnalyzeModalWithConnect objectKey={this.props.objectKey} 
+            var modal = <CustomModalWithConnect objectKey={this.props.objectKey} 
                                 selectedId={parent.state.selectedIds [0]} 
                                 />
             parent.setState({modal: modal})
@@ -98,9 +98,9 @@ class AnalyzeAction extends BaseAction {
 
     render(){
         return <Button color="black" onClick={this.onClick} >
-                    <span><FontAwesomeIcon className="fa-fw" icon={faPlay}></FontAwesomeIcon>Analyze</span>
+                    <span><FontAwesomeIcon className="fa-fw" icon={faPlay}></FontAwesomeIcon>Custom</span>
                 </Button>
     }   
 }
 
-export default AnalyzeAction
+export default CustomAction

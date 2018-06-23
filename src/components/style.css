@@ -4,6 +4,8 @@
  * Copyright 2011-2018 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
+
+
 :root {
   --blue: #007bff;
   --indigo: #6610f2;
@@ -4643,7 +4645,8 @@ input[type="button"].btn-block {
   padding: 0.5rem 0.75rem;
   margin-left: -1px;
   line-height: 1.25;
-  color: #007bff;
+  /*color: #007bff;*/
+  color: black;
   background-color: #fff;
   border: 1px solid #dee2e6;
 }
@@ -4680,8 +4683,10 @@ input[type="button"].btn-block {
 .page-item.active .page-link {
   z-index: 1;
   color: #fff;
-  background-color: #007bff;
-  border-color: #007bff;
+  /*background-color: #007bff;*/
+  /*border-color: #007bff;*/
+  border-color: #545b62;
+  background-color: #545b62;
 }
 
 .page-item.disabled .page-link {
@@ -5463,6 +5468,7 @@ button.close {
     max-width: 800px;
   }
 }
+
 
 .tooltip {
   position: absolute;
@@ -8979,3 +8985,21 @@ a.text-dark:hover, a.text-dark:focus {
   }
 }
 /*# sourceMappingURL=bootstrap.css.map */
+
+
+
+
+
+@media (min-width: 1400px) {
+  /* tpollet changed*/
+  .modal-xlg {
+    max-width: 1200px;
+  }
+}
+
+@media (min-width: 1400px) {
+  /* tpollet changed*/
+  .modal-lg {
+    max-width: 900px;
+  }
+}

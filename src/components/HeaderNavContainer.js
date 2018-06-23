@@ -36,6 +36,9 @@ class HeaderNavContainer extends React.Component {
     })
   }
   render() {
+    //let classname =  this.props.currentPath == Param.APP[key].path ? "current" : ""
+    var currentPath = this.props.currentPath
+    var currentStyle = {color:'white'} // todo move to css
     return (
      <div>
         <Navbar color="faded" light expand="md" className="navbar-dark navbar-inverse bg-dark">
@@ -44,12 +47,13 @@ class HeaderNavContainer extends React.Component {
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav navbar>
               {
+
                 Object.keys(Param.APP).map(function(key, index) {
                     return (<NavItem key = {index}>
-                        <NavLink href={Param.APP [key].path} >
-                            {Param.APP [key].menu}
-                        </NavLink>
-                    </NavItem>)
+                              <NavLink href={Param.APP[key].path} style={ currentPath == Param.APP[key].path ? currentStyle : {} }>
+                                  {Param.APP [key].menu}
+                              </NavLink>
+                            </NavItem>)
                 })
               }
             </Nav>

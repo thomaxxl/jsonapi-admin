@@ -3,6 +3,9 @@ import { connect } from 'react-redux'
 import { Button } from 'reactstrap';
 import BaseAction from './BaseAction'
 import toastr from 'toastr';
+import { faTrashAlt  } from '@fortawesome/fontawesome-free-solid'
+import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+
 
 class DeleteAction extends BaseAction{  
     constructor(){
@@ -26,10 +29,10 @@ class DeleteAction extends BaseAction{
     }
 
     render(){
-        return <Button color = "danger"
+        return <Button color = "none"
                     onClick={this.onClick}
                 >
-                    <i className="fa fa-trash-o" aria-hidden="true"/> Delete
+                    <FontAwesomeIcon icon={faTrashAlt}></FontAwesomeIcon> Delete
                 </Button>
     }
 }

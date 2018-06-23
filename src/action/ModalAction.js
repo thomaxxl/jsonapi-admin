@@ -6,7 +6,6 @@ export const getModalResponse = Modal => ({
 });
 
 export function getModalAction(modal) {
-    
     return (dispatch) => {
             dispatch(getModalResponse(modal))
     };

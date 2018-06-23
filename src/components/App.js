@@ -1,47 +1,72 @@
+
 import React, { Component } from 'react'
 import createBrowserHistory from 'history/createBrowserHistory'
 import { Router, Route, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { query, getRelationship } from 'redux-bees';
 import * as Param from '../Config'
 import HeaderNavContainer from './HeaderNavContainer'
 import Home from './Home'
-import ApiObjectListContainer from './ApiObject/ApiObjectContainer'
+import ApiObjectContainer from './ApiObject/ApiObjectContainer'
 import * as ObjectAction from '../action/ObjectAction'
 import * as ModalAction from '../action/ModalAction'
 import * as FormAction from '../action/FormAction'
-import './style.css';
 
 const history = createBrowserHistory()
 
-function genRoute(key) {
+function genCollectionRoute(key) {
 
     const mapStateToProps = state => ({
         objectKey: key,
         item: Param.APP [key],
-        datas: state.object
+        api_data: state.object
     })
     
     const mapDispatchToProps = dispatch => ({
         action: bindActionCreators(ObjectAction, dispatch),
         modalaction: bindActionCreators(ModalAction,dispatch),
-        formaction: bindActionCreators(FormAction,dispatch),
+        //formaction: bindActionCreators(FormAction,dispatch),
+        //getRelationship: getRelationship
     })
     
-    const Results = connect(mapStateToProps, mapDispatchToProps)(ApiObjectListContainer)
-    return <Route key={key} path={Param.APP [key].path} component={Results} />
+    const Results = connect(mapStateToProps, mapDispatchToProps)(ApiObjectContainer)
+    return <Route sensitive key={key} exact path={Param.APP [key].path} component={Results} />
 }
+
+
+function genItemRoute(key) {
+
+    const mapStateToProps = state => ({
+        objectKey: key,
+        api_data: state.object,
+        item: Param.APP[key]
+    })
+    
+    const mapDispatchToProps = dispatch => ({
+        action: bindActionCreators(ObjectAction, dispatch),
+        modalaction: bindActionCreators(ModalAction,dispatch),
+        //formaction: bindActionCreators(FormAction,dispatch),
+        //getRelationship: getRelationship
+    })
+    
+    const Results = connect(mapStateToProps, mapDispatchToProps)(ApiObjectContainer)
+    return <Route sensitive path="/images/:itemId" component={Results}/>
+}
+
 
 class App extends Component {
 
     render() {
-        const routes = Object.keys(Param.APP).map((key) => genRoute(key) )
+
+        const collectionRoutes = Object.keys(Param.APP).map((key) => genCollectionRoute(key) )
+        //const itemRoutes = genItemRoute('Books')
         return <Router history={history}>
                   <div>
-                      <HeaderNavContainer />
+                      <HeaderNavContainer currentPath={history.location.pathname}/>
                       <Switch>
                           <Route exact path="/" component={Home} />
-                          {routes}
+                          {collectionRoutes}
                       </Switch>
                   </div>
               </Router>  
