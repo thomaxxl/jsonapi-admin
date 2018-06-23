@@ -39,8 +39,7 @@
         "dataField": "name",
         "type": "text",
         "placeholder": "Type name.",
-        "sort": true,
-        "formatter" : "imageNameFormatter"
+        "sort": true
       },
       {
         "text": "User",
