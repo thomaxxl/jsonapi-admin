@@ -2,9 +2,18 @@
 
 [LIVE DEMO](http://www.blackbirdbits.com)
 
-
 (beta) reactjs+redux frontend for [jsonapi](http://jsonapi.org)
 
+## installation
+
+```
+git clone https://github.com/thomaxxl/jsonapi-admin
+cd jsonapi-admin
+npm install
+npm start
+```
+
+## Configuration
 
 Interface configuration is declared in [src/Config.js](src/Config.js)  
 
