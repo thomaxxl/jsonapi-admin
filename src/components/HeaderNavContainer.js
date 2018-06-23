@@ -42,7 +42,7 @@ class HeaderNavContainer extends React.Component {
     return (
      <div>
         <Navbar color="faded" light expand="md" className="navbar-dark navbar-inverse bg-dark">
-        <NavbarBrand href="/">C&C</NavbarBrand>
+        <NavbarBrand href="/">J:A</NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav navbar>
