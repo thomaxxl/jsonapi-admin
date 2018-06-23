@@ -25,7 +25,7 @@
       "DeleteAction",
       "CustomAction"
     ],
-    "path": "/cases",
+    "path": "/users",
     "API": "Users",
     "API_TYPE": "User",
     "menu": "Users",
