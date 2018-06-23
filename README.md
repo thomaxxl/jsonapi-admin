@@ -1,6 +1,6 @@
 # jsonapi-admin
 
-(beta) reactjs based frontend for [jsonapi](http://jsonapi.org)
+(beta) reactjs+redux frontend for [jsonapi](http://jsonapi.org)
 
 [LIVE DEMO](http://www.blackbirdbits.com)
 
