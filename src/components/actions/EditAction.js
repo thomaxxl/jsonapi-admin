@@ -69,7 +69,7 @@ class EditModal extends React.Component {
                                     key={index}
                                     data={data}
                                     column={item}
-                                    value={value}
+                                    value={this.state[item.dataField]}
                                     placeholder={value}
                                     onChange={(event) => {
                                             if(event && event.target){
