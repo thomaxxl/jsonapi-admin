@@ -1,7 +1,7 @@
 {
-  "name": "jsonapi-admin",
-  "version": "0.1.0",
-  "private": true,
+  "name": "@thomaspollet/jsonapi-admin",
+  "version": "0.0.1",
+  "private": false,
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.8",
     "@fortawesome/react-fontawesome": "^0.0.20",
@@ -58,5 +58,18 @@
     "test": "react-scripts test --env=jsdom",
     "coverage": "react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject"
-  }
+  },
+  "description": "[LIVE DEMO](http://www.blackbirdbits.com)",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thomaxxl/jsonapi-admin.git"
+  },
+  "keywords": [],
+  "author": "Thomas Pollet <thomas.pollet@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thomaxxl/jsonapi-admin/issues"
+  },
+  "homepage": "https://github.com/thomaxxl/jsonapi-admin#readme"
 }
