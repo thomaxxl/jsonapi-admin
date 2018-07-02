@@ -30,7 +30,7 @@
     "API_TYPE": "User",
     "menu": "Users",
     "Title": "Users",
-    "request_args" : { "include" : "books" }
+    "request_args" : { "include" : "books", "sort" : "name" }
   },
   "Books": {
     "column": [
