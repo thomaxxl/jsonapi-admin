@@ -80,6 +80,7 @@ class ApiObjectContainer extends React.Component {
         }
         this.handleSearch = this.handleSearch.bind(this)
         this.getAction = this.getAction.bind(this)
+        this.actions = {}
     }
 
     getAction(...extraArgs){
@@ -161,9 +162,13 @@ class ApiObjectContainer extends React.Component {
             console.log(`Invalid Action ${action_name}`)
             return <div/>
         }
-        return <Action key={action_name}
-                       objectKey={this.props.objectKey}
-                       parent={this} />
+        
+        const action = <Action key={action_name}
+                               selectedIds={this.state.selectedIds}
+                               objectKey={this.props.objectKey}
+                               parent={this} />
+        this.actions[action_name] = action
+        return action
     }
 
     handleSearch(value){
@@ -205,7 +210,7 @@ class ApiObjectContainer extends React.Component {
 
         let data = this.props.api_data[this.props.objectKey]
 
-        console.log("container data:",data)
+        //console.log("container data:",data)
 
         return (
             <div className="container-fluid">
@@ -221,14 +226,15 @@ class ApiObjectContainer extends React.Component {
                         </div>
 
                         <List data={data} 
-                            handleRowSelect={this.handleRowSelect.bind(this)} 
-                            columns={this.props.item.column}
-                            selectedIds={this.state.selectedIds}
-                            filter={ this.props.api_data[this.props.objectKey].filter }
-                            onChange={this.handleSearch.bind(this)}
-                            handleSave={this.handleSave.bind(this)}
-                            handleSaveRelationship={this.handleSaveRelationship.bind(this)}
-                            onTableChange={this.onTableChange.bind(this)}/>
+                              actions={this.actions}
+                              handleRowSelect={this.handleRowSelect.bind(this)} 
+                              columns={this.props.item.column}
+                              selectedIds={this.state.selectedIds}
+                              filter={ this.props.api_data[this.props.objectKey].filter }
+                              onChange={this.handleSearch.bind(this)}
+                              handleSave={this.handleSave.bind(this)}
+                              handleSaveRelationship={this.handleSaveRelationship.bind(this)}
+                              onTableChange={this.onTableChange.bind(this)}/>
                     </div>
                 </div>
                 <ModalContainer modal={this.state.modal} />
@@ -240,3 +246,4 @@ class ApiObjectContainer extends React.Component {
 
 
 export default  ApiObjectContainer
+

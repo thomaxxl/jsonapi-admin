@@ -3,6 +3,9 @@ import * as Param from '../Config';
 import { setAxiosConfig } from 'redux-json-api';
 import { readEndpoint } from 'redux-json-api';
 import { buildApi, get, post, patch, destroy } from 'redux-bees';
+import toastr from 'toastr'
+
+const TOASTR_POS =  {positionClass: "toast-top-center"}
 
 function mapIncludes(api_data){
     /*
@@ -42,7 +45,7 @@ function mapIncludes(api_data){
                     for(let included_item of included){
                             if(related.id === included_item.id){
                                 relationship.data['attributes'] = included_item.attributes
-                                console.log('FOUND::',related['attributes'])
+                                //console.log('FOUND::',related['attributes'])
                             }
                         }
                 }
@@ -54,7 +57,7 @@ function mapIncludes(api_data){
     return api_data
 }
 
-function jsonapi2bootstrap(jsonapi_data, objectKey){
+function jsonapi2bootstrap(jsonapi_data){
     /*
         jsonapi and bootstrap have different data formats
         this function transforms data from jsonapi to bootstrap format
@@ -75,6 +78,7 @@ function jsonapi2bootstrap(jsonapi_data, objectKey){
 
 const apiEndpoints = {  
   getDatas:      { method: get,     path: '/:key' },
+  getData:      { method: get,     path: '/:key/:id' },
   getSearch:     { method: post,    path: '/:key/search' },
   getFilter:     { method: post,    path: '/:key/startswith' },
   search:        { method: post,    path: '/:key/search' },
@@ -155,7 +159,6 @@ class ObjectApi {
     }
 
     static getAllDatas(objectKey, offset, limit, queryArgs ) {
-        console.log('getAllDatas')
         return new Promise ((resolve)=>{
                 var filter = datas [objectKey].filter;
                 var search = datas [objectKey].search;
@@ -197,7 +200,7 @@ class ObjectApi {
                       post_args
                     )
                 .then((result)=>{
-                    let transformed_data = jsonapi2bootstrap(result.body, objectKey)
+                    let transformed_data = jsonapi2bootstrap(result.body)
                     datas[objectKey] = {
                         offset: offset,
                         limit: limit,
@@ -212,9 +215,10 @@ class ObjectApi {
 
     static saveData(objectKey, data) {
         return new Promise((resolve, reject) => {
-            var attributes = {};
+            var attributes = {}
             Param.APP [objectKey].column.map(function(item, index) {
-                if(item.dataField && ! item.readonly ){
+                console.log(item, data)
+                if(item.dataField && !item.readonly){
                     attributes[item.dataField] = data[item.dataField]
                 }
             });
@@ -236,7 +240,22 @@ class ObjectApi {
                         type: Param.APP [objectKey].API_TYPE,
                         attributes: attributes}})
                     .then((result)=>{
-                        resolve();
+                        if(result.status != 201){
+                            throw `Create Request: http code ${result.code}`
+                        }
+                        if(result && result.body && result.body.data){
+                            resolve(result.body.data);
+                            datas[objectKey].data.push(result.body.data)
+                            datas[objectKey].data = []
+                            resolve()
+                        }
+                        else {
+                            throw 'Create Request: No data in response body'
+                        }
+                    }).catch((error) => { 
+                        console.log(error)
+                        toastr.error('Failed to save data')
+                        throw error
                     })
             }
         });
@@ -244,10 +263,26 @@ class ObjectApi {
 
     static getData(objectKey, dataId) {
         return new Promise((resolve) => {
-            const existingDataIndex = datas [objectKey].data.findIndex(data => data.id === dataId);
-            const dataFound = Object.assign({}, datas[objectKey].data[existingDataIndex]);
-            console.log('dataFound',dataFound)
-            resolve(dataFound);
+
+            let request_args = Object.assign({ key: Param.APP[objectKey].API, id: dataId },
+                                               Param.APP[objectKey].request_args ? Param.APP[objectKey].request_args : {} )
+
+            api.getData(request_args).then((result)=>{
+                const data = result.body.data
+                const included = result.body.included
+                const existingDataIndex = datas[objectKey].data.findIndex(data => data.id === dataId)
+                if(existingDataIndex >= 0 ){
+
+                }
+                else{
+                    datas[objectKey].data.push(data)
+                    datas[objectKey].included = included
+                    jsonapi2bootstrap(datas[objectKey])
+                    resolve(datas)
+                }
+                /*const dataFound = Object.assign({}, datas[objectKey].data[existingDataIndex]);
+                resolve(dataFound);*/
+            })
         });
     }
 
@@ -266,4 +301,4 @@ class ObjectApi {
 }
 
 export default ObjectApi;
-exports.getInitialObject = datas;
+exports.getInitialObject = datas

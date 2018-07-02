@@ -1,5 +1,7 @@
 import * as ActionType from './ActionType';
 import ObjectApi from '../api/ObjectApi';
+import toastr from 'toastr'
+const TOASTR_POS =  {positionClass: "toast-top-center"}
 
 // TODO: make the ActionTypes generic
 
@@ -8,13 +10,13 @@ export const getResponse = data => ({
     data
 });
 
-
 export function getAction(objectKey, offset, limit, ...queryArgs) {
     return (dispatch) => {        
         return ObjectApi.getAllDatas( objectKey, offset, limit, ...queryArgs )
             .then(data => {
                 dispatch({...getResponse(data)});
             }).catch(error => {
+                toastr.error('Failed to retrieve data')
                 throw error
             });
     };
@@ -24,22 +26,26 @@ export const updateExistingResponse = () => ({
     type: ActionType.UPDATE_EXISTING_RESPONSE
 });
 
-export const addNewResponse = () => ({
-    type: ActionType.ADD_NEW_RESPONSE
+export const addNewResponse = data => ({
+    type: ActionType.ADD_NEW_RESPONSE,
+    data
 });
 
 export function saveAction(objectKey, BeingAddedOrEdited, offset, limit) {
     return function (dispatch) {
         return ObjectApi.saveData(objectKey, BeingAddedOrEdited)
-            .then(() => {
+            .then((data) => {
                 if (BeingAddedOrEdited.id) {
                     dispatch(updateExistingResponse())
                 } else {
                     dispatch(addNewResponse())
                 }
-            }).then(() => {
                 dispatch(getAction(objectKey, offset, limit))
+                return data.id
+            }).catch(error => {
+                throw error
             });
+                
     };
 }
 
@@ -67,8 +73,6 @@ export function getSingleAction(objectKey, Id) {
     return (dispatch) => {
         return ObjectApi.getData(objectKey, Id)
             .then(data => {
-
-                console.log('getSingleAction',data)
                 dispatch(getSingleResponse(data));
             }).catch(error => {
                 throw error;
@@ -90,3 +94,4 @@ export function deleteAction(objectKey, Ids, offset, limit) {
             });
     };
 }
+
