@@ -23,11 +23,6 @@ import fontawesome from '@fortawesome/fontawesome'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import './style.css'
 
-const defaultConfig = {
-  title : 'J:A'
-
-}
-
 class HeaderNavContainer extends React.Component {
   constructor(props) {
     super(props)
@@ -45,11 +40,11 @@ class HeaderNavContainer extends React.Component {
     //let classname =  this.props.currentPath == Param.APP[key].path ? "current" : ""
     var currentPath = this.props.currentPath
     var currentStyle = {color:'white'} // todo move to css
-    var config = Param.APP.Config ? Param.APP.Config : defaultConfig
+    var navTitle = Param.NavTitle ? Param.NavTitle : 'J:A'
     return (
      <div>
         <Navbar color="faded" light expand="md" className="navbar-dark navbar-inverse bg-dark">
-        <NavbarBrand href="/">{config.title}</NavbarBrand>
+        <NavbarBrand href="/">{navTitle}</NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav navbar>
