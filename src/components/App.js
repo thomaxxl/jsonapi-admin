@@ -12,6 +12,7 @@ import ApiObjectContainer from './ApiObject/ApiObjectContainer'
 import * as ObjectAction from '../action/ObjectAction'
 import * as ModalAction from '../action/ModalAction'
 import * as FormAction from '../action/FormAction'
+import ItemInfo from './Common/ItemInfo'
 
 const history = createBrowserHistory()
 
@@ -34,7 +35,6 @@ function genCollectionRoute(key) {
     return <Route sensitive key={key} exact path={Param.APP [key].path} component={Results} />
 }
 
-
 function genItemRoute(key) {
 
     const mapStateToProps = state => ({
@@ -42,16 +42,15 @@ function genItemRoute(key) {
         api_data: state.object,
         item: Param.APP[key]
     })
-    
+
     const mapDispatchToProps = dispatch => ({
         action: bindActionCreators(ObjectAction, dispatch),
-        modalaction: bindActionCreators(ModalAction,dispatch),
-        //formaction: bindActionCreators(FormAction,dispatch),
-        //getRelationship: getRelationship
+        modalaction: bindActionCreators(ModalAction,dispatch)
     })
-    
-    const Results = connect(mapStateToProps, mapDispatchToProps)(ApiObjectContainer)
-    return <Route sensitive path="/images/:itemId" component={Results}/>
+
+    const Results = connect(mapStateToProps, mapDispatchToProps)(ItemInfo)
+    let path = `${Param.APP [key].path}/:itemId`
+    return <Route sensitive key={path} path={path} component={Results}/>
 }
 
 
@@ -59,8 +58,7 @@ class App extends Component {
 
     render() {
 
-        const collectionRoutes = Object.keys(Param.APP).map((key) => genCollectionRoute(key) )
-        //const itemRoutes = genItemRoute('Books')
+        const collectionRoutes = Object.keys(Param.APP).map((key) => [genItemRoute(key), genCollectionRoute(key)] )
         return <Router history={history}>
                   <div>
                       <HeaderNavContainer currentPath={history.location.pathname}/>
