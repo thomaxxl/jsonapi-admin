@@ -48,13 +48,6 @@
 	padding: 0.7rem;
 }
 
-
-/* Image table */
-.AnalysisCell{
-	display: block;
-	margin-right: 1em;
-}
-
 .caretupdown {
 	margin-left: 1em;
 }
@@ -75,21 +68,8 @@ td.react-bootstrap-table-editing-cell input:focus {
 td.react-bootstrap-table-editing-cell input:active{
 	border: none;
 }
-/*
-.caretupdown .caretdown {
-	color: green;
-	float: left; 
-	width: 50%;
-	height: 1em;
-}
 
-.caretupdown .caretup {
-	color: green;
-	float: left; 
-	width: 50%;
-    position: relative;
-    top: -0.2em;
-}*/.btn-none {
+.btn-none {
 	background-color: white;
 }
 
@@ -103,18 +83,6 @@ a {
  color: red;
 }
 
-.AnalysisSettingsGroup {
-	color: #343a40;
-	font-size: 1.2em;
-	font-variant: small-caps;
-	font-weight: bold;
-	border-bottom: 1px solid #f7f7f7;
-	display: block;
-}
-
-.c2_log {
-	margin-top: 1em;
-}
 
 .btn-analysis{
 	color: #343a40;
@@ -132,19 +100,6 @@ a {
 	border: 1px solid red;
 }
 
-.pvlabel{
-	font-weight: bold;
-	text-align: right;
-}
-
-.PV-form {
-	font-size: 0.8em;
-}
-
-.PV-form input{
-	font-size: 0.8em;
-}
-
 .from-label{
 	font-weight: bold;
 }
@@ -155,11 +110,6 @@ a {
 
 .RelationDeleteIcon {
 	margin-left: 0.6em;
-}
-
-.pv-header {
-	font-size: 1.5em;
-	font-weight: bold;
 }
 
 .editable{

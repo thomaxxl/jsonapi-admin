@@ -1,10 +1,8 @@
 import React, { PropTypes } from 'react';
 import * as Param from '../Config'
-import APP from '../Config.json';
 
 const Home = () => {
 
-    console.log('hom',Param)
     return (
         <div>
             <header>
@@ -22,7 +20,7 @@ const Home = () => {
                     </li>
                     <li>This framework implements CRUD operations on the jsonapi at {Param.URL} </li>
                     <li>UI Configuration:
-                        <pre>{JSON.stringify(APP,null,2)}</pre>
+                        <pre>{JSON.stringify(Param.APP,null,2)}</pre>
                     </li>
                 </ul>
             </div>
