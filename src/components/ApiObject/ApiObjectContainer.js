@@ -194,7 +194,7 @@ class ApiObjectContainer extends React.Component {
     handleSaveRelationship(newValue, row, column){
         /*/[ this.props.objectKey, this.state.offset, this.state.sizePerPage, request_args]
             var offset = this.props.datas [this.props.objectKey].offset;
-        var limit = this.props.datas [this.props.objectKey].limit;
+            var limit = this.props.datas [this.props.objectKey].limit;
         
         this.props.action.saveAction(this.props.objectKey, post, offset, limit)
         
@@ -246,4 +246,3 @@ class ApiObjectContainer extends React.Component {
 
 
 export default  ApiObjectContainer
-

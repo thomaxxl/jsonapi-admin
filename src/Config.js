@@ -1,8 +1,8 @@
-import './style.css'
 import APP from './Config.json';
 import ActionList from './action/ActionList'
 import InfoAction from './components/actions/InfoAction.jsx'
 import FormatterList from './components/formatters/FormatterList.jsx'
+import './style/style.css'
 
 const BaseUrl = 'http://thomaxxl.pythonanywhere.com'
 

@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import * as Param from '../Config'
 
+
 const Home = () => {
 
     return (
@@ -28,4 +29,6 @@ const Home = () => {
     );
 };
 
-export default Home;
+let exported = Param.Home ? Param.Home : Home
+
+export default exported;

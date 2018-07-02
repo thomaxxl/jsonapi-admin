@@ -22,6 +22,12 @@ import { faCog, faTrashAlt, faCoffee, faBullseye, faPlay, faSearchEngin  } from 
 import fontawesome from '@fortawesome/fontawesome'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import './style.css'
+
+const defaultConfig = {
+  title : 'J:A'
+
+}
+
 class HeaderNavContainer extends React.Component {
   constructor(props) {
     super(props)
@@ -39,16 +45,20 @@ class HeaderNavContainer extends React.Component {
     //let classname =  this.props.currentPath == Param.APP[key].path ? "current" : ""
     var currentPath = this.props.currentPath
     var currentStyle = {color:'white'} // todo move to css
+    var config = Param.APP.Config ? Param.APP.Config : defaultConfig
     return (
      <div>
         <Navbar color="faded" light expand="md" className="navbar-dark navbar-inverse bg-dark">
-        <NavbarBrand href="/">J:A</NavbarBrand>
+        <NavbarBrand href="/">{config.title}</NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav navbar>
               {
 
-                Object.keys(Param.APP).map(function(key, index) {
+                Object.keys(Param.APP).map(function(key, index){
+                    if(Param.APP[key].hidden) {
+                        return <span/>
+                    }
                     return (<NavItem key = {index}>
                               <NavLink href={Param.APP[key].path} style={ currentPath == Param.APP[key].path ? currentStyle : {} }>
                                   {Param.APP [key].menu}

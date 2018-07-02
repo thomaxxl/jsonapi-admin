@@ -62,5 +62,9 @@
     "menu": "Books",
     "Title": "Books",
     "request_args" : { "include" : "user" }
+  },
+  "Config" : {
+    "hidden" : true,
+    "title" : "J:A"
   }
 }
