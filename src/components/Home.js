@@ -19,7 +19,7 @@ const Home = () => {
                     <li>
                         <a href="https://github.com/thomaxxl/jsonapi-admin">Github</a>
                     </li>
-                    <li>This framework implements CRUD operations on the jsonapi at {Param.URL} </li>
+                    <li>This framework implements CRUD operations on the jsonapi at <a href={Param.URL}>{Param.URL}</a> </li>
                     <li>UI Configuration:
                         <pre>{JSON.stringify(Param.APP,null,2)}</pre>
                     </li>

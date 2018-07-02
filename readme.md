@@ -15,7 +15,7 @@ npm start
 
 ## Configuration
 
-Interface configuration is declared in [src/Config.js](src/Config.js)  
+Interface configuration is declared in [src/Config.js](src/Config.js) (Modify this file to customize the app)
 
 ```javascript
 const BaseUrl = 'http://thomaxxl.pythonanywhere.com'
