@@ -1,10 +1,10 @@
 import React from 'react'
-import { Button, Popover, PopoverHeader, PopoverBody, Input } from 'reactstrap';
-import { faCaretUp, faCaretDown, faTimes } from '@fortawesome/fontawesome-free-solid'
+import { faTimes } from '@fortawesome/fontawesome-free-solid'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
-import BootstrapTable from 'react-bootstrap-table-next';
-import cellEditFactory from 'react-bootstrap-table2-editor';
 import toastr from 'toastr'
+import { Async }  from 'react-select';
+import 'react-select/dist/react-select.css';
+import ObjectApi from '../../api/ObjectApi'
 
 function cellFormatter(cell, row) {
 
@@ -29,7 +29,7 @@ function lookupIncluded(item, row){
 		return <div/>
 	}
 	for(let included of row.included){
-		if(included.type == item.type && included.id == item.id){
+		if(included.type === item.type && included.id === item.id){
 			return included
 		}
 	}
@@ -96,7 +96,7 @@ class ToManyRelationshipEditor extends React.Component {
 		let items = []
 		let rel_name = this.props.column.relationship
 		for(let item of this.props.row[rel_name]){
-			if(item.id != item_id){
+			if(item.id !== item_id){
 				items.push(item)
 			}
 		}
@@ -128,9 +128,7 @@ class ToManyRelationshipEditor extends React.Component {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-import { Select, Async }  from 'react-select';
-import 'react-select/dist/react-select.css';
-import ObjectApi from '../../api/ObjectApi'
+
 
 function getOptions(collection){
 	/*
@@ -196,11 +194,9 @@ class toOneEditor extends React.Component {
 	}*/
 
  	render() {
- 		const { selectedOption } = this.state;
 	  	const { value, onUpdate, ...rest } = this.props;
 
 	  	let options = getOptions('Users')
-		let defaultValue = selectedOption ? selectedOption : value
 		
 	  	return <Async
 				    name="parentName"

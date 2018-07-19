@@ -1,20 +1,15 @@
 import React from 'react';
-import { Form, FormGroup, Label, Input } from 'reactstrap';
-import { Alert } from 'reactstrap';
-import * as Param from '../../Config'
-import { Type } from 'react-bootstrap-table2-editor';
-
+import { FormGroup, Label, Input } from 'reactstrap';
 
 class Field extends React.Component {  
-    constructor(){
-        super()
-    }
+    // constructor(){
+    //     super()
+    // }
 
     getInput(){
         let column = this.props.column
         let data = this.props.data
         let result = ''
-        console.log('Field:', column, data)
         if(!column){
             result = <div/>
         }
@@ -37,7 +32,7 @@ class Field extends React.Component {
                             type={column.type}
                             disabled={this.props.disabled}
                             name={column.dataField}
-                            placeholder= {this.props.placeholder != undefined && this.props.disabled == undefined? this.props.placeholder : ''}
+                            placeholder= {this.props.placeholder !== undefined && this.props.disabled === undefined? this.props.placeholder : ''}
                             onChange={this.props.onChange}/>
         }
 

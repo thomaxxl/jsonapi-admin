@@ -10,3 +10,4 @@ export function getModalAction(modal) {
             dispatch(getModalResponse(modal))
     };
 }
+

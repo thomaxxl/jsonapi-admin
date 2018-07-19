@@ -5,8 +5,8 @@ import {connect} from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import Field from '../fields/Field';
-import { Form, FormGroup, Label, Input } from 'reactstrap';
-import Config from '../../Config'
+import { Form } from 'reactstrap';
+import {APP} from '../../Config'
 import toastr from 'toastr'
 import * as ObjectAction from '../../action/ObjectAction'
 import * as ModalAction from '../../action/ModalAction'
@@ -32,19 +32,18 @@ class CreateModal extends React.Component {
 
     create() {
         var post = {};
-        console.log(this.state)
-        Config.APP [this.props.objectKey].column.map(function(item, index) {
-            if(item.dataField && this.state [item.dataField] != undefined){
-                post [item.dataField] = this.state [item.dataField]
+        APP[this.props.objectKey].column.map(function(item, index) {
+            if(item.dataField && this.state[item.dataField] !== undefined){
+                post[item.dataField] = this.state[item.dataField]
             }
+            return 0;
         }, this);
 
         this.props.modalaction.getModalAction(false)
         
-        var offset = this.props.datas [this.props.objectKey].offset;
-        var limit = this.props.datas [this.props.objectKey].limit;
+        var offset = this.props.datas[this.props.objectKey].offset;
+        var limit = this.props.datas[this.props.objectKey].limit;
 
-        console.log(post)
         this.props.action.saveAction(this.props.objectKey, post, offset, limit)
             .then(()=>{
                 toastr.success('Saved', '', {positionClass: "toast-top-center"});
@@ -60,17 +59,17 @@ class CreateModal extends React.Component {
     renderAttributes(){
 
         return <Form>
-                    { Config.APP[this.props.objectKey].column.map(function(column, index) {
+                    { APP[this.props.objectKey].column.map(function(column, index) {
                             if(column.readonly || column.relationship){
-                                //return <div>{column.text}</div>
-                                return <div/>
+                                return <div>{column.text}</div>
+                                // return <div/>
                             }
                             return (<Field 
                                     key={index} 
                                     column={column} 
                                     placeholder={column.placeholder}
                                     onChange={(event) => {
-                                        this.state[column.dataField] = event.target.value}}/>)
+                                        this.setState({[column.dataField] : event.target.value})}}/>)
                         }, this)
                       }
                 </Form>        
@@ -93,9 +92,9 @@ class CreateModal extends React.Component {
 }
 
 class CreateAction extends BaseAction {
-    constructor(props){
-        super(props)
-    }
+    // constructor(props){
+    //     super(props)
+    // }
 
     onClick(){
 

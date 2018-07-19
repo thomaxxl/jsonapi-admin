@@ -1,6 +1,4 @@
-import { Form, FormGroup, Label, Input, Col } from 'reactstrap'
 import React from 'react'
-import toastr from 'toastr';
 import './style.css'
 
 class ItemView extends React.Component {

@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import * as ModalAction from '../../action/ModalAction'
 import BaseAction from './BaseAction'
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap'
 import { Form, FormGroup, Label, Input } from 'reactstrap'
 import Field from '../fields/Field';
-import { faCog, faTrashAlt, faCoffee, faBullseye, faPlay, faSearchEngin, faEdit, faInfo  } from '@fortawesome/fontawesome-free-solid'
+import { faPlay } from '@fortawesome/fontawesome-free-solid'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import toastr from 'toastr'
-import Config from '../../Config'
+import {APP} from '../../Config'
 
 class CustomModal extends React.Component {    
     
@@ -32,13 +32,13 @@ class CustomModal extends React.Component {
                     <Label for="id">ID</Label>
                     <Input value={this.props.selectedId} disabled={true}/>
                     </FormGroup>
-                    {Config.APP[this.props.objectKey].column.map(function(item,index){
+                    {APP[this.props.objectKey].column.map(function(item,index){
                         return (<Field
                                     key={index}
                                     column={item} 
                                     disabled={true}
-                                    value={ (data == undefined) 
-                                    ? '' : data [item.dataField] }
+                                    value={ (data === undefined) 
+                                    ? '' : data[item.dataField] }
                                 />)
                     })}
                 </Form>
@@ -68,7 +68,7 @@ class CustomAction extends BaseAction {
     onClick(){
         let parent = this.props.parent;
         
-        if(parent.state.selectedIds.length == 1)
+        if(parent.state.selectedIds.length === 1)
         {
             parent.props.modalaction.getModalAction(true)
 
@@ -85,7 +85,7 @@ class CustomAction extends BaseAction {
             let CustomModalWithConnect = connect(mapStateToProps, mapDispatchToProps)( CustomModal);
 
             var modal = <CustomModalWithConnect objectKey={this.props.objectKey} 
-                                selectedId={parent.state.selectedIds [0]} 
+                                selectedId={parent.state.selectedIds[0]} 
                                 />
             parent.setState({modal: modal})
         }

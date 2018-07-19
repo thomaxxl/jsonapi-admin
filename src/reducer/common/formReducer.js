@@ -1,6 +1,4 @@
 import * as ActionType from '../../action/ActionType';
-import _ from 'lodash';
-
 const formReducer = (state = {form:true}, action) => {
 
     switch(action.type) {

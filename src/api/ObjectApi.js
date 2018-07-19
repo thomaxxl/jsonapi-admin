@@ -1,11 +1,7 @@
-//import APP from '../Config.json';
-import * as Param from '../Config';
-import { setAxiosConfig } from 'redux-json-api';
-import { readEndpoint } from 'redux-json-api';
+import { APP, config as api_config } from '../Config';
 import { buildApi, get, post, patch, destroy } from 'redux-bees';
 import toastr from 'toastr'
-
-const TOASTR_POS =  {positionClass: "toast-top-center"}
+import Cookies from 'universal-cookie';
 
 function mapIncludes(api_data){
     /*
@@ -62,7 +58,6 @@ function jsonapi2bootstrap(jsonapi_data){
         jsonapi and bootstrap have different data formats
         this function transforms data from jsonapi to bootstrap format
     */
-
     let data = []
     for (let item of jsonapi_data.data){
         /* map the attributes inline :
@@ -72,7 +67,7 @@ function jsonapi2bootstrap(jsonapi_data){
         data.push(item_data)
     }
     jsonapi_data.data = data
-    mapIncludes(jsonapi_data)    
+    mapIncludes(jsonapi_data) 
     return jsonapi_data
 }
 
@@ -88,16 +83,22 @@ const apiEndpoints = {
   destroyData:   { method: destroy, path: '/:key/:id' },
 };
 
-const config = {
-  baseUrl: Param.URL
-};
- 
-const api = buildApi(apiEndpoints, config);
 
-const getInitialObject = () => {
+const cookies = new Cookies()
+let api_url = cookies.get('api_url') ? cookies.get('api_url') : api_config.URL
+localStorage.setItem('url',api_url)
+ 
+let api = buildApi(apiEndpoints, api_config);
+
+function change_backend_url(url){
+    let new_config=Object.assign({}, api_config, {baseUrl:url})
+    api = buildApi(apiEndpoints,new_config);
+}
+
+let getInitialObject = () => {
     var initObj = {};
-    Object.keys(Param.APP).map(function(key, index) {
-        initObj [key] = {
+    Object.keys(APP).map(function(key, index) {
+        initObj[key] = {
             offset: 0,
             limit: 50,
             data: [],
@@ -106,19 +107,22 @@ const getInitialObject = () => {
             search: "",
             included: []
         };
+        return 0;
     });
     return initObj;
 }
 
 var datas = getInitialObject();
 
+
 class ObjectApi {
 
     static updateRelationship(objectKey, id, rel_name, data){
+        change_backend_url(localStorage.getItem('url'));
         return new Promise ((resolve)=>{
             var func = api.updateRelationship
             var post_args = { data : data }
-            var request_args = { key: Param.APP[objectKey].API , id: id, rel_name : rel_name }
+            var request_args = { key: APP[objectKey].API , id: id, rel_name : rel_name }
             func( request_args, post_args ).then(console.log('updated')).then((result)=>{
                         resolve(Object.assign({}, {}));
                     })
@@ -126,6 +130,7 @@ class ObjectApi {
     }
 
     static search(objectKey, filter, offset, limit, queryArgs){
+        change_backend_url(localStorage.getItem('url'));
         return new Promise ((resolve)=>{
                 var func = api.search;
                 var post_args = {
@@ -135,22 +140,22 @@ class ObjectApi {
                     }
                 }
             
-                let request_args = Object.assign({ key: Param.APP[objectKey].API,
+                let request_args = Object.assign({ key: APP[objectKey].API,
                                                     "page[offset]": offset,
                                                     "page[limit]": limit
                                                   },
-                                                 Param.APP[objectKey].request_args ? Param.APP[objectKey].request_args : {}, 
+                                                 APP[objectKey].request_args ? APP[objectKey].request_args : {}, 
                                                  queryArgs)
                 func( request_args,
                       post_args
                     )
                 .then((result)=>{
                     datas[objectKey] = {
-                        offset: offset,
-                        limit: limit,
+                        offset: datas[objectKey].offset,
+                        limit: datas[objectKey].limit,
                         data: result.body.data,
                         count: result.body.meta.count,
-                        filter: datas [objectKey].filter,
+                        filter: datas[objectKey].filter,
                         included: result.body.included ? result.body.included : []
                     };
                     resolve(Object.assign({}, datas));
@@ -159,9 +164,9 @@ class ObjectApi {
     }
 
     static getAllDatas(objectKey, offset, limit, queryArgs ) {
-        return new Promise ((resolve)=>{
-                var filter = datas [objectKey].filter;
-                var search = datas [objectKey].search;
+        change_backend_url(localStorage.getItem('url'));
+        return new Promise ((resolve,reject)=>{
+                var search = datas[objectKey].search;
                 var func = null;
                 var post_args = {}
                 /*if (Object.keys(filter).length != 0) {
@@ -190,11 +195,11 @@ class ObjectApi {
                 if(! queryArgs){
                     queryArgs = {}
                 }
-                let request_args = Object.assign({ key: Param.APP[objectKey].API,
+                let request_args = Object.assign({ key: APP[objectKey].API,
                                                     "page[offset]": offset,
                                                     "page[limit]": limit
                                                   },
-                                                 Param.APP[objectKey].request_args ? Param.APP[objectKey].request_args : {}, 
+                                                 APP[objectKey].request_args ? APP[objectKey].request_args : {}, 
                                                  queryArgs)
                 func( request_args,
                       post_args
@@ -205,43 +210,47 @@ class ObjectApi {
                         offset: offset,
                         limit: limit,
                         data: transformed_data.data,
+                        search:search,
                         count: transformed_data.meta ? transformed_data.meta.count : -1,
-                        filter: datas [objectKey].filter,
+                        filter: datas[objectKey].filter,
                     };
                     resolve(Object.assign({}, datas));
-                });
+                }).catch((error) => { 
+                    reject(error);
+                })
         });
     }
 
     static saveData(objectKey, data) {
+        change_backend_url(localStorage.getItem('url'));
         return new Promise((resolve, reject) => {
             var attributes = {}
-            Param.APP [objectKey].column.map(function(item, index) {
-                console.log(item, data)
+            APP[objectKey].column.map(function(item, index) {
                 if(item.dataField && !item.readonly){
                     attributes[item.dataField] = data[item.dataField]
                 }
+                return 0;
             });
             if (data.id) {
                 api.updateData({
                         id: data.id,
-                        key: Param.APP [objectKey].API},
+                        key:APP[objectKey].API},
                     {data:{
                         id: data.id, 
-                        type: Param.APP [objectKey].API_TYPE, 
+                        type: APP[objectKey].API_TYPE, 
                         attributes: attributes}}).then(()=>{
                             resolve(data);
                         });
                 
             } else {
                 api.createData({
-                        key: Param.APP [objectKey].API},
+                        key:APP[objectKey].API},
                     {data:{
-                        type: Param.APP [objectKey].API_TYPE,
+                        type:APP[objectKey].API_TYPE,
                         attributes: attributes}})
                     .then((result)=>{
-                        if(result.status != 201){
-                            throw `Create Request: http code ${result.code}`
+                        if(result.status !== 201){
+                            throw new Error( `Create Request: http code`+ result.code)
                         }
                         if(result && result.body && result.body.data){
                             resolve(result.body.data);
@@ -250,10 +259,9 @@ class ObjectApi {
                             resolve()
                         }
                         else {
-                            throw 'Create Request: No data in response body'
+                            throw new Error('Create Request: No data in response body')
                         }
                     }).catch((error) => { 
-                        console.log(error)
                         toastr.error('Failed to save data')
                         throw error
                     })
@@ -262,17 +270,18 @@ class ObjectApi {
     }
 
     static getData(objectKey, dataId) {
+        change_backend_url(localStorage.getItem('url'));
         return new Promise((resolve) => {
 
-            let request_args = Object.assign({ key: Param.APP[objectKey].API, id: dataId },
-                                               Param.APP[objectKey].request_args ? Param.APP[objectKey].request_args : {} )
+            let request_args = Object.assign({ key: APP[objectKey].API, id: dataId },
+                                               APP[objectKey].request_args ? APP[objectKey].request_args : {} )
 
             api.getData(request_args).then((result)=>{
                 const data = result.body.data
                 const included = result.body.included
                 const existingDataIndex = datas[objectKey].data.findIndex(data => data.id === dataId)
                 if(existingDataIndex >= 0 ){
-
+                    resolve(data)
                 }
                 else{
                     datas[objectKey].data.push(data)
@@ -287,18 +296,21 @@ class ObjectApi {
     }
 
     static deleteData(objectKey, dataIds) {
+        change_backend_url(localStorage.getItem('url'));
         return new Promise((resolve) => {
             dataIds.map((dataId, index) => {
                 api.destroyData({
                     id: dataId,
-                    key: Param.APP [objectKey].API})
+                    key: APP[objectKey].API})
                 .then(() => {
                     resolve();
                 });
+                return 0;
             });
         });
     }
 }
-
+getInitialObject = datas
+export {getInitialObject}
 export default ObjectApi;
-exports.getInitialObject = datas
+

@@ -5,8 +5,8 @@ import { bindActionCreators } from 'redux'
 import BaseAction from './BaseAction'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import Field from '../fields/Field';
-import { Form, FormGroup, Label, Input } from 'reactstrap';
-import Config from '../../Config'
+import { Form } from 'reactstrap';
+import { APP } from '../../Config'
 import toastr from 'toastr'
 import { faPencilAlt  } from '@fortawesome/fontawesome-free-solid'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
@@ -40,15 +40,16 @@ class EditModal extends React.Component {
         
         var post = {};
         post.id = this.props.selectedId;
-        Config.APP [this.props.objectKey].column.map(function(item, index) {
-            if(item.dataField && this.state [item.dataField] != undefined){
-                post [item.dataField] = this.state [item.dataField]
+        APP[this.props.objectKey].column.map(function(item, index) {
+            if(item.dataField && this.state[item.dataField] !== undefined){
+                post[item.dataField] = this.state[item.dataField]
             }
+            return 0;
         }, this);
         this.props.modalaction.getModalAction(false)
 
-        var offset = this.props.datas [this.props.objectKey].offset;
-        var limit = this.props.datas [this.props.objectKey].limit;
+        var offset = this.props.datas[this.props.objectKey].offset;
+        var limit = this.props.datas[this.props.objectKey].limit;
         
         this.props.action.saveAction(this.props.objectKey, post, offset, limit)
             .then(()=>{
@@ -57,23 +58,24 @@ class EditModal extends React.Component {
     }
 
     renderAttributes(){
-        let data = this.props.formdata
+        let data = this.props.formdata.attributes
         return <Form>
-                    { Config.APP[this.props.objectKey].column.map(function(item, index) {
+                    { APP[this.props.objectKey].column.map(function(item, index) {
                             if( !data || item.dataField === undefined ){
                                 return <div key={index} />
                             }
                             let value = (data === undefined || data[item.dataField] === "") ? item.placeholder : data[item.dataField]
+                          
                             return (<Field 
                                     row={data}
                                     key={index}
                                     data={data}
                                     column={item}
-                                    value={this.state[item.dataField]}
+                                    // value={this.state[item.dataField] === undefined ? '':this.state[item.dataField]}
                                     placeholder={value}
                                     onChange={(event) => {
                                             if(event && event.target){
-                                                this.state[item.dataField] = event.target.value
+                                                this.setState({[item.dataField] : event.target.value})
                                             }
                                         }
                                     }/>)
@@ -102,15 +104,15 @@ class EditModal extends React.Component {
 
 class EditAction extends BaseAction {  
     
-    constructor(props){
-        super(props)
-    }
+    // constructor(props){
+    //     super(props)
+    // }
 
     onClick(){  
 
         let parent = this.props.parent;
         
-        if(parent.state.selectedIds.length == 1)
+        if(parent.state.selectedIds.length === 1)
         {
             parent.props.modalaction.getModalAction(true)
             parent.props.action.getSingleAction(parent.props.objectKey, parent.state.selectedIds[0]);
@@ -128,7 +130,7 @@ class EditAction extends BaseAction {
             let EditModalWithConnect = connect(mapStateToProps, mapDispatchToProps)(EditModal);
 
             var modal = <EditModalWithConnect objectKey={this.props.objectKey} 
-                                selectedId={parent.state.selectedIds [0]} 
+                                selectedId={parent.state.selectedIds[0]} 
                                 />
             parent.setState({modal: modal})
         }

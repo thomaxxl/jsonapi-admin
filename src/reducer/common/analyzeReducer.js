@@ -1,5 +1,4 @@
 import * as ActionType from '../../action/ActionType';
-import _ from 'lodash';
 
 const analyzeReducer = (state = {showmodal:false}, action) => {
     switch(action.type) {

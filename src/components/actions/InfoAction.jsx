@@ -1,15 +1,12 @@
-import { faCog, faTrashAlt, faCoffee, faBullseye, faPlay, faSearchEngin, faEdit, faInfo, faUserSecret  } from '@fortawesome/fontawesome-free-solid'
+import { faUserSecret  } from '@fortawesome/fontawesome-free-solid'
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import * as ModalAction from '../../action/ModalAction'
 import BaseAction from './BaseAction'
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
-import { Form, FormGroup, Label, Input } from 'reactstrap'
-import Field from '../fields/Field';
+import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import toastr from 'toastr'
-import Config from '../../Config'
 
 class StatusModal extends React.Component {    
     
@@ -25,9 +22,9 @@ class StatusModal extends React.Component {
         this.props.modalaction.getModalAction(false)
     }
 
-    getIncluded(){
-        let included = this.props.formdata[this.props.objectKey].included
-    }
+    // getIncluded(){
+    //     let included = this.props.formdata[this.props.objectKey].included
+    // }
 
     getRelationships(rel_name){
         let result = []
@@ -44,8 +41,6 @@ class StatusModal extends React.Component {
            return <div/>
         }
 
-        
-        let tmp = JSON.stringify(this.props.formdata, null, 2)
         return <div></div>
     }
 
@@ -72,7 +67,7 @@ class CustomAction extends BaseAction {
     onClick(){
         let parent = this.props.parent;
         
-        if(parent.state.selectedIds.length == 1)
+        if(parent.state.selectedIds.length === 1)
         {
             parent.props.modalaction.getModalAction(true)
             parent.props.action.getSingleAction(parent.props.objectKey, parent.state.selectedIds[0]);
@@ -88,7 +83,7 @@ class CustomAction extends BaseAction {
             let StatusModalWithConnect = connect(mapStateToProps, mapDispatchToProps)( StatusModal);
 
             var modal = <StatusModalWithConnect objectKey={this.props.objectKey} 
-                                selectedId={parent.state.selectedIds [0]} 
+                                selectedId={parent.state.selectedIds[0]} 
                                 />
             parent.setState({modal: modal})
         }

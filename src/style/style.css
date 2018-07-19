@@ -1,6 +1,5 @@
 .container-fluid{
     margin: auto;
-    width: 85%;
 }.react-bootstrap-table, .form-control .search {
 	font-size: 0.8em;
 }
@@ -100,7 +99,7 @@ a {
 }
 
 .page-item.active .page-link {
-	border: 1px solid red;
+	/*border: 1px solid red;*/
 }
 
 .from-label{
@@ -109,6 +108,7 @@ a {
 
 .editable{
 	font-weight: bold;
+	cursor: pointer;
 }
 
 .RelationDeleteIcon {
@@ -118,4 +118,15 @@ a {
 .editable{
 	cursor: pointer;
 	font-weight: bold;
+}
+
+
+.container-fluid{
+	max-width: 100%;
+}
+
+
+.search {
+	/* stupid adaptation to bootstrap col-sm-12 , todo: fix*/
+	margin-right: 15px;
 }

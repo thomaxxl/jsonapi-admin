@@ -1,8 +1,9 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import * as Param from '.././Config';
-import ReactDOM from 'react-dom';
-import { browserHistory } from 'react-router'
+import { NavLink as RRNavLink } from 'react-router-dom';
+import * as InputAction from '../action/InputAction'
+import { bindActionCreators } from 'redux'
 import {
   Collapse,
   Navbar,
@@ -11,17 +12,15 @@ import {
   Nav,
   NavItem,
   NavLink,
-  NavDropdown,
-  MenuItem,
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
+  InputGroup,
+  InputGroupAddon,
+  Input,
   DropdownItem } from 'reactstrap';
 
-import { faCog, faTrashAlt, faCoffee, faBullseye, faPlay, faSearchEngin  } from '@fortawesome/fontawesome-free-solid'
-import fontawesome from '@fortawesome/fontawesome'
-import FontAwesomeIcon from '@fortawesome/react-fontawesome'
-import './style.css'
+import Cookies from 'universal-cookie';
 
 class HeaderNavContainer extends React.Component {
   constructor(props) {
@@ -30,21 +29,49 @@ class HeaderNavContainer extends React.Component {
     this.state = {
       isOpen: false
     };
+    this.change_url = this.change_url.bind(this)
   }
   toggle() {
     this.setState({
       isOpen: !this.state.isOpen
     })
   }
+
+  change_url(e){
+    let api_url = e.target.value
+    this.props.inputaction.getUrlAction(e.target.value);
+    localStorage.setItem('url',api_url);
+    const cookies = new Cookies()
+    cookies.set('api_url', api_url)
+  }
+
   render() {
     //let classname =  this.props.currentPath == Param.APP[key].path ? "current" : ""
     var currentPath = this.props.currentPath
     var currentStyle = {color:'white'} // todo move to css
-    var navTitle = Param.NavTitle ? Param.NavTitle : 'J:A'
+    // var navTitle = Param.NavTitle ? Param.NavTitle : 'J:A'
+    var navTitle = 'J:A'
+    var INPUT = (<InputGroup className="Left">
+                  <InputGroupAddon addonType="prepend">{this.props.inputflag.url===''?Param.URL:this.props.inputflag.url}</InputGroupAddon>
+                </InputGroup>)
+    if(this.props.inputflag.flag){
+      INPUT =     (<InputGroup className="Left">
+                    <InputGroupAddon addonType="prepend">BACK-END-URL</InputGroupAddon>
+                    <Input placeholder={this.props.inputflag.url===''?Param.URL:this.props.inputflag.url} onChange={this.change_url.bind(this)}/>
+                  </InputGroup>)
+    }
+
+    // if(Param.disable_api_url){
+    //     INPUT = ''
+    // }
+
+    // const login = Param.enable_login ?  <Login logged_in={logged_in}/> : 'Login'
+    const login = 'Login'
+
     return (
      <div>
         <Navbar color="faded" light expand="md" className="navbar-dark navbar-inverse bg-dark">
-        <NavbarBrand href="/">{navTitle}</NavbarBrand>
+        <NavbarBrand replace tag={RRNavLink} to="/" >{navTitle}</NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav navbar>
@@ -55,36 +82,31 @@ class HeaderNavContainer extends React.Component {
                         return <span/>
                     }
                     return (<NavItem key = {index}>
-                              <NavLink href={Param.APP[key].path} style={ currentPath == Param.APP[key].path ? currentStyle : {} }>
-                                  {Param.APP [key].menu}
+                              <NavLink replace tag={RRNavLink} to={Param.APP[key].path} style={ currentPath === Param.APP[key].path ? currentStyle : {} }>
+                                  {Param.APP[key].menu}
                               </NavLink>
                             </NavItem>)
                 })
               }
             </Nav>
-
+            {INPUT}
             <Nav className="ml-auto" navbar>
-              <NavItem>
-                <NavLink href="">Admin</NavLink>
-              </NavItem>
                <NavItem>
-                <NavLink href="">API</NavLink>
+                <NavLink href="">{login}</NavLink>
               </NavItem>
               <UncontrolledDropdown nav inNavbar>
                 <DropdownToggle nav caret>
-                  <FontAwesomeIcon icon={faCog}></FontAwesomeIcon>
+                  {/* <FontAwesomeIcon icon={faCog}></FontAwesomeIcon> */}
                 </DropdownToggle>
                 <DropdownMenu right>
                   <DropdownItem>
-                     Option 1
+                     <a href="/admin">Admin</a>
                   </DropdownItem>
                   <DropdownItem>
-                    Option 2
+                    <a href="/api">API</a>
                   </DropdownItem>
                   <DropdownItem divider />
-                  <DropdownItem>
-                    Logout
-                  </DropdownItem>
+                   
                 </DropdownMenu>
               </UncontrolledDropdown>
             </Nav>
@@ -96,4 +118,13 @@ class HeaderNavContainer extends React.Component {
   }
 }
 
-export default HeaderNavContainer;
+const mapStateToProps = state => ({
+  api_data: state.object,
+  inputflag: state.inputReducer
+})
+
+const mapDispatchToProps = dispatch => ({
+  inputaction: bindActionCreators(InputAction,dispatch),
+})
+
+export default connect(mapStateToProps,mapDispatchToProps)(HeaderNavContainer);

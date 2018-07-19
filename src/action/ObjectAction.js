@@ -1,7 +1,5 @@
 import * as ActionType from './ActionType';
 import ObjectApi from '../api/ObjectApi';
-import toastr from 'toastr'
-const TOASTR_POS =  {positionClass: "toast-top-center"}
 
 // TODO: make the ActionTypes generic
 
@@ -11,12 +9,11 @@ export const getResponse = data => ({
 });
 
 export function getAction(objectKey, offset, limit, ...queryArgs) {
-    return (dispatch) => {        
+    return (dispatch) => {    
         return ObjectApi.getAllDatas( objectKey, offset, limit, ...queryArgs )
             .then(data => {
                 dispatch({...getResponse(data)});
             }).catch(error => {
-                toastr.error('Failed to retrieve data')
                 throw error
             });
     };
@@ -49,7 +46,7 @@ export function saveAction(objectKey, BeingAddedOrEdited, offset, limit) {
     };
 }
 
-export function updateRelationshipAction(objectKey, id, rel_name, data) {
+export function updateRelationshipAction(objectKey, id, rel_name, data, offset, limit) {
     return function (dispatch) {
         return ObjectApi.updateRelationship(objectKey, id, rel_name, data)
             .then(() => {
@@ -59,7 +56,7 @@ export function updateRelationshipAction(objectKey, id, rel_name, data) {
                     dispatch(addNewResponse())
                 }
             }).then(() => {
-                dispatch(getAction(objectKey))
+                dispatch(getAction(objectKey,offset, limit))
             });
     };
 }
@@ -70,6 +67,8 @@ export const getSingleResponse = data => ({
 });
 
 export function getSingleAction(objectKey, Id) {
+    
+    
     return (dispatch) => {
         return ObjectApi.getData(objectKey, Id)
             .then(data => {

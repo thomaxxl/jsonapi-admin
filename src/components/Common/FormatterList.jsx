@@ -1,6 +1,6 @@
 import React from 'react'
 
-function cellFormatter(cell, row) {
+function cellFormatter(cell) {
 
     return <strong>{ cell }</strong>
 }

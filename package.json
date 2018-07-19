@@ -39,21 +39,22 @@
     "redux-json-api": "^2.0.0",
     "redux-thunk": "^2.2.0",
     "tether": "^1.4.0",
-    "toastr": "^2.1.4"
+    "toastr": "^2.1.4",
+    "universal-cookie": "^2.2.0"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free-solid": "^5.0.13",
-    "coveralls": "^2.13.1",
+    "coveralls": "^3.0.2",
     "enzyme": "^2.8.2",
     "enzyme-to-json": "^1.5.1",
     "nock": "^9.3.3",
     "react-addons-test-utils": "^15.4.2",
-    "react-scripts": "0.9.5",
+    "react-scripts": "^1.1.4",
     "redux-mock-store": "^1.5.3",
     "tslint-config-prettier": "^1.13.0"
   },
   "scripts": {
-    "start": "PORT=2080 react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "coverage": "react-scripts test --env=jsdom --coverage",
@@ -71,5 +72,5 @@
   "bugs": {
     "url": "https://github.com/thomaxxl/jsonapi-admin/issues"
   },
-  "homepage": "https://github.com/thomaxxl/jsonapi-admin#readme"
+  "homepage": "http://localhost/ja/"
 }
