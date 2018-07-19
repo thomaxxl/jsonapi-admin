@@ -5,7 +5,6 @@ import { Row, Col } from 'reactstrap';
 import List from '../Common/List';
 import * as Param from '../../Config';
 import { Input } from 'reactstrap'
-import './style.css'
 
 // const DEFAULT_PAGE_SIZE = 50
 // const DEFAULT_PAGE_OFFSET = 0
