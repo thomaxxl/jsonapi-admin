@@ -1,4 +1,4 @@
-import FormatterList from './components/formatters/FormatterList.jsx'
+import {FormatterList} from './components/formatters/FormatterList.jsx'
 import APP from './Config.json';
 import ActionList from './action/ActionList'
 import InfoAction from './components/actions/InfoAction.jsx'

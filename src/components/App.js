@@ -3,9 +3,11 @@ import '../style/style.css'
 
 import * as Param from '../Config'
 import React, { Component } from 'react'
-import {  Route, Switch, HashRouter } from 'react-router-dom'
+//import createBrowserHistory from 'history/createBrowserHistory'
+import { Route, Switch, HashRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+//import { getRelationship } from 'redux-bees';
 import HeaderNavContainer from './HeaderNavContainer'
 import Home from './Home'
 import ApiObjectContainer from './ApiObject/ApiObjectContainer'
@@ -14,8 +16,10 @@ import * as ModalAction from '../action/ModalAction'
 import * as InputAction from '../action/InputAction'
 import ItemInfo from './Common/ItemInfo'
 
+//const history = createBrowserHistory()
+
 function genCollectionRoute(key) {
-    
+
     const mapStateToProps = state => ({
         objectKey: key,
         item: Param.APP[key],
@@ -32,7 +36,8 @@ function genCollectionRoute(key) {
     })
     
     const Results = connect(mapStateToProps, mapDispatchToProps)(ApiObjectContainer)
-    return <Route key={key}  path={Param.APP[key].path} component={Results} />
+    const path = Param.APP[key].path
+    return <Route key={key}  path={path} component={Results} />
 }
 
 function genItemRoute(key) {
@@ -48,8 +53,15 @@ function genItemRoute(key) {
         modalaction: bindActionCreators(ModalAction,dispatch)
     })
 
-    const Results = connect(mapStateToProps, mapDispatchToProps)(ItemInfo)
-    let path = `${Param.APP[key].path}/:itemId`
+    const component_info = Param.APP[key]
+
+    if(!component_info){
+        alert('Invalid Component')
+        return <div/>
+    }
+    const Viewer  = component_info.viewer ? component_info.viewer : ItemInfo
+    const Results = connect(mapStateToProps, mapDispatchToProps)(Viewer)
+    const path = `${component_info.path}/:itemId`
     return <Route sensitive key={path} path={path} component={Results}/>
 }
 
@@ -65,6 +77,7 @@ class App extends Component {
                       <Switch>
                           <Route exact path="/" component={Home} />
                           {collectionRoutes}
+                          
                       </Switch>
                   </div>
                 </HashRouter>  

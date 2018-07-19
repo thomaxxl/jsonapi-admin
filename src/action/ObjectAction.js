@@ -12,6 +12,7 @@ export function getAction(objectKey, offset, limit, ...queryArgs) {
     return (dispatch) => {    
         return ObjectApi.getAllDatas( objectKey, offset, limit, ...queryArgs )
             .then(data => {
+                console.log(data)
                 dispatch({...getResponse(data)});
             }).catch(error => {
                 throw error
@@ -46,7 +47,7 @@ export function saveAction(objectKey, BeingAddedOrEdited, offset, limit) {
     };
 }
 
-export function updateRelationshipAction(objectKey, id, rel_name, data, offset, limit) {
+export function updateRelationshipAction(objectKey, id, rel_name, data) {
     return function (dispatch) {
         return ObjectApi.updateRelationship(objectKey, id, rel_name, data)
             .then(() => {
@@ -56,7 +57,7 @@ export function updateRelationshipAction(objectKey, id, rel_name, data, offset, 
                     dispatch(addNewResponse())
                 }
             }).then(() => {
-                dispatch(getAction(objectKey,offset, limit))
+                dispatch(getAction(objectKey))
             });
     };
 }
@@ -66,12 +67,13 @@ export const getSingleResponse = data => ({
     data: data
 });
 
-export function getSingleAction(objectKey, Id) {
-    
+export function getSingleAction(objectKey, Id, queryArgs) {
     
     return (dispatch) => {
-        return ObjectApi.getData(objectKey, Id)
+        return ObjectApi.getData(objectKey, Id, queryArgs)
             .then(data => {
+                console.log('track17');
+                console.log(data);
                 dispatch(getSingleResponse(data));
             }).catch(error => {
                 throw error;

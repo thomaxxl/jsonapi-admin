@@ -3,7 +3,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
-import * as Param from '../../Config';
+import { APP, FormatterList } from '../../Config';
 import cellEditFactory from 'react-bootstrap-table2-editor';
 
 
@@ -70,21 +70,21 @@ class List extends React.Component {
             if(value.formatter){
                 let formatter_name = value.formatter
                 if(typeof value.formatter === 'string'){ // bah!, we only need to replace it once
-                   value.formatter = Param.FormatterList[formatter_name] //resolveFormatter(value.formatter)
+                   value.formatter = FormatterList[formatter_name] //resolveFormatter(value.formatter)
                 }
                 if (!value.formatter) { console.log(`formatter ${formatter_name} not found!`) }
             }
             if(value.editor){
                 let editor_name = value.editor
                 if(typeof value.editor === 'string'){
-                   value.editor = Param.FormatterList[value.editor] //resolveFormatter(value.formatter)
+                   value.editor = FormatterList[value.editor] //resolveFormatter(value.formatter)
                 }
                 if (!value.editor){ console.log(`formatter ${editor_name} not found!`) }   
             }
-            if(value.editorRenderer && Param.APP[this.props.objectKey].Editor){
-                const EditorRenderer = Param.FormatterList[value.editorRenderer]
+            if(value.editorRenderer && APP[this.props.objectKey].Editor){
+                const EditorRenderer = FormatterList[value.editorRenderer]
         
-                Param.APP[this.props.objectKey].Editor = false
+                APP[this.props.objectKey].Editor = false
                 value.editorRenderer = (editorProps, value, row, column, rowIndex, columnIndex) => 
                     ( <EditorRenderer className="editable" { ...editorProps } row={row} column={column} value={ value }  /> )
             }

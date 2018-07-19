@@ -15,7 +15,7 @@ class Field extends React.Component {
         }
         else if( data && ( column.readonly || data[column.dataField] === undefined )){
             let value = data[column.dataField]
-            if(typeof value == 'string'){
+            if(typeof value === 'string'){
                 result = value
             }
             else{
@@ -30,7 +30,7 @@ class Field extends React.Component {
         else if(column.editorRenderer){
             const EditorRenderer = column.editorRenderer
             let defaultValue= this.props.value === undefined ? '' : this.props.value
-            if(typeof defaultValue != 'string'){
+            if(typeof defaultValue !== 'string'){
                 console.warn('defaultValue not of type string for column', column, defaultValue)
                 defaultValue = JSON.stringify(defaultValue)
             }
