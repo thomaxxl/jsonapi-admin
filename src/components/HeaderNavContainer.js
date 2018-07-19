@@ -50,8 +50,7 @@ class HeaderNavContainer extends React.Component {
     //let classname =  this.props.currentPath == Param.APP[key].path ? "current" : ""
     var currentPath = this.props.currentPath
     var currentStyle = {color:'white'} // todo move to css
-    // var navTitle = Param.NavTitle ? Param.NavTitle : 'J:A'
-    var navTitle = 'J:A'
+    var navTitle = Config.title ? Config.title : 'J:A'
     var INPUT = (<InputGroup className="Left">
                   <InputGroupAddon addonType="prepend">{this.props.inputflag.url===''?Param.URL:this.props.inputflag.url}</InputGroupAddon>
                 </InputGroup>)
