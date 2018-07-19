@@ -60,5 +60,12 @@ export const config = {
   },
 };
 
-export default config; 
+
+class Config {
+    static routes = null;
+    static APP = APP;
+    static disable_api_url = false
+}
+
+export {Config}
 

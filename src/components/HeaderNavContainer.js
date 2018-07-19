@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import * as Param from '.././Config';
+import * as Param from '../Config';
+import {Config} from '../Config'
 import { NavLink as RRNavLink } from 'react-router-dom';
 import * as InputAction from '../action/InputAction'
 import { bindActionCreators } from 'redux'
@@ -61,9 +62,9 @@ class HeaderNavContainer extends React.Component {
                   </InputGroup>)
     }
 
-    // if(Param.disable_api_url){
-    //     INPUT = ''
-    // }
+    if(Config.disable_api_url){
+         INPUT = ''
+    }
 
     // const login = Param.enable_login ?  <Login logged_in={logged_in}/> : 'Login'
     const login = 'Login'
