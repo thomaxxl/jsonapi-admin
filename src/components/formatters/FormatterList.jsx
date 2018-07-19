@@ -221,6 +221,6 @@ let FormatterList = { cellFormatter : cellFormatter,
 					  ToManyRelationshipEditor: ToManyRelationshipEditor,
 					  }
 
-export default FormatterList
+export {FormatterList}
 
 
