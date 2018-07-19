@@ -151,8 +151,8 @@ class ObjectApi {
                     )
                 .then((result)=>{
                     datas[objectKey] = {
-                        offset: datas[objectKey].offset,
-                        limit: datas[objectKey].limit,
+                        offset: offset,
+                        limit: limit,
                         data: result.body.data,
                         count: result.body.meta.count,
                         filter: datas[objectKey].filter,
@@ -262,6 +262,7 @@ class ObjectApi {
                             throw new Error('Create Request: No data in response body')
                         }
                     }).catch((error) => { 
+                        console.log(error)
                         toastr.error('Failed to save data')
                         throw error
                     })
@@ -269,12 +270,15 @@ class ObjectApi {
         });
     }
 
-    static getData(objectKey, dataId) {
+    static getData(objectKey, dataId, queryArgs) {
         change_backend_url(localStorage.getItem('url'));
         return new Promise((resolve) => {
-
+            if(! queryArgs){
+                    queryArgs = {}
+            }
             let request_args = Object.assign({ key: APP[objectKey].API, id: dataId },
-                                               APP[objectKey].request_args ? APP[objectKey].request_args : {} )
+                                             APP[objectKey].request_args ? APP[objectKey].request_args : {},
+                                             queryArgs )
 
             api.getData(request_args).then((result)=>{
                 const data = result.body.data

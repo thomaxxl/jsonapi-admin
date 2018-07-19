@@ -14,7 +14,13 @@ class Field extends React.Component {
             result = <div/>
         }
         else if( data && ( column.readonly || data[column.dataField] === undefined )){
-            result = data[column.dataField]
+            let value = data[column.dataField]
+            if(typeof value == 'string'){
+                result = value
+            }
+            else{
+                result = JSON.stringify(value)
+            }
         }
         else if(column.editor){
             //result = column.editor
@@ -22,10 +28,13 @@ class Field extends React.Component {
             result = 'editor TODO'
         }
         else if(column.editorRenderer){
-           const EditorRenderer = column.editorRenderer
-           let defaultValue= this.props.value
-           result = <EditorRenderer column={column} {...this.props} defaultValue={defaultValue} onChange={this.props.onChange} />
-           
+            const EditorRenderer = column.editorRenderer
+            let defaultValue= this.props.value === undefined ? '' : this.props.value
+            if(typeof defaultValue != 'string'){
+                console.warn('defaultValue not of type string for column', column, defaultValue)
+                defaultValue = JSON.stringify(defaultValue)
+            }
+            result = <EditorRenderer column={column} {...this.props} defaultValue={defaultValue} onChange={this.props.onChange} />
         }
         else{
             result = <Input value={this.props.value}
