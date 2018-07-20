@@ -25,7 +25,6 @@ Object.keys(APP).map(function(key, index) {
 
 ActionList['InfoAction'] = InfoAction
 
-
 var URL = BaseUrl
 export {APP}
 export {URL}
@@ -33,8 +32,7 @@ export {ActionList}
 export {Timing}
 export {FormatterList}
 
-
-export const config = {
+const api_config = {
   baseUrl: BaseUrl,
   configureHeaders(headers) {
     const cookies = new Cookies()
@@ -61,11 +59,11 @@ export const config = {
 };
 
 
-class Config {
-    static routes = null;
-    static APP = APP;
-    static disable_api_url = false
+const Config = {
+    routes : null,
+    APP : APP,
+    disable_api_url : false
 }
 
-export {Config}
+export {Config, api_config as config}
 
