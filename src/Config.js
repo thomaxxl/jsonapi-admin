@@ -2,13 +2,15 @@ import {FormatterList} from './components/formatters/FormatterList.jsx'
 import APP from './Config.json';
 import ActionList from './action/ActionList'
 import InfoAction from './components/actions/InfoAction.jsx'
-
+import {ViewerList} from './components/viewers/ViewerList'
+import ItemInfo from './components/Common/ItemInfo'
 import './style/style.css'
 import Cookies from 'universal-cookie';
 
 const BaseUrl = 'http://thomaxxl.pythonanywhere.com'
 const Timing = 5000
-Object.keys(APP).map(function(key, index) {
+
+Object.keys(APP).map((key, index) => {
     var initVal = {
         column: [],
         actions: Object.keys(ActionList),
@@ -17,11 +19,28 @@ Object.keys(APP).map(function(key, index) {
         path: "/" + key.toLocaleLowerCase(),
         menu: key,
         Title: key + " Page",
-        Editor:true,
+        viewer: ItemInfo
     }
-    APP[key] = {...initVal, ...APP[key]};
-    return 0;
-});
+
+    if(APP[key].viewer && ViewerList[APP[key].viewer]){
+        APP[key].viewer = ViewerList[APP[key].viewer]
+    }
+
+    for( let col of APP[key].column ){
+
+        if(col.editorRenderer && FormatterList[col.editorRenderer]){
+            col.editorRenderer = FormatterList[col.editorRenderer]
+        }
+
+        if(col.formatter && FormatterList[col.formatter]){
+            col.formatter = FormatterList[col.formatter]
+        }
+    }
+
+    APP[key] = {...initVal, ...APP[key]}
+    return null
+})
+
 
 ActionList['InfoAction'] = InfoAction
 

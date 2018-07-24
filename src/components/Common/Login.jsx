@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { Form, FormGroup, Label, Input } from 'reactstrap';
 import toastr from 'toastr'
-import * as Param from '../../Config';
+import {URL} from '../../Config';
 import Cookies from 'universal-cookie';
 
 class LoginModal extends React.Component {
@@ -13,8 +13,8 @@ class LoginModal extends React.Component {
 
     this.state = {
       modal: props.logged_in,
-      username : 'user4',
-      password : 'pass',
+      username : 'admin',
+      password : 'admin',
       token : token
     };
     this.portalId = 'login_form'
@@ -41,7 +41,6 @@ class LoginModal extends React.Component {
   }
 
   login(){
-    let URL = Param.default.URL
     let options = { headers: new Headers({ 'Authorization': `Basic ${btoa(this.state.username + ':' + this.state.password)}` })}
     fetch(`${URL}/Auth/token`, options)
       .then(function(response) {
@@ -76,11 +75,16 @@ class LoginModal extends React.Component {
     this.setState(s);
   }
 
+  logged_in(){
+      const cookies = new Cookies();
+      return cookies.get('token') && this.state.token && this.state.token !== 'false' 
+  }
+
   render() {
 
     var link
     var isOpen = false
-    if(this.state.token && this.state.token !== 'false' ){
+    if(this.logged_in()){
         link  = <span id="login" onClick={this.logout.bind(this)}>Logout</span>
     }
     else {
@@ -115,4 +119,4 @@ class LoginModal extends React.Component {
   }
 }
 
-export default LoginModal;
+export {LoginModal as Login}

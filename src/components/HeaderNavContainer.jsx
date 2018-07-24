@@ -2,9 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import * as Param from '../Config';
 import {Config} from '../Config'
-import { NavLink as RRNavLink } from 'react-router-dom';
+import {NavLink as RRNavLink} from 'react-router-dom';
 import * as InputAction from '../action/InputAction'
-import { bindActionCreators } from 'redux'
+import {bindActionCreators} from 'redux'
+import {Login} from './Common/Login'
 import {
   Collapse,
   Navbar,
@@ -29,7 +30,7 @@ class HeaderNavContainer extends React.Component {
     this.toggle = this.toggle.bind(this)
     this.state = {
       isOpen: false
-    };
+    }
     this.change_url = this.change_url.bind(this)
   }
   toggle() {
@@ -65,9 +66,8 @@ class HeaderNavContainer extends React.Component {
          INPUT = ''
     }
 
-    // const login = Param.enable_login ?  <Login logged_in={logged_in}/> : 'Login'
-    const login = 'Login'
-
+    const login = Config.enable_login ?  <Login ref={this.login} logged_in={false}/> : 'Login'
+    
     return (
      <div>
         <Navbar color="faded" light expand="md" className="navbar-dark navbar-inverse bg-dark">
@@ -76,7 +76,6 @@ class HeaderNavContainer extends React.Component {
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav navbar>
               {
-
                 Object.keys(Param.APP).map(function(key, index){
                     if(Param.APP[key].hidden) {
                         return <span/>

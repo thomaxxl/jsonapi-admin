@@ -1,6 +1,6 @@
+
 import './style/bootstrapstyle.css'
 import '../style/style.css'
-
 import * as Param from '../Config'
 import React, { Component } from 'react'
 //import createBrowserHistory from 'history/createBrowserHistory'

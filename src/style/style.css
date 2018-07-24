@@ -31,21 +31,6 @@
 	border: 1px solid red;
 }
 
-.ja-popover {
-	color: red;
-	position: absolute;
-	left: 100px;
-    top: 150px;
-}
-
-.image-name{
-	cursor: pointer;
-}
-
-.image-popover {
-	max-width: 100%;
-}
-
 .table th, .table td {
 	padding: 0.7rem;
 }
@@ -129,4 +114,5 @@ a {
 .search {
 	/* stupid adaptation to bootstrap col-sm-12 , todo: fix*/
 	margin-right: 15px;
+	margin-bottom: 20px;
 }

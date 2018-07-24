@@ -81,8 +81,8 @@ class List extends React.Component {
                 }
                 if (!value.editor){ console.log(`formatter ${editor_name} not found!`) }   
             }
-            if(value.editorRenderer && APP[this.props.objectKey].Editor){
-                const EditorRenderer = FormatterList[value.editorRenderer]
+            if(value.editorRenderer){
+                const EditorRenderer = value.editorRenderer  
         
                 APP[this.props.objectKey].Editor = false
                 value.editorRenderer = (editorProps, value, row, column, rowIndex, columnIndex) => 
