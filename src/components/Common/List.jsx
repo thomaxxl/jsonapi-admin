@@ -36,11 +36,9 @@ import cellEditFactory from 'react-bootstrap-table2-editor';
 // class ColHeader extends React.Component {
 //     // todo: this generates a warning because text is no longer a string:
 //     // Warning: Failed prop type: Invalid prop `column.text` of type `object` supplied to `HeaderCell`, expected `string`.
-
 //     onClick(){
 //         alert('todo')
 //     }
-
 //     render(){
 //         return  <span>{this.props.text}
 //                     <FontAwesomeIcon className="column-filter" onClick={this.onClick.bind(this)} icon={faFilter} />
@@ -48,58 +46,75 @@ import cellEditFactory from 'react-bootstrap-table2-editor';
 //     }
 // }
 
+function dispatch_col_type(column){
+    if(column.type === "integer"){
+            let col_style = {width: '6em'}
+            column.headerStyle = Object.assign({}, col_style, (column.headerStyle || {}) )
+            col_style.paddingLeft = '1.5em'
+            column.style = Object.assign({}, col_style, (column.style || {}) )
+    }
+    if(column.type === "date"){
+        const col_style = {width: '12em'}
+        column.style = Object.assign({}, col_style, (column.style || {}) )
+        column.headerStyle = Object.assign({}, col_style, (column.headerStyle || {}) )
+    }
+}
+
 class List extends React.Component {
 
     constructor(props) {
         super(props)
-        this.columns = []
-        this.props.columns.map((value, index) => {
-
-
+        const columns = APP[this.props.objectKey].column || []
+        this.columns = columns.map((column, index) => {
             /* 
                 merge the config column properties 
                 with our property dict
             */
             
-            /* 
-                Dispatch the formatter from string to function
-                Only replace it the first time (when it's still a string)
-                this turned out to be quite ugly... TODO: redo!
-            */
+            if(column.formatter){
+                /* 
+                    Dispatch the formatter from string to function
+                    Only replace it the first time (when it's still a string)
+                    this turned out to be quite ugly... TODO: redo!
+                */
 
-            if(value.formatter){
-                let formatter_name = value.formatter
-                if(typeof value.formatter === 'string'){ // bah!, we only need to replace it once
-                   value.formatter = FormatterList[formatter_name] //resolveFormatter(value.formatter)
+                let formatter_name = column.formatter
+                if(typeof column.formatter === 'string'){ // bah!, we only need to replace it once
+                   column.formatter = FormatterList[formatter_name] //resolveFormatter(column.formatter)
                 }
-                if (!value.formatter) { console.log(`formatter ${formatter_name} not found!`) }
-            }
-            if(value.editor){
-                let editor_name = value.editor
-                if(typeof value.editor === 'string'){
-                   value.editor = FormatterList[value.editor] //resolveFormatter(value.formatter)
+                if (!column.formatter){
+                    console.log(`formatter ${formatter_name} not found!`) 
                 }
-                if (!value.editor){ console.log(`formatter ${editor_name} not found!`) }   
+                else{
+                    column.location = this.props.location
+                }
             }
-            if(value.editorRenderer){
-                const EditorRenderer = value.editorRenderer  
-        
-                APP[this.props.objectKey].Editor = false
-                value.editorRenderer = (editorProps, value, row, column, rowIndex, columnIndex) => 
+            if(column.editor){
+                let editor_name = column.editor
+                if(typeof column.editor === 'string'){
+                   column.editor = FormatterList[column.editor] //resolveFormatter(column.formatter)
+                }
+                if (!column.editor){ console.log(`formatter ${editor_name} not found!`) }   
+            }
+            if(column.editorRenderer){
+                const EditorRenderer = column.editorRenderer  
+                column.editorRenderer = (editorProps, value, row, column, rowIndex, columnIndex) => 
                     ( <EditorRenderer className="editable" { ...editorProps } row={row} column={column} value={ value }  /> )
             }
-            if(!value.text){
-                value.text = value.name
+            if(!column.text){
+                column.text = column.name
             }
-            if(!value.dataField){
-                console.log('No dataField for column', value)
-                value.dataField = '__dummy'+Math.random(); // filler to avoid console warnings (lol if you run into this :p)
-                value.readonly = true
+            if(!column.dataField){
+                console.log('No dataField for column', column)
+                column.dataField = '__dummy'+Math.random(); // filler to avoid console warnings (lol if you run into this :p)
+                column.readonly = true
             }
-            if(value.readonly){
-                value.editable = false
+            if(column.readonly){
+                column.editable = false
             }
-            value.plaintext = value.text
+            dispatch_col_type(column)
+            
+            column.plaintext = column.text
             // let listFilter = textFilter({ className:"textFilter", 
             //                               style: { display: 'inline',
             //                                        backgroundColor: 'white', 
@@ -107,31 +122,40 @@ class List extends React.Component {
             //                             }})
             // const ff = <JAFilter />
             
-            let column = Object.assign({}, { //filter: listFilter,
-                                            delay: 100,
-                                            editable : true,
-                                            onSort: (field, order) => {
-                                                console.log(field, order);
-                                            }
-                                        },
-                                        value)
-            this.columns.push(column);
-            return 0;
+            column = Object.assign({}, { //filter: listFilter,
+                                        delay: 100,
+                                        editable : true,
+                                        onSort: (field, order) => {
+                                            console.log(field, order);
+                                        }
+                                    },
+                                    column)
+            return column
         }, this);
 
 
-        this.options = {
-            sortIndicator: true,
-            noDataText: 'No data'
-        };
+        this.options = Object.assign({}, 
+                                     { sortIndicator: true,
+                                       mode: 'checkbox',
+                                       noDataText: 'No data' }, 
+                                    APP[this.props.objectKey].options || {} )
 
-        this.selectRowProp = {
-            mode: 'radio',
-            bgColor: '#c1f291',
-            onSelect: props.handleRowSelect,
-            clickToSelect: true, 
-            // mode: 'checkbox',  
-        };
+
+        this.selectRow = Object.assign({}, {
+            mode: 'checkbox',
+            /*clickToSelect : true,*/
+            /*clickToSelectAndEditCell : true,*/
+            style: { backgroundColor: '#c8e6c9' },
+            onSelect: this.props.handleRowSelect,
+            selected: this.props.selectedIds
+            }, 
+            APP[this.props.objectKey].selectRow || {} )
+
+        if(APP[this.props.objectKey].selectRow === undefined){
+            /*this.selectRow.hideSelectColumn = true*/
+            this.selectRow.selectionRenderer = ({ mode, checked, disabled }) => console.log(mode, checked, disabled),
+            this.selectRow.selectionHeaderRenderer = ({ mode, checked, indeterminate }) => console.log(mode, checked, indeterminate)
+        }
     }
 
     handleTableChange(type, { page, sizePerPage, filters }) {
@@ -149,20 +173,52 @@ class List extends React.Component {
     }
 
     afterSaveCell(oldValue, newValue, row, column){
-        console.log('SAVE::',oldValue, newValue)
-        console.log(column)
         if(column.relationship){
             this.props.handleSaveRelationship(newValue, row, column)
         }
         else{
             this.props.handleSave(row)
         }
-
         // todo!!!
     }
 
+    test(){
+        alert()
+    }
+
+    render__() {
+    const tableOptions = {
+      onRowClick: this.showModal,
+      expandBy: 'column',
+    }
+
+    return (
+      <BootstrapTable
+        data={[
+          { id: 1, foo: 'bar', expand: 'foo' },
+          { id: 2, foo: 'bar', expand: 'bar' },
+        ]}
+        options={tableOptions}
+        expandableRow={this.isExpandableRow}
+        expandComponent={this.expandComponent}
+        expandColumnOptions={{ expandColumnVisible: true }}
+      >
+      </BootstrapTable>
+    )
+}
     render() {
+
+        const pager = paginationFactory({
+            page: parseInt(this.props.data.offset/this.props.data.limit,10) + 1,
+            sizePerPage: this.props.data.limit,
+            totalSize: this.props.data.count,
+        })
         
+        const tableOptions = {
+              onRowClick: this.test,
+              expandBy: 'column',
+            }
+
         const selectRow = {
             mode: 'checkbox',
             clickToSelect: false,
@@ -171,27 +227,25 @@ class List extends React.Component {
             selected: this.props.selectedIds,
             clickToEdit: true
 
-        };
+        }
 
-        const pager = paginationFactory({
-            page: parseInt(this.props.data.offset/this.props.data.limit,10)+1,
-            sizePerPage: this.props.data.limit,
-            totalSize: this.props.data.count,
-        });
-        
-        
-        return <BootstrapTable
+        console.log('props', this.props)
+        let table_props = { options : this.options || {} ,
+                            selectRow : selectRow || {}
+                            }
+
+        return <BootstrapTable hover condensed
                   keyField="id"
                   data={ this.props.data.data }
-                  columns={ this.columns  }
-                  cellEdit={ cellEditFactory({ mode: 'dbclick', afterSaveCell: this.afterSaveCell.bind(this) }) }
-                  pagination={ pager }
-                  selectRow={ selectRow }
+                  columns={ this.columns }
+                  cellEdit={cellEditFactory({ mode: 'dbclick', afterSaveCell: this.afterSaveCell.bind(this) })}
+                  pagination={pager}
                   onTableChange={this.handleTableChange.bind(this)}
-                  remote={ { pagination: true } }
+                  remote={ { pagination : true } }
+                  options={tableOptions}
+                  {...table_props}
             />
-
     }
 }
 
-export default List;
+export default List

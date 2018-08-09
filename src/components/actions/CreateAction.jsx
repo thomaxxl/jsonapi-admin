@@ -61,8 +61,8 @@ class CreateModal extends React.Component {
         return <Form>
                     { APP[this.props.objectKey].column.map(function(column, index) {
                             if(column.readonly || column.relationship){
-                                return <div>{column.text}</div>
-                                // return <div/>
+                                //return <div>{column.text}</div>
+                                return <div/>
                             }
                             return (<Field 
                                     key={index} 

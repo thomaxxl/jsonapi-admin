@@ -1,7 +1,7 @@
 import React from 'react';
 import toastr from 'toastr';
 import { withRouter } from 'react-router'
-import { Row, Col } from 'reactstrap';
+import { Row, Col, Container } from 'reactstrap';
 import List from '../Common/List';
 import * as Param from '../../Config';
 import { Input } from 'reactstrap'
@@ -61,7 +61,7 @@ class SearchInput extends React.Component {
                 onChange={this.handleChange.bind(this)}
                 onKeyDown={this.handleKeyDown.bind(this)}
             />
-        );
+        )
     }
 }
 
@@ -87,13 +87,20 @@ class ApiObjectContainer extends React.Component {
         return this.props.action.getAction(...getArgs)
     }
 
-    handleRowSelect(itemData, state, index) {
-        var orgIndex = this.state.selectedIds.indexOf(itemData.id);
+    handleRowSelect(itemData, isSelect, index) {
 
-        if (state && orgIndex === -1){
+        let multi_select = Param.APP[this.props.objectKey].selectRow && Param.APP[this.props.objectKey].selectRow.mode == 'checkbox' // has to be specicified in Config.json, otherwise it's not a multiselect
+        if(!multi_select){
+            // only one item per selection
+            this.state.selectedIds = []
+        }
+
+        var orgIndex = this.state.selectedIds.indexOf(itemData.id)
+        
+        if (isSelect && orgIndex === -1){
             this.state.selectedIds.push(itemData.id)
         }
-        else if (!state && orgIndex !== -1){
+        else if (!isSelect && orgIndex !== -1){
             this.state.selectedIds.splice(orgIndex, 1)
         }
     }
@@ -168,6 +175,7 @@ class ApiObjectContainer extends React.Component {
         /*
             Return one selected item, error if more
         */
+        console.log(this.getSelectedItems())
         let selectedItems = this.getSelectedItems()
         if(!selectedItems){
             return {} // error already shown in getSelectedItems
@@ -226,7 +234,7 @@ class ApiObjectContainer extends React.Component {
 
     render() {
         return (
-            <div className="container-fluid">
+            <Container fluid>
                 <Row>
                     <Col sm={8}>
                         <div className="btn-group" role="group">
@@ -252,11 +260,13 @@ class ApiObjectContainer extends React.Component {
                               onChange={this.handleSearch.bind(this)}
                               handleSave={this.handleSave.bind(this)}
                               handleSaveRelationship={this.handleSaveRelationship.bind(this)}
-                              onTableChange={this.onTableChange.bind(this)}/>
+                              onTableChange={this.onTableChange.bind(this)}
+                              location={this.props.location}
+                              />
                     </Col>
                 </Row>
                 <ModalContainer modal={this.state.modal} />
-            </div>
+            </Container>
         )
     }
 }

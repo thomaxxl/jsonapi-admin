@@ -16,6 +16,7 @@ import * as ModalAction from '../action/ModalAction'
 import * as InputAction from '../action/InputAction'
 import ItemInfo from './Common/ItemInfo'
 
+
 //const history = createBrowserHistory()
 
 function genCollectionRoute(key) {
@@ -37,7 +38,8 @@ function genCollectionRoute(key) {
     
     const Results = connect(mapStateToProps, mapDispatchToProps)(ApiObjectContainer)
     const path = Param.APP[key].path
-    return <Route key={key}  path={path} component={Results} />
+
+    return <Route key={key} path={path} component={Results} />
 }
 
 function genItemRoute(key) {
@@ -61,7 +63,7 @@ function genItemRoute(key) {
     }
     const Viewer  = component_info.viewer ? component_info.viewer : ItemInfo
     const Results = connect(mapStateToProps, mapDispatchToProps)(Viewer)
-    const path = `${component_info.path}/:itemId`
+    const path = `${component_info.path}/:itemId/:actionId`
     return <Route sensitive key={path} path={path} component={Results}/>
 }
 
@@ -71,7 +73,7 @@ class App extends Component {
     render() {
 
         const collectionRoutes = Object.keys(Param.APP).map((key) => [genItemRoute(key), genCollectionRoute(key)] )
-        return <HashRouter>
+        return <HashRouter basename="/ja">
                   <div>
                       <HeaderNavContainer/>
                       <Switch>

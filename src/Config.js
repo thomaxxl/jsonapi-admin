@@ -1,16 +1,14 @@
-import {FormatterList} from './components/formatters/FormatterList.jsx'
+import FormatterList from './components/formatters/FormatterList'
 import APP from './Config.json';
 import ActionList from './action/ActionList'
-import InfoAction from './components/actions/InfoAction.jsx'
-import {ViewerList} from './components/viewers/ViewerList'
-import ItemInfo from './components/Common/ItemInfo'
+import InfoAction from './components/actions/InfoAction'
+
 import './style/style.css'
 import Cookies from 'universal-cookie';
 
 const BaseUrl = 'http://thomaxxl.pythonanywhere.com'
 const Timing = 5000
-
-Object.keys(APP).map((key, index) => {
+Object.keys(APP).map(function(key, index) {
     var initVal = {
         column: [],
         actions: Object.keys(ActionList),
@@ -19,30 +17,14 @@ Object.keys(APP).map((key, index) => {
         path: "/" + key.toLocaleLowerCase(),
         menu: key,
         Title: key + " Page",
-        viewer: ItemInfo
     }
-
-    if(APP[key].viewer && ViewerList[APP[key].viewer]){
-        APP[key].viewer = ViewerList[APP[key].viewer]
-    }
-
-    for( let col of APP[key].column ){
-
-        if(col.editorRenderer && FormatterList[col.editorRenderer]){
-            col.editorRenderer = FormatterList[col.editorRenderer]
-        }
-
-        if(col.formatter && FormatterList[col.formatter]){
-            col.formatter = FormatterList[col.formatter]
-        }
-    }
-
-    APP[key] = {...initVal, ...APP[key]}
-    return null
-})
+    APP[key] = {...initVal, ...APP[key]};
+    return 0;
+});
 
 
 ActionList['InfoAction'] = InfoAction
+
 
 var URL = BaseUrl
 export {APP}
@@ -51,7 +33,8 @@ export {ActionList}
 export {Timing}
 export {FormatterList}
 
-const api_config = {
+
+export const config = {
   baseUrl: BaseUrl,
   configureHeaders(headers) {
     const cookies = new Cookies()
@@ -77,12 +60,5 @@ const api_config = {
   },
 };
 
-
-const Config = {
-    routes : null,
-    APP : APP,
-    disable_api_url : false
-}
-
-export {Config, api_config as config}
+export default config; 
 

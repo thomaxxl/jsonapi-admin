@@ -2,9 +2,14 @@ import React from 'react'
 import { faTimes } from '@fortawesome/fontawesome-free-solid'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import toastr from 'toastr'
+import * as Param from '../../Config';
 import { Async }  from 'react-select';
+import Select from 'react-select'
 import 'react-select/dist/react-select.css';
 import ObjectApi from '../../api/ObjectApi'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import * as ObjectAction from '../../action/ObjectAction'
 
 function cellFormatter(cell, row) {
 
@@ -38,11 +43,33 @@ function lookupIncluded(item, row){
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function toOneFormatter(cell, row){
+function toOneFormatter(cell, row,col){
+	let obj = ''
+	Object.keys(row).map(function(key, index) {
+		if(row[key] !== null)
+			if(typeof (row[key]['data']) !== 'undefined')
+				if(typeof (row[key]['data']['id']) !== 'undefined')
+					if(row[key]['data']['id'] === cell){
+						obj = key
+						return 0
+					}
+	})
+	let data = ''
+	if(obj !== '') data = row[obj].data
+	let value = ''
+	if(data){
+		let objectKey = data.type
 
-	let user = row.user ? row.user : ''
-	let name = user ? user.attributes.name : ''
-	return <span className="editable">{name}</span>
+		var show = 0;
+		Object.keys(Param.APP[objectKey]).map(function(key,index){
+			if(key === 'main_show') show = 1
+		})
+		let attr = show === 1?Param.APP[objectKey].main_show:''
+		value = data.attributes[attr]
+	}
+	// let user = row.user ? row.user : ''
+	// let name = user ? user.attributes.name : ''
+	return <span className="editable">{value}</span>
 }
 
 
@@ -52,21 +79,22 @@ class ItemLink extends React.Component {
 	/*
 		Single item in the tomany relationship formatter
 	*/
-
+	
 	render(){
-		let attr = 'name'
+		let objectKey = this.props.item.type
+		let attr = Param.APP[objectKey].main_show
 		return <span>{this.props.item.attributes[attr]}</span>
 	}
 }
 
 function toManyFormatter(cell, row, col){
 
-	if(!cell){
+	if(!cell || !cell.data){
 		return <div/>
 	}
-	
-	const items = cell.map(function(item){
-					let item_data = lookupIncluded(item, row)
+
+	const items = cell.data.map(function(item){
+					let item_data = item
 					let result = '';
 					if(item_data){
 						result = <ItemLink item={item_data} />
@@ -94,18 +122,19 @@ class ToManyRelationshipEditor extends React.Component {
 
 	handleDelete(item_id){
 		let items = []
-		let rel_name = this.props.column.relationship
-		for(let item of this.props.row[rel_name]){
+		let rel_name = this.props.column.dataField
+		for(let item of this.props.row[rel_name].data){
 			if(item.id !== item_id){
 				items.push(item)
 			}
 		}
 		this.props.onUpdate(items)
 	}
-
 	renderItem(item){
+		let objectKey = item.type
+		let attr = Param.APP[objectKey].main_show
 		return <div key={item.id}>
-					{item.attributes.name}
+					{item.attributes[attr]}
 					<FontAwesomeIcon className="RelationDeleteIcon" icon={faTimes} onClick={() => this.handleDelete(item.id)}></FontAwesomeIcon>
 				</div>
 	}
@@ -117,41 +146,62 @@ class ToManyRelationshipEditor extends React.Component {
  			console.log(error, this.props)
  			return <div/>
  		}
-		let rel_name = this.props.column.relationship
-		if(!this.props.row || ! this.props.row.relationships || ! this.props.row.relationships[rel_name] || ! this.props.row.relationships[rel_name].data){
+		let rel_name = this.props.column.dataField
+		if(!this.props.row || ! this.props.row[rel_name] || ! this.props.row[rel_name].data){
  			return <div/>
  		}
-	  	let items = this.props.row.relationships[rel_name].data
+		let items = this.props.row[rel_name].data
+		
 	  	return <div ref={ node => this.parent = node }>{items.map((item) => this.renderItem(item) ) } </div>
-
-	  }
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function getOptions(collection){
+function getOptions(collection,data){
 	/*
 		return an option list for the <Async> select filter
 	*/
-	
-	var label = 'name' // attribute to be used for the label
+	let attr = Param.APP[collection].main_show
+
+	var label = attr // attribute to be used for the label
 	var offset = 0
 	var limit = 20
 		
-	var result = (input, callback) => {
-		let api_endpoint = ObjectApi.search(collection, { "query" : `${input}` }, offset, limit)
-	  	api_endpoint.then((result) => {
-	  		let options = result[collection].data.map(function(item){ return { value: item.id, label: item.attributes[label]} } )
+	var result 
+	console.log('track_if_3')
+	console.log(data)
+	if(Object.keys(data).length !== 0 && data[collection] !== undefined){
+	// if(!data){
+		console.log('track_if_1')
+		result = (input,callback) => {
+			let options = data[collection].map(function(item){ return { value: item.id, label: item.attributes[label]} } )
 
 	  		//options.unshift({ value: null , label : 'No parent', style: { fontStyle: 'italic' } })
 		    callback(null, {
 		      options: options,
 		      // CAREFUL! Only set this to true when there are no more options,
 		      // or more specific queries will not be sent to the server.
-		      complete: false
+		      complete: true
 		    });
-		  }, 500);
+		}
+	}else{
+			console.log('track_if_2')
+			result = (input, callback) => {
+			let api_endpoint = ObjectApi.search(collection, { "query" : `${input}` }, offset, limit)
+			api_endpoint.then((result) => {
+				let options = result[collection].data.map(function(item){ return { value: item.id, label: item.attributes[label]} } )
+
+				//options.unshift({ value: null , label : 'No parent', style: { fontStyle: 'italic' } })
+				callback(null, {
+				options: options,
+				// CAREFUL! Only set this to true when there are no more options,
+				// or more specific queries will not be sent to the server.
+				complete: true
+				});
+			}, 500);
+		}
 	}
 
 	return result
@@ -160,29 +210,47 @@ function getOptions(collection){
 
 class toOneEditor extends React.Component {
 
-	 constructor(props) {
+	constructor(props) {
 	    super(props);
 
 	    this.state = {
-			selectedOption: ''
+			selectedOption: '',
+			value:props.value
 		}
 	}
 
 	onChange(selectedOption){
-
+		
 		if(!selectedOption){
 			// filter has been cleared
 			this.props.onUpdate(null)
 			return
 		}
 
-		this.parent.value = selectedOption.value
-		this.setState({ selectedOption : selectedOption});
+		// this.parent.value = selectedOption.value
+		// this.setState({ selectedOption : selectedOption});
 		// selectedOption can be null when the `x` (close) button is clicked
 		if (selectedOption) {
 			let value = null // No parent id ==> remove the relationship 
 			if(selectedOption.value){
 				value = { id : selectedOption.value }
+				this.setState({value : selectedOption.value})
+
+			
+				console.log('track_one_1')
+				console.log(value)
+				console.log(this.props)
+
+				var sel_opt_rel_key = this.props.column.relationship
+				
+				for (let item of this.props.select_option[sel_opt_rel_key]) {
+					if (item.id === selectedOption.value) {
+						console.log('-------------------------aaaaaaaaaaaa')
+						value = Object.assign({}, {id:item.id}, {type:item.type}, {attributes:item.attributes})
+						console.log(value)
+						break;
+					}
+				}
 			}
 			this.props.onUpdate(value)
 		}
@@ -193,34 +261,58 @@ class toOneEditor extends React.Component {
 		return this.state.selectedOption.label
 	}*/
 
- 	render() {
-	  	const { value, onUpdate, ...rest } = this.props;
+	componentWillMount(){
+		console.log('track_componentWillMount_1')
+		let key = this.props.column.relationship
+		var offset = 0
+		var limit = 20
+		if(this.props.select_option === undefined || this.props.select_option[key] === undefined){
+			this.props.action.updateSelectOptionAction(this.props.row.route, key,{ "query" : '' }, offset,limit)
+			.then(()=>{
+			})
+		}
+	}
 
-	  	let options = getOptions('Users')
+ 	render() {
+		console.log('track_rerender_please_1')
+		const { onUpdate, ...rest } = this.props;
+		let key = this.props.column.relationship
+	  	let options = getOptions(key,this.props.select_option)
 		
-	  	return <Async
-				    name="parentName"
-				    key="parent"
-				    value={value}
-				    ref={ node => this.parent = node }
-				    loadOptions={options}
-				    onUpdate={onUpdate}
-				    onChange={this.onChange.bind(this)}
-				    filterOptions={(options, filter, currentValues) => {return options;}}
-				    { ...rest }
+	  	return <Select.Async
+					// name="parentName"
+				    // key="parent"
+				    value={this.state.value}
+				    // ref={ node => this.parent = node }
+					loadOptions={options}
+					// autoload
+				    // onUpdate={onUpdate}
+					onChange={this.onChange.bind(this)}
+				    // filterOptions={(options, filter, currentValues) => {return options;}}
+				    // { ...rest }
 				/>
 	  }
 }
+
+const mapStateToProps = (state,own_props) => ({
+	select_option: state.object[own_props.row.route].select_option
+})
+
+const mapDispatchToProps = dispatch => ({
+	action: bindActionCreators(ObjectAction, dispatch),
+})
+
+const connected_toOneEditor = connect(mapStateToProps,mapDispatchToProps)(toOneEditor)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 let FormatterList = { cellFormatter : cellFormatter, 
 					  toOneFormatter : toOneFormatter,
 					  toManyFormatter: toManyFormatter,
-					  toOneEditor: toOneEditor,
+					  toOneEditor: connected_toOneEditor,
 					  ToManyRelationshipEditor: ToManyRelationshipEditor,
 					  }
 
-export {FormatterList}
+export default FormatterList
 
 

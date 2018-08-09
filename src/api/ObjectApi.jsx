@@ -141,7 +141,7 @@ class ObjectApi {
                 }
             
                 let request_args = Object.assign({ key: APP[objectKey].API,
-                                                    "page[offset]": offset,
+                                                    //"page[offset]": offset,
                                                     "page[limit]": limit
                                                   },
                                                  APP[objectKey].request_args ? APP[objectKey].request_args : {}, 

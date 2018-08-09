@@ -1,6 +1,6 @@
 # jsonapi-admin
 
-[LIVE DEMO](http://thomaxxl.pythonanywhere.com/ja/)
+[LIVE DEMO](http://www.blackbirdbits.com)
 
 (beta) reactjs+redux frontend for [jsonapi](http://jsonapi.org)
 
