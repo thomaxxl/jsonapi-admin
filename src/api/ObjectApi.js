@@ -128,7 +128,7 @@ class JAObject{
             object_config.columns.push(col)
         }
 
-        return <div><h3>Config:</h3><pre>{JSON.stringify(object_config, null, 2)}</pre></div>
+        return <div><h3>Config:</h3><textarea style={{width: '640px', height:'1600px' }}>{JSON.stringify(object_config, null, 2)}</textarea></div>
     }
 
 }
