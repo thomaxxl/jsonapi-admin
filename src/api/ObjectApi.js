@@ -98,6 +98,10 @@ class JAObject{
                 </div>
     }
 
+    update_config(){
+
+    }
+
     render_config(){
 
         let object_config = {
@@ -123,8 +127,16 @@ class JAObject{
         }
 
         for(const [rel_name, data] of Object.entries(this.props.relationships || {})){
+            let col = { dataField : rel_name, relation_url : rel_name }
+            if(data && Array.isArray(data.data)){
+                col.formatter = "toManyFormatter"
+                col.editorRenderer = "ToManyRelationshipEditor"
+            }
+            else{
+                col.formatter = "toOneFormatter"
+                col.editorRenderer = "toOneEditor"
+            }
 
-            let col = { dataField : rel_name }
             object_config.columns.push(col)
         }
 
