@@ -22,12 +22,14 @@ class Fetcher extends React.Component {
         const sample = ok_data.data ? ok_data.data[0] : ''
 
         if(sample){
-                return <div>{sample.render()}</div>
+                return <div>
+                            <h2>{this.props.objectKey}</h2>
+                            {sample.render()}
+                            {sample.render_config()}
+                        </div>
         }
         
-        return <pre>
-                 {JSON.stringify(sample,null,2)}
-                </pre>
+        return <div/>
    }
 }
 
