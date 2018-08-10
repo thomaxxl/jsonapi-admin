@@ -1,9 +1,8 @@
 import React from 'react'
 import { faTimes } from '@fortawesome/fontawesome-free-solid'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
-import toastr from 'toastr'
+// import toastr from 'toastr'
 import * as Param from '../../Config';
-import { Async }  from 'react-select';
 import Select from 'react-select'
 import 'react-select/dist/react-select.css';
 import ObjectApi from '../../api/ObjectApi'
@@ -18,28 +17,28 @@ function cellFormatter(cell, row) {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function lookupIncluded(item, row){
-	/*
-		lookup the relationship item in the row "included" data
-		this follows the jsonapi format:
+// function lookupIncluded(item, row){
+// 	/*
+// 		lookup the relationship item in the row "included" data
+// 		this follows the jsonapi format:
 
-		item : { "id" : .. , "type" : .. }
-		row : { "data" : .. , "links" : .. , "relationships" : }
-	*/
+// 		item : { "id" : .. , "type" : .. }
+// 		row : { "data" : .. , "links" : .. , "relationships" : }
+// 	*/
 	
-	if(!item.id || !item.type){
-		toastr.error('Data Error')
-	}
-	if(!row || !row.included || !row.relationships){
-		return <div/>
-	}
-	for(let included of row.included){
-		if(included.type === item.type && included.id === item.id){
-			return included
-		}
-	}
-	return null
-}
+// 	if(!item.id || !item.type){
+// 		toastr.error('Data Error')
+// 	}
+// 	if(!row || !row.included || !row.relationships){
+// 		return <div/>
+// 	}
+// 	for(let included of row.included){
+// 		if(included.type === item.type && included.id === item.id){
+// 			return included
+// 		}
+// 	}
+// 	return null
+// }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -53,6 +52,7 @@ function toOneFormatter(cell, row,col){
 						obj = key
 						return 0
 					}
+		return 0
 	})
 	let data = ''
 	if(obj !== '') data = row[obj].data
@@ -63,6 +63,7 @@ function toOneFormatter(cell, row,col){
 		var show = 0;
 		Object.keys(Param.APP[objectKey]).map(function(key,index){
 			if(key === 'main_show') show = 1
+			return 0
 		})
 		let attr = show === 1?Param.APP[objectKey].main_show:''
 		value = data.attributes[attr]
@@ -130,6 +131,13 @@ class ToManyRelationshipEditor extends React.Component {
 		}
 		this.props.onUpdate(items)
 	}
+
+	// handleDelete(item_id){
+	// 	console.log('track_many_edotor_1')
+	// 	console.log(this.props)
+	// 	this.props.onUpdate({'id':item_id,'action_type':'delete','url':this.props.column.relation_url})
+	// }
+
 	renderItem(item){
 		let objectKey = item.type
 		let attr = Param.APP[objectKey].main_show
@@ -152,7 +160,7 @@ class ToManyRelationshipEditor extends React.Component {
  		}
 		let items = this.props.row[rel_name].data
 		
-	  	return <div ref={ node => this.parent = node }>{items.map((item) => this.renderItem(item) ) } </div>
+	  	return <div>{items.map((item) => this.renderItem(item))}</div>
 	}
 }
 
@@ -170,11 +178,8 @@ function getOptions(collection,data){
 	var limit = 20
 		
 	var result 
-	console.log('track_if_3')
-	console.log(data)
 	if(Object.keys(data).length !== 0 && data[collection] !== undefined){
 	// if(!data){
-		console.log('track_if_1')
 		result = (input,callback) => {
 			let options = data[collection].map(function(item){ return { value: item.id, label: item.attributes[label]} } )
 
@@ -187,7 +192,6 @@ function getOptions(collection,data){
 		    });
 		}
 	}else{
-			console.log('track_if_2')
 			result = (input, callback) => {
 			let api_endpoint = ObjectApi.search(collection, { "query" : `${input}` }, offset, limit)
 			api_endpoint.then((result) => {
@@ -236,18 +240,11 @@ class toOneEditor extends React.Component {
 				value = { id : selectedOption.value }
 				this.setState({value : selectedOption.value})
 
-			
-				console.log('track_one_1')
-				console.log(value)
-				console.log(this.props)
-
 				var sel_opt_rel_key = this.props.column.relationship
 				
 				for (let item of this.props.select_option[sel_opt_rel_key]) {
 					if (item.id === selectedOption.value) {
-						console.log('-------------------------aaaaaaaaaaaa')
-						value = Object.assign({}, {id:item.id}, {type:item.type}, {attributes:item.attributes})
-						console.log(value)
+						value = Object.assign({},{action_type:'one'}, {id:item.id}, {type:item.type}, {attributes:item.attributes})
 						break;
 					}
 				}
@@ -262,7 +259,6 @@ class toOneEditor extends React.Component {
 	}*/
 
 	componentWillMount(){
-		console.log('track_componentWillMount_1')
 		let key = this.props.column.relationship
 		var offset = 0
 		var limit = 20
@@ -274,8 +270,6 @@ class toOneEditor extends React.Component {
 	}
 
  	render() {
-		console.log('track_rerender_please_1')
-		const { onUpdate, ...rest } = this.props;
 		let key = this.props.column.relationship
 	  	let options = getOptions(key,this.props.select_option)
 		

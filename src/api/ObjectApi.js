@@ -2,6 +2,7 @@ import { APP, config as api_config } from '../Config';
 import { buildApi, get, post, patch, destroy } from 'redux-bees';
 import toastr from 'toastr'
 import Cookies from 'universal-cookie';
+import React from 'react';
 
 function mapIncludes(api_data){
     /*
@@ -50,10 +51,36 @@ function mapIncludes(api_data){
                 item[relationship_name] = relationship
             }
         }
-        delete item.relationships;
-        delete item.included;
+        //delete item.relationships;
+        //delete item.included;
     }
     return api_data
+}
+
+class JAObject{
+
+    constructor(props){
+
+        this.id = props.id
+        this.route = props.route
+
+        this.props = props
+        this.relationships = props.relationships
+        
+        /*for(const [key, value] of Object.entries(props.attributes || {})){
+            this[key] = value
+        }*/
+        
+    }
+
+    get data(){
+        return Object.assign(this.props.attributes, this.props.relationships)
+    }
+
+    render(){
+        return <div>{this.id}</div>
+    }
+
 }
 
 function jsonapi2bootstrap(jsonapi_data,objectKey){
@@ -66,19 +93,15 @@ function jsonapi2bootstrap(jsonapi_data,objectKey){
         /* map the attributes inline :
             item = { id: .. , attributes : {...} } ==> item = { id: ... , attr1: ... , attr2: ... }
         */
-        let item_data = Object.assign({route:objectKey, id : item.id, relationships: item.relationships, included: jsonapi_data.included}, item.attributes)
-        data.push(item_data)
+        let api_object = new JAObject({route:objectKey, 
+                                        id : item.id, 
+                                        relationships: item.relationships, 
+                                        included: jsonapi_data.included,
+                                        attributes: item.attributes})
+        data.push(api_object)
     }
     jsonapi_data.data = data
-    console.log('track201')
-    console.log(jsonapi_data)
     mapIncludes(jsonapi_data) 
-    // var index = jsonapi_data.indexOf('relationships');
-    // console.log('track_index_1_______________')
-    // console.log(index)
-
-    console.log("track202")
-    console.log(jsonapi_data)
     return jsonapi_data
 }
 
@@ -90,7 +113,9 @@ const apiEndpoints = {
   search:        { method: post,    path: '/:key/search' },
   createData:    { method: post,    path: '/:key' },
   updateData:    { method: patch,   path: '/:key/:id' },
-  updateRelationship: { method: patch,   path: '/:key/:id/:rel_name' },
+  updateRelationship_one: { method: patch,   path: '/:key/:id/:rel_name' },
+  updateRelationship_many: { method:patch, path: '/:key/:key_id/:rel_name'},
+  updateRelationship_delete: { method:destroy, path: '/:key/:key_id/:rel_name/:rel_id'},
   destroyData:   { method: destroy, path: '/:key/:id' },
 };
 
@@ -131,18 +156,28 @@ class ObjectApi {
 
     static updateRelationship(objectKey, id, rel_name, data){
         change_backend_url(localStorage.getItem('url'));
-        console.log("track104")
-        console.log(objectKey)
-        console.log(id)
-        console.log(rel_name)
+        console.log('track_objectapi_1')
         console.log(data)
+        console.log(rel_name)
+        var func,post_args, request_args
         return new Promise ((resolve)=>{
-            var func = api.updateRelationship
-            var post_args = { data : data }
-            var request_args = { key: APP[objectKey].API , id: id, rel_name : rel_name }
-            func( request_args, post_args ).then(console.log('updated')).then((result)=>{
-                        resolve(Object.assign({}, {}));
-                    })
+            if(data.action_type === 'one'){
+                func = api.updateRelationship_one
+                post_args = { data : data }
+                request_args = { key: APP[objectKey].API , id: id, rel_name : rel_name }
+                func( request_args, post_args ).then(console.log('updated')).then((result)=>{
+                            resolve(Object.assign({}, {}));
+                        })
+            }
+            else{
+                console.log('track_many_______________________')  
+                func = api.updateRelationship_many
+                post_args = {data:data}
+                request_args = { key: APP[objectKey].API , key_id: id, rel_name : rel_name } 
+                func( request_args, post_args ).then(console.log('updated')).then((result)=>{
+                    resolve(Object.assign({}, {}));
+                })
+            }
         })
     }
 
@@ -330,4 +365,3 @@ class ObjectApi {
 getInitialObject = datas
 export {getInitialObject}
 export default ObjectApi;
-

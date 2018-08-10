@@ -209,8 +209,6 @@ class ApiObjectContainer extends React.Component {
     }
 
     handleSave(column,dataField){
-        console.log("track12")
-        console.log(column)
         var key = this.props.objectKey
         let saveArgs = [ this.props.objectKey, column, this.props.api_data[key].offset,  this.props.api_data[key].limit, dataField]
 
@@ -220,8 +218,6 @@ class ApiObjectContainer extends React.Component {
     }
 
     handleSaveRelationship(newValue, row, column){
-        console.log('track101')
-        console.log(newValue,row,column)
         var key = this.props.objectKey
         let rel_name = column.relation_url
         let relArgs = [ this.props.objectKey, row.id, rel_name, newValue, this.props.api_data[key].offset, this.props.api_data[key].limit ]

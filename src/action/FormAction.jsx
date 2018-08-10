@@ -6,7 +6,6 @@ export const getFormResponse = form => ({
 });
 
 export function getFormAction(form) {
-    
     return (dispatch) => {
             dispatch(getFormResponse(form));
     };

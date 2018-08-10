@@ -1,11 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import * as Param from '../Config';
-import {Config} from '../Config'
-import {NavLink as RRNavLink} from 'react-router-dom';
+import * as Param from '.././Config';
+import { NavLink as RRNavLink } from 'react-router-dom';
 import * as InputAction from '../action/InputAction'
-import {bindActionCreators} from 'redux'
-import {Login} from './Common/Login'
+import { bindActionCreators } from 'redux'
 import {
   Collapse,
   Navbar,
@@ -23,128 +21,101 @@ import {
   DropdownItem } from 'reactstrap';
 
 import Cookies from 'universal-cookie';
-import './style/navstyle.css'
-
-
 
 class HeaderNavContainer extends React.Component {
-    constructor(props) {
-        super(props)
-        this.toggle = this.toggle.bind(this)
+  constructor(props) {
+    super(props)
+    this.toggle = this.toggle.bind(this)
+    this.state = {
+      isOpen: false
+    };
+    this.change_url = this.change_url.bind(this)
+  }
+  toggle() {
+    this.setState({
+      isOpen: !this.state.isOpen
+    })
+  }
 
-        const cookies = new Cookies()
-        let language = cookies.get('language')
-        language = language ? language : 'En'
-        cookies.set('language', language)
-        this.state = {
-          isOpen: false,
-          language : language
-        }
+  change_url(e){
+    let api_url = e.target.value
+    this.props.inputaction.getUrlAction(e.target.value);
+    localStorage.setItem('url',api_url);
+    const cookies = new Cookies()
+    cookies.set('api_url', api_url)
+  }
+
+  render() {
+    //let classname =  this.props.currentPath == Param.APP[key].path ? "current" : ""
+    var currentPath = this.props.currentPath
+    var currentStyle = {color:'white'} // todo move to css
+    // var navTitle = Param.NavTitle ? Param.NavTitle : 'J:A'
+    var navTitle = 'J:A'
+    var INPUT = (<InputGroup className="Left">
+                  <InputGroupAddon addonType="prepend">{this.props.inputflag.url===''?Param.URL:this.props.inputflag.url}</InputGroupAddon>
+                </InputGroup>)
+    if(this.props.inputflag.flag){
+      INPUT =     (<InputGroup className="Left">
+                    <InputGroupAddon addonType="prepend">BACK-END-URL</InputGroupAddon>
+                    <Input placeholder={this.props.inputflag.url===''?Param.URL:this.props.inputflag.url} onChange={this.change_url.bind(this)}/>
+                  </InputGroup>)
     }
 
-    toggle() {
-        this.setState({
-          isOpen: !this.state.isOpen
-        })
-    }
+    // if(Param.disable_api_url){
+    //     INPUT = ''
+    // }
 
-    change_url(e){
-        let api_url = e.target.value
-        this.props.inputaction.getUrlAction(e.target.value);
-        localStorage.setItem('url',api_url);
-        const cookies = new Cookies()
-        cookies.set('api_url', api_url)
-    }
+    // const login = Param.enable_login ?  <Login logged_in={logged_in}/> : 'Login'
+    const login = 'Login'
 
-    setLanguage() {
-        const cookies = new Cookies()
-        let language = this.state.language
-        if(language === 'En'){
-            language = 'Fr'
-        }
-        else if (language === 'Nl'){
-            language = 'En'
-        }
-        else if (language === 'Fr'){
-            language = 'Nl'
-        }
-        cookies.set('language', language)
-        this.setState({ language : language})
-    }
+    return (
+     <div>
+        <Navbar color="faded" light expand="md" className="navbar-dark navbar-inverse bg-dark">
+        <NavbarBrand replace tag={RRNavLink} to="/" >{navTitle}</NavbarBrand>
+          <NavbarToggler onClick={this.toggle} />
+          <Collapse isOpen={this.state.isOpen} navbar>
+            <Nav navbar>
+              {
 
-    render() {
-        var currentPath = this.props.currentPath
-        var navTitle = Config.title ? Config.title : 'J:A'
-        var INPUT = (<InputGroup className="Left">
-                      <InputGroupAddon addonType="prepend">{this.props.inputflag.url===''?Param.URL:this.props.inputflag.url}</InputGroupAddon>
-                    </InputGroup>)
-        if(this.props.inputflag.flag){
-          INPUT =     (<InputGroup className="Left">
-                        <InputGroupAddon addonType="prepend">BACK-END-URL</InputGroupAddon>
-                        <Input placeholder={this.props.inputflag.url===''?Param.URL:this.props.inputflag.url} onChange={this.change_url.bind(this)}/>
-                      </InputGroup>)
-        }
+                Object.keys(Param.APP).map(function(key, index){
+                    if(Param.APP[key].hidden) {
+                        return <span/>
+                    }
+                    return (<NavItem key = {index}>
+                              <NavLink replace tag={RRNavLink} to={Param.APP[key].path} style={ currentPath === Param.APP[key].path ? currentStyle : {} }>
+                                  {Param.APP[key].menu}
+                              </NavLink>
+                            </NavItem>)
+                })
+              }
+            </Nav>
+            {INPUT}
+            <Nav className="ml-auto" navbar>
+               <NavItem>
+                <NavLink href="">{login}</NavLink>
+              </NavItem>
+              <UncontrolledDropdown nav inNavbar>
+                <DropdownToggle nav caret>
+                  {/* <FontAwesomeIcon icon={faCog}></FontAwesomeIcon> */}
+                </DropdownToggle>
+                <DropdownMenu right>
+                  <DropdownItem>
+                     <a href="/admin">Admin</a>
+                  </DropdownItem>
+                  <DropdownItem>
+                    <a href="/api">API</a>
+                  </DropdownItem>
+                  <DropdownItem divider />
+                   
+                </DropdownMenu>
+              </UncontrolledDropdown>
+            </Nav>
+          </Collapse>
 
-        if(Config.disable_api_url){
-             INPUT = ''
-        }
-
-        const login = Config.enable_login ?  <Login ref={this.login} logged_in={false}/> : 'Login'
-        
-        return (
-         <div>
-            <Navbar color="faded" light expand="md" className="navbar-dark navbar-inverse bg-dark">
-            <NavbarBrand replace tag={RRNavLink} to="/" >{navTitle}</NavbarBrand>
-              <NavbarToggler onClick={this.toggle} />
-              <Collapse isOpen={this.state.isOpen} navbar>
-                <Nav navbar>
-                  {
-                    Object.keys(Param.APP).map(function(key, index){
-                        if(Param.APP[key].hidden) {
-                            return <span key={index}/>
-                        }
-                        return (<NavItem key = {index}>
-                                  <NavLink replace activeClassName="active" tag={RRNavLink} to={Param.APP[key].path} >
-                                      {Param.APP[key].menu}
-                                  </NavLink>
-                                </NavItem>)
-                    })
-                  }
-                </Nav>
-                {INPUT}
-                <Nav className="ml-auto" navbar>
-                  <NavItem>
-                    <NavLink href="">{login}</NavLink>
-                  </NavItem>
-
-                  <UncontrolledDropdown nav inNavbar>
-                    <DropdownToggle nav caret>
-                      {/* <FontAwesomeIcon icon={faCog}></FontAwesomeIcon> */}
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>
-                         <a href="/admin">Admin</a>
-                      </DropdownItem>
-                      <DropdownItem>
-                        <a href="/api">API</a>
-                      </DropdownItem>
-                      <DropdownItem divider />
-                      <DropdownItem>
-                        <span onClick={this.setLanguage.bind(this)} className="langspan">Fr</span> 
-                        <span onClick={this.setLanguage.bind(this)} className="langspan">Nl</span>
-                        <span onClick={this.setLanguage.bind(this)} className="langspan">De</span>
-                        <span onClick={this.setLanguage.bind(this)} className="langspan current">En</span>
-                      </DropdownItem>
-                      
-                    </DropdownMenu>
-                  </UncontrolledDropdown>
-                </Nav>
-              </Collapse>
-
-            </Navbar>
-          </div>
-        )
-      }
+        </Navbar>
+      </div>
+    )
+  }
 }
 
 const mapStateToProps = state => ({

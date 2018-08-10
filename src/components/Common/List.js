@@ -136,6 +136,7 @@ class List extends React.Component {
     }
 
     handleTableChange(type, { page, sizePerPage, filters }) {
+        console.log('track_handleTableChange_1_________')
         Object.keys(this.props.filter).map((key)=>{
             delete this.props.filter[key];
             return 0;
@@ -150,11 +151,7 @@ class List extends React.Component {
     }
 
     afterSaveCell(oldValue, newValue, row, column){
-        console.log('SAVE::',oldValue, newValue)
-        console.log(column)
         if(column.relationship){
-            console.log("track100")
-            console.log(row)
             this.props.handleSaveRelationship(newValue, row, column)
         }
         else{
@@ -165,7 +162,8 @@ class List extends React.Component {
     }
 
     render() {
-        console.log('track_list_render')
+        console.log('track_rerender_list_1')
+        console.log(this.props.data.data)
         const selectRow = {
             mode: 'checkbox',
             clickToSelect: false,
@@ -181,19 +179,18 @@ class List extends React.Component {
             totalSize: this.props.data.count,
         });
         
-        if(this.props.spin)
-            return (
-                <div className='sweet-loading'>
-                <RingLoader
-                    color={'#123abc'} 
-                    loading={this.props.spin} 
-                />
-                </div>
-            )
-        else
-            return <BootstrapTable
+        let spin = <div/>
+        if (this.props.spin)
+            spin =  <RingLoader
+                        color={'#123abc'} 
+                        loading={this.props.spin} 
+                    />
+    
+        
+        let data = this.props.data.data.map(item => item.data)
+        return <div> <BootstrapTable
                     keyField="id"
-                    data={ this.props.data.data }
+                    data={data}
                     columns={ this.columns  }
                     cellEdit={ cellEditFactory({ mode: 'dbclick', afterSaveCell: this.afterSaveCell.bind(this) }) }
                     pagination={ pager }
@@ -201,6 +198,9 @@ class List extends React.Component {
                     onTableChange={this.handleTableChange.bind(this)}
                     remote={ { pagination: true } }
                 />
+                <div className='sweet-loading'/>
+                    {spin}
+                </div>
 
     }
 }
