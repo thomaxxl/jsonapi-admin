@@ -2,7 +2,6 @@ import { APP, config as api_config } from '../Config';
 import { buildApi, get, post, patch, destroy } from 'redux-bees';
 import toastr from 'toastr'
 import Cookies from 'universal-cookie';
-import React from 'react';
 
 function mapIncludes(api_data){
     /*
@@ -51,98 +50,10 @@ function mapIncludes(api_data){
                 item[relationship_name] = relationship
             }
         }
-        //delete item.relationships;
-        //delete item.included;
+        delete item.relationships;
+        delete item.included;
     }
     return api_data
-}
-
-
-class JAObject{
-    /*
-        I wanted to make a react component out of this but this doesn't work 
-        with react-bootstrap table which needs subscriptable objects
-
-    */
-
-    constructor(props){
-
-        this.id = props.id
-        this.route = props.route
-        this.props = props
-        this.relationships = props.relationships
-        
-        /*for(const [key, value] of Object.entries(props.attributes || {})){
-            this[key] = value
-        }*/
-    }
-
-    get data(){
-        return Object.assign(this.props.attributes, this.props.relationships)
-    }
-
-    render_attributes(){
-        return <ul>{Object.keys(this.props.attributes).map((key) => <li>{key}</li>)}</ul>
-    }
-
-    render(){
-        return <div>
-                    <dl>
-                        <dt>id</dt><dd> {this.id}</dd>
-                        <dt>attributes</dt>
-                            <dd>{this.render_attributes()}</dd>
-                        <dt>relationships</dt>
-                            <dd>{Object.keys(this.props.relationships).map((key) => <span>{key} </span>)}</dd>
-                        
-                    </dl>
-                </div>
-    }
-
-    update_config(){
-
-    }
-
-    render_config(){
-
-        let object_config = {
-            columns : [],
-            "actions": [
-                "CreateAction",
-                "EditAction",
-                "DeleteAction",
-                "InfoAction"
-            ],
-            "main_show":"name",
-            "path": "/"+this.props.route,
-            "API": this.props.objectKey,
-            "API_TYPE": this.props.objectKey,
-            "menu": this.props.objectKey,
-            "Title": this.props.objectKey,
-            "request_args" : { "include" : Object.keys(this.props.relationships).join(',') }
-        }
-
-        for(const attr of Object.keys(this.props.attributes || {})){
-            let col = { text : attr, dataField: attr }
-            object_config.columns.push(col)
-        }
-
-        for(const [rel_name, data] of Object.entries(this.props.relationships || {})){
-            let col = { dataField : rel_name, relation_url : rel_name }
-            if(data && Array.isArray(data.data)){
-                col.formatter = "toManyFormatter"
-                col.editorRenderer = "ToManyRelationshipEditor"
-            }
-            else{
-                col.formatter = "toOneFormatter"
-                col.editorRenderer = "toOneEditor"
-            }
-
-            object_config.columns.push(col)
-        }
-
-        return <div><h3>Config:</h3><textarea style={{width: '640px', height:'1600px' }}>{JSON.stringify(object_config, null, 2)}</textarea></div>
-    }
-
 }
 
 function jsonapi2bootstrap(jsonapi_data,objectKey){
@@ -155,16 +66,14 @@ function jsonapi2bootstrap(jsonapi_data,objectKey){
         /* map the attributes inline :
             item = { id: .. , attributes : {...} } ==> item = { id: ... , attr1: ... , attr2: ... }
         */
-        let api_object = new JAObject({ route:objectKey, 
-                                        objectKey: objectKey,
-                                        id : item.id, 
-                                        relationships: item.relationships, 
-                                        included: jsonapi_data.included,
-                                        attributes: item.attributes})
-        data.push(api_object)
+        let item_data = Object.assign({route:objectKey, id : item.id, relationships: item.relationships, included: jsonapi_data.included}, item.attributes)
+        data.push(item_data)
     }
     jsonapi_data.data = data
     mapIncludes(jsonapi_data) 
+    // var index = jsonapi_data.indexOf('relationships');
+    // console.log('track_index_1_______________')
+    // console.log(index)
     return jsonapi_data
 }
 
@@ -209,6 +118,8 @@ let getInitialObject = () => {
         };
         return 0;
     });
+    console.log("--------------8888888888888888888999999999999999999")
+    console.log(initObj)
     return initObj;
 }
 
@@ -428,3 +339,4 @@ class ObjectApi {
 getInitialObject = datas
 export {getInitialObject}
 export default ObjectApi;
+
