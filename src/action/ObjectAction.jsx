@@ -36,21 +36,24 @@ export const addNewResponse = data => ({
 
 
 export function saveAction(objectKey, BeingAddedOrEdited, offset, limit,dataField) {
-    return function (dispatch) {
-        return ObjectApi.saveData(objectKey, BeingAddedOrEdited)
-            .then((data) => {
-                if (BeingAddedOrEdited.id) {
-                    dispatch(updateExistingResponse(0,objectKey, BeingAddedOrEdited.id, dataField, BeingAddedOrEdited))
-                } else {
-                    dispatch(addNewResponse())
-                }
-                // dispatch(getAction(objectKey, offset, limit))
-                return data.id
-            }).catch(error => {
-                throw error
-            });
+    // return function (dispatch) {
+    //     return ObjectApi.saveData(objectKey, BeingAddedOrEdited)
+    //         .then((data) => {
+    //             if (BeingAddedOrEdited.id) {
+    //                 dispatch(updateExistingResponse(0,objectKey, BeingAddedOrEdited.id, dataField, BeingAddedOrEdited))
+    //             } else {
+    //                 dispatch(addNewResponse())
+    //             }
+    //         }).catch(error => {
+    //             throw error
+    //         });
                 
-    };
+    // };
+    ObjectApi.saveData(objectKey, BeingAddedOrEdited)
+    return (dispatch) => {
+        dispatch(updateExistingResponse(0,objectKey, BeingAddedOrEdited.id, dataField, BeingAddedOrEdited))
+        return Promise.resolve();
+    }
 }
 
 export const updateSelectOptionResponse = (route, objectKey,data) => ({
@@ -98,9 +101,7 @@ export const getSingleResponse = data => ({
 
 export function getSingleAction(objectKey, Id) {
     
-    
     return (dispatch) => {
-        
         return ObjectApi.getData(objectKey, Id)
             .then(data => {
                 dispatch(getSingleResponse(data));

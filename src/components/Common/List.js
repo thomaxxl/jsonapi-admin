@@ -179,28 +179,29 @@ class List extends React.Component {
             totalSize: this.props.data.count,
         });
         
-        let spin = <div/>
-        if (this.props.spin)
-            spin =  <RingLoader
-                        color={'#123abc'} 
-                        loading={this.props.spin} 
+            let spin = <div/>
+            if (this.props.spin)
+                spin =  <RingLoader
+                            color={'#123abc'} 
+                            loading={this.props.spin} 
+                        />
+            return (
+                <div>
+                    <BootstrapTable
+                        keyField="id"
+                        data={ this.props.data.data }
+                        columns={ this.columns  }
+                        cellEdit={ cellEditFactory({ mode: 'dbclick', afterSaveCell: this.afterSaveCell.bind(this) }) }
+                        pagination={ pager }
+                        selectRow={ selectRow }
+                        onTableChange={this.handleTableChange.bind(this)}
+                        remote={ { pagination: true } }
                     />
-    
-        
-        let data = this.props.data.data.map(item => item.data)
-        return <div> <BootstrapTable
-                    keyField="id"
-                    data={data}
-                    columns={ this.columns  }
-                    cellEdit={ cellEditFactory({ mode: 'dbclick', afterSaveCell: this.afterSaveCell.bind(this) }) }
-                    pagination={ pager }
-                    selectRow={ selectRow }
-                    onTableChange={this.handleTableChange.bind(this)}
-                    remote={ { pagination: true } }
-                />
-                <div className='sweet-loading'/>
-                    {spin}
+                    <div className='sweet-loading'>
+                        {spin}
+                    </div>
                 </div>
+                )
 
     }
 }

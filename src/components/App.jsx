@@ -3,12 +3,11 @@ import '../style/style.css'
 
 import * as Param from '../Config'
 import React, { Component } from 'react'
-import { Route, Switch, HashRouter } from 'react-router-dom'
+import {  Route, Switch, HashRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import HeaderNavContainer from './HeaderNavContainer'
 import Home from './Home'
-import Admin from './Admin/Admin'
 import ApiObjectContainer from './ApiObject/ApiObjectContainer'
 import * as ObjectAction from '../action/ObjectAction'
 import * as ModalAction from '../action/ModalAction'
@@ -67,7 +66,6 @@ class App extends Component {
                       <HeaderNavContainer/>
                       <Switch>
                           <Route exact path="/" component={Home} />
-                          <Route exact path="/admin" component={Admin} />
                           {collectionRoutes}
                       </Switch>
                   </div>

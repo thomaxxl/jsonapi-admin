@@ -125,12 +125,8 @@ a {
 	max-width: 100%;
 }
 
+
 .search {
 	/* stupid adaptation to bootstrap col-sm-12 , todo: fix*/
 	margin-right: 15px;
-}
-
-.sweet-loading {
-	position: fixed;
-	border: 1px solid red;
 }
