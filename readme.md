@@ -2,7 +2,7 @@
 
 [LIVE DEMO](http://thomaxxl.pythonanywhere.com/ja/index.html#/)
 
-(beta) reactjs+redux frontend for [jsonapi](http://jsonapi.org) backend
+(beta) reactjs+redux CRUD frontend for [jsonapi](http://jsonapi.org) backend
 
 ## Installation
 
