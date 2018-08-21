@@ -4,7 +4,7 @@
 
 (beta) reactjs+redux frontend for [jsonapi](http://jsonapi.org) backend
 
-## installation
+## Installation
 
 ```
 git clone https://github.com/thomaxxl/jsonapi-admin
