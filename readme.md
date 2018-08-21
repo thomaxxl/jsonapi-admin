@@ -1,8 +1,8 @@
 # jsonapi-admin
 
-[LIVE DEMO](http://www.blackbirdbits.com)
+[LIVE DEMO](http://thomaxxl.pythonanywhere.com/ja/index.html#/)
 
-(beta) reactjs+redux frontend for [jsonapi](http://jsonapi.org)
+(beta) reactjs+redux frontend for [jsonapi](http://jsonapi.org) backend
 
 ## installation
 
@@ -25,24 +25,47 @@ and [src/Config.json](src/Config.json)
 
 ```javascript
 {
-  "Users": {
+  "People": {
     "column": [
       {
         "text": "Name",
         "dataField": "name",
-        "type": "text"
+        "type": "text",
+        "plaintext": "Name"
       },
       {
         "text": "Email",
-        "dataField" : "email"
+        "dataField": "email",
+        "plaintext": "Email"
       },
       {
-        "text": "Books",
-        "dataField": "books",
+        "text": "Comment",
+        "dataField": "comment",
+        "plaintext": "Comment"
+      },
+      {
+        "text": "Books_read",
+        "dataField": "books_read",
+        "relation_url": "books_read",
         "type": "text",
-        "formatter" : "toManyFormatter",
-        "relationship" : "books",
-        "editorRenderer" : "ToManyRelationshipEditor"
+        "relationship": "Books",
+        "plaintext": "Books_read"
+      },
+      {
+        "text": "Books_written",
+        "dataField": "books_written",
+        "relation_url": "books_written",
+        "type": "text",
+        "relationship": "books_written",
+        "plaintext": "Books_written"
+      },
+      {
+        "text": "Reviews",
+        "dataField": "reviews",
+        "relation_url": "reviews",
+        "type": "text",
+        "relationship": "Reviews",
+        "plaintext": "Reviews"
       }
     ],
     "actions": [
@@ -51,30 +74,58 @@ and [src/Config.json](src/Config.json)
       "DeleteAction",
       "CustomAction"
     ],
-    "path": "/cases",
-    "API": "Users",
+    "API": "People",
     "API_TYPE": "User",
-    "menu": "Users",
-    "Title": "Users",
-    "request_args" : { "include" : "books" }
+    "path": "/people",
+    "menu": "People",
+    "Title": "People",
+    "main_show": "name",
+    "request_args": {
+      "include": "books_read,books_written,reviews",
+      "sort": "name"
+    }
   },
   "Books": {
     "column": [
       {
-        "text": "Name",
-        "dataField": "name",
+        "text": "Title",
+        "dataField": "title",
         "type": "text",
-        "placeholder": "Type name.",
+        "placeholder": "Title name.",
         "sort": true,
-        "formatter" : "imageNameFormatter"
+        "plaintext": "Title"
       },
       {
-        "text": "User",
-        "dataField": "user_id",
+        "text": "Author",
+        "dataField": "author_id",
+        "relation_url": "author",
         "type": "text",
-        "formatter" : "toOneFormatter",
-        "relationship" : "user",
-        "editorRenderer" : "toOneEditor"
+        "relationship": "People",
+        "plaintext": "Author"
+      },
+      {
+        "text": "Publisher",
+        "dataField": "publisher_id",
+        "relation_url": "publisher",
+        "type": "text",
+        "relationship": "Publishers",
+        "plaintext": "Publisher"
+      },
+      {
+        "text": "Reader",
+        "dataField": "reader_id",
+        "relation_url": "reader",
+        "type": "text",
+        "relationship": "People",
+        "plaintext": "Reader"
+      },
+      {
+        "text": "Reviews",
+        "dataField": "reviews",
+        "relation_url": "reviews",
+        "type": "text",
+        "relationship": "Reviews",
+        "plaintext": "Reviews"
       }
     ],
     "actions": [
@@ -83,12 +134,93 @@ and [src/Config.json](src/Config.json)
       "DeleteAction",
       "InfoAction"
     ],
-    "path": "/books",
     "API": "Books",
     "API_TYPE": "Book",
+    "path": "/books",
     "menu": "Books",
     "Title": "Books",
-    "request_args" : { "include" : "user" }
+    "main_show": "title",
+    "request_args": {
+      "include": "reader,author,publisher,reviews"
+    }
+  },
+  "Reviews": {
+    "column": [
+      {
+        "text": "Review",
+        "dataField": "review",
+        "type": "text",
+        "placeholder": "Type review.",
+        "sort": true,
+        "plaintext": "Review"
+      },
+      {
+        "text": "Person",
+        "dataField": "reader_id",
+        "relation_url": "person",
+        "type": "text",
+        "relationship": "People",
+        "plaintext": "Person"
+      },
+      {
+        "text": "Book",
+        "dataField": "book_id",
+        "relation_url": "book",
+        "type": "text",
+        "relationship": "Books",
+        "plaintext": "Book"
+      }
+    ],
+    "actions": [
+      "CreateAction",
+      "EditAction",
+      "DeleteAction",
+      "InfoAction"
+    ],
+    "API": "Reviews",
+    "API_TYPE": "Review",
+    "path": "/reviews",
+    "menu": "Reviews",
+    "Title": "Reviews",
+    "main_show": "review",
+    "request_args": {
+      "include": "person,book"
+    }
+  },
+  "Publishers": {
+    "column": [
+      {
+        "text": "Name",
+        "dataField": "name",
+        "type": "text",
+        "placeholder": "Type name.",
+        "sort": true,
+        "plaintext": "Name"
+      },
+      {
+        "text": "Books",
+        "dataField": "books",
+        "relation_url": "books",
+        "type": "text",
+        "relationship": "Books",
+        "plaintext": "Books"
+      }
+    ],
+    "actions": [
+      "CreateAction",
+      "EditAction",
+      "DeleteAction",
+      "InfoAction"
+    ],
+    "API": "Publishers",
+    "API_TYPE": "Publisher",
+    "path": "/publishers",
+    "menu": "Publishers",
+    "Title": "Publishers",
+    "main_show": "name",
+    "request_args": {
+      "include": "books"
+    }
   }
 }
 ```
