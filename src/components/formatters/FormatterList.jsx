@@ -133,8 +133,6 @@ class ToManyRelationshipEditor extends React.Component {
 	}
 
 	// handleDelete(item_id){
-	// 	console.log('track_many_edotor_1')
-	// 	console.log(this.props)
 	// 	this.props.onUpdate({'id':item_id,'action_type':'delete','url':this.props.column.relation_url})
 	// }
 

@@ -45,10 +45,7 @@ class LoginModal extends React.Component {
     let options = { headers: new Headers({ 'Authorization': `Basic ${btoa(this.state.username + ':' + this.state.password)}` })}
     fetch(`${URL}/Auth/token`, options)
       .then(function(response) {
-        console.log('response')
-        console.log(response)
         if(response.status !== 200){
-          console.log(response)
           throw new Error('Authentication Failed')
         }
         return response.json();

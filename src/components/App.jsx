@@ -3,7 +3,7 @@ import '../style/style.css'
 
 import * as Param from '../Config'
 import React, { Component } from 'react'
-import {  Route, Switch, HashRouter } from 'react-router-dom'
+import {  Route, BrowserRouter as Router} from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import HeaderNavContainer from './HeaderNavContainer'
@@ -14,6 +14,7 @@ import * as ModalAction from '../action/ModalAction'
 import * as InputAction from '../action/InputAction'
 import * as SpinnerAction from '../action/SpinnerAction'
 import ItemInfo from './Common/ItemInfo'
+import Admin from 'components/Admin/Admin'
 
 function genCollectionRoute(key) {
     
@@ -59,17 +60,18 @@ function genItemRoute(key) {
 class App extends Component {
 
     render() {
-
         const collectionRoutes = Object.keys(Param.APP).map((key) => [genItemRoute(key), genCollectionRoute(key)] )
-        return <HashRouter>
+        return <Router>
                   <div>
                       <HeaderNavContainer/>
-                      <Switch>
+                      {/* <Switch> */}
                           <Route exact path="/" component={Home} />
+                          <Route sensitive key="100" path="/admin" component={Admin}/>
+                          {/* <Route path="/admin" component={Admin} /> */}
                           {collectionRoutes}
-                      </Switch>
+                      {/* </Switch> */}
                   </div>
-                </HashRouter>  
+                </Router>  
     }
 }
 

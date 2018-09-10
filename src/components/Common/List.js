@@ -136,7 +136,6 @@ class List extends React.Component {
     }
 
     handleTableChange(type, { page, sizePerPage, filters }) {
-        console.log('track_handleTableChange_1_________')
         Object.keys(this.props.filter).map((key)=>{
             delete this.props.filter[key];
             return 0;
@@ -162,8 +161,6 @@ class List extends React.Component {
     }
 
     render() {
-        console.log('track_rerender_list_1')
-        console.log(this.props.data.data)
         const selectRow = {
             mode: 'checkbox',
             clickToSelect: false,

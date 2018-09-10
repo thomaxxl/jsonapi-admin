@@ -72,12 +72,11 @@ function jsonapi2bootstrap(jsonapi_data,objectKey){
     jsonapi_data.data = data
     mapIncludes(jsonapi_data) 
     // var index = jsonapi_data.indexOf('relationships');
-    // console.log('track_index_1_______________')
-    // console.log(index)
     return jsonapi_data
 }
 
 const apiEndpoints = {  
+  getJsonData: {method: get, path:'/'},
   getDatas:      { method: get,     path: '/:key' },
   getData:      { method: get,     path: '/:key/:id' },
   getSearch:     { method: post,    path: '/:key/search' },
@@ -118,8 +117,6 @@ let getInitialObject = () => {
         };
         return 0;
     });
-    console.log("--------------8888888888888888888999999999999999999")
-    console.log(initObj)
     return initObj;
 }
 
@@ -127,12 +124,24 @@ var datas = getInitialObject();
 
 
 class ObjectApi {
+  
+  static getJsondata(url) {
+    let json_api_config = api_config
+    json_api_config.baseUrl = url
+    let jsonapi =  buildApi(apiEndpoints, json_api_config)
+    return new Promise ((resolve, reject)=>{
+      jsonapi.getJsonData()
+      .then((data) => {
+        resolve(data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+    })
+  }
 
     static updateRelationship(objectKey, id, rel_name, data){
         change_backend_url(localStorage.getItem('url'));
-        console.log('track_objectapi_1')
-        console.log(data)
-        console.log(rel_name)
         var func,post_args, request_args
         return new Promise ((resolve)=>{
             if(data.action_type === 'one'){
@@ -144,7 +153,6 @@ class ObjectApi {
                         })
             }
             else{
-                console.log('track_many_______________________')  
                 func = api.updateRelationship_many
                 post_args = {data:data}
                 request_args = { key: APP[objectKey].API , key_id: id, rel_name : rel_name } 

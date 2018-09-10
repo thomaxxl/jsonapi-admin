@@ -1,10 +1,14 @@
 import FormatterList from './components/formatters/FormatterList'
-import APP from './Config.json';
+// import APP from './Config.json';
 import ActionList from './action/ActionList'
 import InfoAction from './components/actions/InfoAction'
 
 import './style/style.css'
 import Cookies from 'universal-cookie';
+
+var APP = JSON.parse(localStorage.getItem('json'))
+if (APP === null) APP = {}
+
 
 const BaseUrl = 'http://thomaxxl.pythonanywhere.com'
 const Timing = 5000

@@ -8,6 +8,18 @@ export const getResponse = data => ({
     data
 });
 
+export function getJsondata(url) {
+  return (
+    ObjectApi.getJsondata(url)
+    .then((data) => {
+      return data
+    })
+    .catch((err) => {
+      return err
+    })
+  )
+}
+
 export function getAction(objectKey, offset, limit, ...queryArgs) {
     return (dispatch) => {    
         return ObjectApi.getAllDatas( objectKey, offset, limit, ...queryArgs )

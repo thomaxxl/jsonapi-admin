@@ -66,7 +66,7 @@ class HeaderNavContainer extends React.Component {
     // }
 
     // const login = Param.enable_login ?  <Login logged_in={logged_in}/> : 'Login'
-    const login = 'Login'
+    const login = 'Login(config)'
 
     return (
      <div>
@@ -92,7 +92,7 @@ class HeaderNavContainer extends React.Component {
             {INPUT}
             <Nav className="ml-auto" navbar>
                <NavItem>
-                <NavLink href="">{login}</NavLink>
+                <NavLink replace tag={RRNavLink} to="/admin">{login}</NavLink>
               </NavItem>
               <UncontrolledDropdown nav inNavbar>
                 <DropdownToggle nav caret>
@@ -100,10 +100,14 @@ class HeaderNavContainer extends React.Component {
                 </DropdownToggle>
                 <DropdownMenu right>
                   <DropdownItem>
-                     <a href="/admin">Admin</a>
+                    <NavItem>
+                      <NavLink replace tag={RRNavLink} to="/admin">Admin</NavLink>
+                    </NavItem>
                   </DropdownItem>
                   <DropdownItem>
-                    <a href="/api">API</a>
+                    <NavItem>
+                      <NavLink replace tag={RRNavLink} to="/api">Api</NavLink>
+                    </NavItem>
                   </DropdownItem>
                   <DropdownItem divider />
                    

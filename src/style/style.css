@@ -4,6 +4,9 @@
 	font-size: 0.8em;
 }
 
+.dropdown-item {
+	background-color:black !important;
+}
 .btn-group {
 	width : 100%;
 }
