@@ -124,11 +124,69 @@ var datas = getInitialObject();
 
 
 class ObjectApi {
-  
-  static getJsondata(url) {
+
+  static getJsondata(url, par=null) {
     let json_api_config = api_config
     json_api_config.baseUrl = url
     let jsonapi =  buildApi(apiEndpoints, json_api_config)
+    if (par === 'discover') {
+      return new Promise ((resolve, reject) => {
+
+    
+        //prepare return value
+        let rlt = {}
+        url['collections'].map((key, index) => {
+          rlt[key] = {}
+          url['args'][index].split(',').map((akey, aindex) => {
+            rlt[key][akey] = ''
+            return true
+          })
+          return true
+        })
+        //getting json data from swagger back-end and analyze data
+        url['path'].map((key, index) => {
+          const req_args = {
+            "page[limit]": 30,
+            "include":url['args'][index]
+          }
+          json_api_config.baseUrl = key
+          jsonapi =  buildApi(apiEndpoints, json_api_config)
+          jsonapi.getJsonData(req_args)
+          .then((res) => {
+            res.body.data.map((rkey, rindex) => {
+              const relationship = rkey['relationships']
+              Object.keys(relationship).map(function(rekey, reindex) {
+                if(rlt[url['collections'][index]][rekey] === '' && relationship[rekey]['data'] !== undefined) {
+                  if (relationship[rekey]['data'] !== undefined) {
+                    rlt[url['collections'][index]][rekey] = relationship[rekey]['data'].type
+                  }
+                  if (Array.isArray(relationship[rekey]['data'])) {
+                    relationship[rekey]['data'].map((arkey, arindex) => {
+                      if (arkey.type !== undefined) {
+                        rlt[url['collections'][index]][rekey] = arkey.type
+                      }
+                      return true
+                    })
+                  }
+                }
+                return true
+              })
+              return true
+            })
+          })
+          return true
+        })
+        setTimeout(() => {
+          resolve(rlt)
+        }, 2000)
+      })
+      // console.log(['rlt', rlt])
+      // setTimeout(() => {
+      //   return new Promise ((resolve, reject) => {
+      //     resolve(rlt)
+      //   })
+      // },2000)
+    }
     return new Promise ((resolve, reject)=>{
       jsonapi.getJsonData()
       .then((data) => {

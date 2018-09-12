@@ -1,4 +1,51 @@
 import * as ActionType from 'action/ActionType';
+import ObjectApi from 'api/ObjectApi'
+
+export function analyzejsonrelationship(data) {
+  const D = data.body.paths
+  let getPath = {}
+  getPath['path'] = []
+  getPath['args'] = []
+  getPath['collections'] = []
+  const JS = {}
+  Object.keys(D).map((key) => {
+    const len = key.length
+    if(key[0] === '/' && key[len-1] === '/') {
+      let gas = 0;
+      for (let i = 0 ; i < len ; i+=1) {
+        if (key[i] === '/') gas += 1
+      }
+      if(gas === 2) {
+        let rlt = key.substring(1, len-1)
+        getPath['collections'].push(rlt)
+        JS[rlt] = {}
+        D[key].get.parameters.map((key, index) => {
+          let relationship = []
+          if(key.name === 'include') {
+            relationship = key.default.split(',')
+            JS[rlt]['relationship'] = relationship
+          }
+          return true
+        })
+        let req = ''
+        JS[rlt]['relationship'].map((key, index) => {
+          req += key + ","
+          return true
+        })
+        let sreq = req.substring(0, req.length-1)
+        getPath['path'].push('http://'+data.body.host+'/'+rlt)
+        getPath['args'].push(sreq)      
+      }
+    }
+    return true
+  })
+  return (dispatch) => {
+    ObjectApi.getJsondata(getPath, 'discover')
+    .then((res) => {
+      dispatch(SetJsonRelationship(res))
+    })
+  }
+}
 
 export function analyzejson(data) {
   //parsing the collections
@@ -106,6 +153,11 @@ export function local_to_reducer(data) {
     dispatch(SetJsonData(data))
   }
 }
+
+export const SetJsonRelationship = data => ({
+  type: ActionType.SET_RELATIONSHIP_DATA_JSON,
+  data
+})
 
 export const SetJsonData = data => ({
   type: ActionType.SET_JSON_DATA,

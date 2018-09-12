@@ -8,6 +8,19 @@ const configReducer = (state = {}, action) => {
           ...state, ...action.data
       }
     }
+    case ActionType.SET_RELATIONSHIP_DATA_JSON: {
+      let mem = state
+      Object.keys(mem).map(function(key, index) {
+        mem[key]['relationship'].map((rkey, rindex) => {
+          mem[key]['relationship'][rkey]['relationship'] = action.data[key][rkey]
+          return true
+        })
+        return true
+      })
+      return { 
+        ...state, ...mem
+      }
+    }
     case ActionType.CHANGE_ATTRIBUTES: {
       let mem = state
       mem[action.data.collectionId]['attributes'][action.data.attributesId] = action.data

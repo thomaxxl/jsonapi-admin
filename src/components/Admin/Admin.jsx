@@ -38,6 +38,10 @@ let styles = {
   marginTop: "30px"
 }
 
+let btnstyle = {
+  backgroundColor: "#343a40"
+}
+
 var stylefloat1 = {
   float: "right",
   marginTop: "10px",
@@ -69,6 +73,7 @@ class Admin extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      discover: 0,
       url: '',
       selected: 0,
       collections: ['Book', 'School', 'Color', 'Love'],
@@ -78,6 +83,7 @@ class Admin extends React.Component {
     this.handleClick = this.handleClick.bind(this)
     this.handleselect = this.handleselect.bind(this)
     this.handlegenerate = this.handlegenerate.bind(this)
+    this.handleDiscoverClick = this.handleDiscoverClick.bind(this)
   }  
 
   handle_json_url(e) {
@@ -104,8 +110,26 @@ class Admin extends React.Component {
       this.props.spinnerAction.getSpinnerEnd()
       if (data.status === undefined) {
         toastr.error('Please input valid url', '', toasterPosition)
+        this.setState({discover: 0})
       } else {
         this.props.analyze.analyzejson(data)
+        this.setState({discover: 1})
+      }
+    })
+    .catch((error) => {
+      // toastr.error('Please input valid url', '', toasterPosition)
+    })
+  }
+
+  handleDiscoverClick(e) {
+    e.preventDefault()
+    this.props.spinnerAction.getSpinnerStart()
+    ObjectAction.getJsondata(this.state.url)
+    .then((data) => {
+      // this.props.spinnerAction.getSpinnerEnd()
+      if (data.status === undefined) {
+      } else {
+        this.props.analyze.analyzejsonrelationship(data)
       }
     })
     .catch((error) => {
@@ -175,10 +199,15 @@ class Admin extends React.Component {
               value={this.state.url}
             />
             <Button color="secondary" onClick={this.handleClick}>After input url click here to analyze</Button>
-          </InputGroup>
+            {
+              this.state.discover === 1?
+                <Button style={btnstyle} onClick={this.handleDiscoverClick}>Discover relationship</Button>
+                :<div></div>
+            }
+            </InputGroup>
         </Row>
         <Grid>
-          <Grid.Row>
+          <Grid.Row className="rowstyle">
             <Grid.Column width={4}>
               <Segment style={styleheight1}>
                 <Header as='h3'>Collections</Header>
