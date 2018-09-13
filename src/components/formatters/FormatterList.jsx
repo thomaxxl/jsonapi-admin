@@ -84,7 +84,10 @@ class ItemLink extends React.Component {
 	render(){
 		let objectKey = this.props.item.type
 		let attr = Param.APP[objectKey].main_show
-		return <span>{this.props.item.attributes[attr]}</span>
+                if(attr && this.props.item.attributes){
+		    return <span>{this.props.item.attributes[attr]}</span>
+                }
+                return <span/>
 	}
 }
 
