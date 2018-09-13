@@ -5,40 +5,43 @@
         "text": "Title",
         "dataField": "title",
         "sort": true,
-        "type": "text",
-        "plaintext": "Title"
+        "type": "text"
       },
       {
         "text": "Publisher",
         "dataField": "publisher_id",
+        "formatter": "toOneFormatter",
+        "editorRenderer": "toOneEditor",
         "relation_url": "publisher",
         "type": "text",
-        "relationship": "Publishers",
-        "plaintext": "Publisher"
+        "relationship": "Publishers"
       },
       {
         "text": "Reviews",
         "dataField": "reviews",
+        "formatter": "toManyFormatter",
+        "editorRenderer": "ToManyRelationshipEditor",
         "relation_url": "reviews",
         "type": "text",
-        "relationship": "Reviews",
-        "plaintext": "Reviews"
+        "relationship": "Reviews"
       },
       {
         "text": "Reader",
         "dataField": "reader_id",
+        "formatter": "toOneFormatter",
+        "editorRenderer": "toOneEditor",
         "relation_url": "reader",
         "type": "text",
-        "relationship": "People",
-        "plaintext": "Reader"
+        "relationship": "People"
       },
       {
         "text": "Author",
         "dataField": "author_id",
+        "formatter": "toOneFormatter",
+        "editorRenderer": "toOneEditor",
         "relation_url": "author",
         "type": "text",
-        "relationship": "People",
-        "plaintext": "Author"
+        "relationship": "People"
       }
     ],
     "actions": [
@@ -63,46 +66,46 @@
         "text": "Name",
         "dataField": "name",
         "sort": true,
-        "type": "text",
-        "plaintext": "Name"
+        "type": "text"
       },
       {
         "text": "Email",
         "dataField": "email",
         "sort": true,
-        "type": "text",
-        "plaintext": "Email"
+        "type": "text"
       },
       {
         "text": "Comment",
         "dataField": "comment",
         "sort": true,
-        "type": "text",
-        "plaintext": "Comment"
+        "type": "text"
       },
       {
         "text": "Books_read",
         "dataField": "books_read",
+        "formatter": "toManyFormatter",
+        "editorRenderer": "ToManyRelationshipEditor",
         "relation_url": "books_read",
         "type": "text",
-        "relationship": "Books",
-        "plaintext": "Books_read"
+        "relationship": "Books"
       },
       {
         "text": "Books_written",
         "dataField": "books_written",
+        "formatter": "toManyFormatter",
+        "editorRenderer": "ToManyRelationshipEditor",
         "relation_url": "books_written",
         "type": "text",
-        "relationship": "Books",
-        "plaintext": "Books_written"
+        "relationship": "Books"
       },
       {
         "text": "Reviews",
         "dataField": "reviews",
+        "formatter": "toManyFormatter",
+        "editorRenderer": "ToManyRelationshipEditor",
         "relation_url": "reviews",
         "type": "text",
-        "relationship": "Reviews",
-        "plaintext": "Reviews"
+        "relationship": "Reviews"
       }
     ],
     "actions": [
@@ -127,16 +130,16 @@
         "text": "Name",
         "dataField": "name",
         "sort": true,
-        "type": "text",
-        "plaintext": "Name"
+        "type": "text"
       },
       {
         "text": "Books",
         "dataField": "books",
+        "formatter": "toManyFormatter",
+        "editorRenderer": "ToManyRelationshipEditor",
         "relation_url": "books",
         "type": "text",
-        "relationship": "Books",
-        "plaintext": "Books"
+        "relationship": "Books"
       }
     ],
     "actions": [
@@ -161,24 +164,25 @@
         "text": "Review",
         "dataField": "review",
         "sort": true,
-        "type": "text",
-        "plaintext": "Review"
+        "type": "text"
       },
       {
         "text": "Book",
         "dataField": "book_id",
+        "formatter": "toOneFormatter",
+        "editorRenderer": "toOneEditor",
         "relation_url": "book",
         "type": "text",
-        "relationship": "Books",
-        "plaintext": "Book"
+        "relationship": "Books"
       },
       {
         "text": "Reader",
         "dataField": "reader_id",
+        "formatter": "toOneFormatter",
+        "editorRenderer": "toOneEditor",
         "relation_url": "reader",
         "type": "text",
-        "relationship": "People",
-        "plaintext": "Reader"
+        "relationship": "People"
       }
     ],
     "actions": [
@@ -198,4 +202,3 @@
     }
   }
 }
-

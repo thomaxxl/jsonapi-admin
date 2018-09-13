@@ -88,6 +88,7 @@ class Admin extends React.Component {
     this.handleClick = this.handleClick.bind(this)
     this.handleselect = this.handleselect.bind(this)
     this.handlegenerate = this.handlegenerate.bind(this)
+    this.handleRemove = this.handleRemove.bind(this)
     this.handleDiscoverClick = this.handleDiscoverClick.bind(this)
   }  
 
@@ -121,9 +122,25 @@ class Admin extends React.Component {
         this.setState({discover: 1})
       }
     })
-    .catch((error) => {
       // toastr.error('Please input valid url', '', toasterPosition)
+    .then(()=> {
+
+    toastr.info('Discovering Relationships')
+    this.props.spinnerAction.getSpinnerStart()
+    ObjectAction.getJsondata(this.state.url)
+    .then((data) => {
+      // this.props.spinnerAction.getSpinnerEnd()
+      if (data.status === undefined) {
+      } else {
+        toastr.info('Now Generate Config !')
+        this.props.analyze.analyzejsonrelationship(data)
+        //this.handlegenerate()
+      }
     })
+    .catch((error) => {
+      console.log(error)
+      toastr.error('Please input valid url', '', toasterPosition)
+    }) } )
   }
 
   handleDiscoverClick(e) {
@@ -189,6 +206,20 @@ class Admin extends React.Component {
     window.location.reload()
   }
 
+  handleRemove(){
+    let check = 0
+    let errors = []
+
+    console.log(this.props.json)
+    console.log(this.state)
+    Object.keys(this.props.json).map(function(key, index) {
+      if(index == this.state.selected){
+        delete this.props.json[key]
+        return
+      }
+    }, this)
+  }
+
   render() {
     let collections = []
     if(Object.keys(this.props.json).length !== 0){
@@ -241,6 +272,7 @@ class Admin extends React.Component {
                     })
                   }
                   <Button onClick={this.handlegenerate}disabled={Object.keys(this.props.json).length !== 0?false:true} style={stylefloat1}>Generate config</Button>
+                  <Button onClick={this.handleRemove}disabled={Object.keys(this.props.json).length !== 0?false:true} style={stylefloat1}>Remove Item</Button>
                   </List>
                 </div>
                 <Segment inverted color='orange'>

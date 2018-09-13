@@ -107,7 +107,7 @@ let getInitialObject = () => {
     Object.keys(APP).map(function(key, index) {
         initObj[key] = {
             offset: 0,
-            limit: 10,
+            limit: 50,
             data: [],
             count: 0,
             filter: {},
@@ -146,7 +146,7 @@ class ObjectApi {
         //getting json data from swagger back-end and analyze data
         url['path'].map((key, index) => {
           const req_args = {
-            "page[limit]": 30,
+            "page[limit]": 50,
             "include":url['args'][index]
           }
           json_api_config.baseUrl = key

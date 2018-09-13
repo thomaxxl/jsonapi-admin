@@ -24,7 +24,7 @@ class Home extends React.Component {
                             <a href="https://github.com/thomaxxl/jsonapi-admin">Github</a>
                         </li>
                         <li>This webapp implements CRUD operations on the jsonapi at <a href={this.props.inputflag.url}>{this.props.inputflag.url}</a>. The interface is generated from the swagger configuration (json) of <a href={this.props.inputflag.url}>{this.props.inputflag.url}</a> </li>
-                        <li>UI Configuration ( Genrated by the <Link to="/admin">admin interface)</Link> ):
+                        <li>UI Configuration ( Genrated by the <Link to={ {pathname: "/Admin"} } >admin interface)</Link> ):
                             <pre>{JSON.stringify(Param.APP,null,2)}</pre>
                         </li>
                     </ul>

@@ -27,7 +27,7 @@ class Otheroption extends React.Component {
     super(props)
     this.state = {
       collecitonkey: -1,
-      otheroption: ['main_show', 'path', 'API', 'API_TYPE', 'menu', 'Title', 'request_args'],
+      otheroption: ['main_show', 'path', 'API', 'API_TYPE', 'menu', 'Title', 'request_args', 'disabled'],
       main_show: '',
       path: '',
       API: '',
@@ -60,6 +60,7 @@ class Otheroption extends React.Component {
       API_TYPE: this.state.API_TYPE,
       menu: this.state.menu,
       Title: this.state.Title,
+      disabled: this.state.disabled,
       request_args: this.state.request_args
     }
     this.props.analyze.change_other(data)
@@ -107,10 +108,14 @@ class Otheroption extends React.Component {
           <Form widths='equal' onSubmit={this.handleformsubmit}>
             {this.state.otheroption.map((item, index) => {
               let lb = item
+              let type = 'text'
               if (item === 'main_show') lb = 'reference'
+              if (item === 'disabled') type = 'checkbox'
+              
               return(
                 <div key={index}>
                   <Input 
+                    type={type}
                     label={lb}
                     style={stylefloat}
                     placeholder={item}

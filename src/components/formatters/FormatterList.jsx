@@ -12,7 +12,7 @@ import * as ObjectAction from '../../action/ObjectAction'
 
 function cellFormatter(cell, row) {
 
-    return <strong><div className="call">{ cell }</div></strong>
+    return <strong><div className="call">{ JSON.stringify(cell) }</div></strong>
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

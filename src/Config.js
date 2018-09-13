@@ -11,7 +11,7 @@ var APP = JSON.parse(localStorage.getItem('json'))
 if (APP === null){
     let default_app = JSON.stringify(defaultAPP)
     //localStorage.setItem('json', default_app)
-    APP = {} 
+    APP = defaultAPP
 }
 
 

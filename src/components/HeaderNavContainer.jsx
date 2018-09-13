@@ -92,7 +92,7 @@ class HeaderNavContainer extends React.Component {
             {INPUT}
             <Nav className="ml-auto" navbar>
                <NavItem>
-                <NavLink replace tag={RRNavLink} to="/admin">{login}</NavLink>
+                <NavLink replace tag={RRNavLink} to="/Admin">{login}</NavLink>
               </NavItem>
               <UncontrolledDropdown nav inNavbar>
                 <DropdownToggle nav caret>
@@ -101,7 +101,7 @@ class HeaderNavContainer extends React.Component {
                 <DropdownMenu right>
                   <DropdownItem>
                     <NavItem>
-                      <NavLink replace tag={RRNavLink} to="/admin">Admin</NavLink>
+                      <NavLink replace tag={RRNavLink} to="/Admin">Admin</NavLink>
                     </NavItem>
                   </DropdownItem>
                   <DropdownItem>
