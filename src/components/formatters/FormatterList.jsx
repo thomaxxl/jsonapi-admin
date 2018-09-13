@@ -90,7 +90,7 @@ class ItemLink extends React.Component {
 
 function toManyFormatter(cell, row, col){
 
-	if(!cell || !cell.data){
+  if(!cell || !cell.data){
 		return <div/>
 	}
 

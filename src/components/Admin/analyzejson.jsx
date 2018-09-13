@@ -127,6 +127,7 @@ export function analyzejson(data) {
           JS[rlt]['relationship'][key]['relation_url'] = key
           JS[rlt]['relationship'][key]['type'] = 'text'
           JS[rlt]['relationship'][key]['relationship'] = ''
+          if (key === "") JS[rlt]['relationship'] = []
           return true
         })
         //attributes processing

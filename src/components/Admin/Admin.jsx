@@ -43,9 +43,13 @@ let btnstyle = {
 }
 
 var stylefloat1 = {
-  float: "right",
+  // float: "right",
   marginTop: "10px",
-  width: "55%"
+  width: "100%"
+}
+
+var whitestyle = {
+  color: "white"
 }
 
 let backstyle = {
@@ -73,6 +77,7 @@ class Admin extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      error:[],
       discover: 0,
       url: '',
       selected: 0,
@@ -139,15 +144,26 @@ class Admin extends React.Component {
 
   handlegenerate() {
     let check = 0
+    let errors = []
     Object.keys(this.props.json).map(function(key, index) {
       this.props.json[key]['relationship'].map((rkey, rindex) => {
-        if (this.props.json[key]['relationship'][rkey]['relationship'] === '') check += 1
+        if (this.props.json[key]['relationship'][rkey]['relationship'] === '') { 
+          check += 1
+          errors.push({
+            collection: key,
+            relationship: rkey
+          })
+        }
         return true
       })
       return true
     }, this)
     if (check) {
       toastr.error('Please select relationships option', '', toasterPosition)
+      console.log(['error', errors])
+      this.setState({
+        error: errors
+      })
       return
     }
     Object.keys(this.props.json).map(function(key, index) {
@@ -204,28 +220,44 @@ class Admin extends React.Component {
                 <Button style={btnstyle} onClick={this.handleDiscoverClick}>Discover relationship</Button>
                 :<div></div>
             }
-            </InputGroup>
+          </InputGroup>
         </Row>
         <Grid>
           <Grid.Row className="rowstyle">
             <Grid.Column width={4}>
               <Segment style={styleheight1}>
-                <Header as='h3'>Collections</Header>
-                <List divided selection>
-                {
-                  collections.map((Item, index) => {
-                    let cons = {}
-                    if (index === this.state.selected) cons = backstyle
-                    return(
-                      <List.Item key={index} value='index' style={cons} onClick={() => this.handleselect(index)}>
-                        <List.Content>{Item}</List.Content>
-                      </List.Item>
-                    )
-                  })
-                }
-                </List>
-                <Button onClick={this.handlegenerate}disabled={Object.keys(this.props.json).length !== 0?false:true} style={stylefloat1}>Generate config</Button>
+                <div>
+                  <Header as='h3'>Collections</Header>
+                  <List divided selection>
+                  {
+                    collections.map((Item, index) => {
+                      let cons = {}
+                      if (index === this.state.selected) cons = backstyle
+                      return(
+                        <List.Item key={index} value='index' style={cons} onClick={() => this.handleselect(index)}>
+                          <List.Content>{Item}</List.Content>
+                        </List.Item>
+                      )
+                    })
+                  }
+                  <Button onClick={this.handlegenerate}disabled={Object.keys(this.props.json).length !== 0?false:true} style={stylefloat1}>Generate config</Button>
+                  </List>
+                </div>
+                <Segment inverted color='orange'>
+                  <List divided selection>
+                  {
+                    this.state.error.map((key, index) => {
+                      return(
+                        <List.Item key={index}>
+                          <List.Content style={whitestyle}>{key.collection} --> {key.relationship}</List.Content>
+                        </List.Item>
+                      )
+                    })
+                  }
+                  </List>
+                </Segment>
               </Segment>
+              
             </Grid.Column>
             <Grid.Column width={8}>
               <Segment style={styleheight1}>

@@ -57,7 +57,7 @@ class LoginModal extends React.Component {
           this.toggle()
           window.location.reload()
       })
-      .catch((error)=>{ console.log(error); toastr.error(error) } )
+      .catch((error)=>{ toastr.error(error) } )
   }
 
   logout(){

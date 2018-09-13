@@ -177,10 +177,12 @@ class Relationship extends React.Component {
       attr = this.props.json[KEY]['relationship']
       const val = this.props.json[KEY]['relationship'][this.state.selected]
       formdata = this.props.json[KEY]['relationship'][val]
-      Object.keys(formdata).map(function(key, index) {
-        if (this.state[key] === '') this.state[key] = formdata[key]
-        return true
-      },this)
+      if (formdata !== undefined) {
+        Object.keys(formdata).map(function(key, index) {
+          if (this.state[key] === '') this.state[key] = formdata[key]
+          return true
+        },this)
+      }
     }
     return (
       <div>

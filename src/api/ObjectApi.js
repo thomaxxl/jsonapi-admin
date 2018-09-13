@@ -178,7 +178,7 @@ class ObjectApi {
         })
         setTimeout(() => {
           resolve(rlt)
-        }, 2000)
+        }, 3000)
       })
       // console.log(['rlt', rlt])
       // setTimeout(() => {
