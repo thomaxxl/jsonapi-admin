@@ -103,7 +103,7 @@ class Admin extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({url: localStorage.getItem('json_url') === null? '': localStorage.getItem('json_url')})
+    this.setState({url: localStorage.getItem('json_url') === null? 'http://thomaxxl.pythonanywhere.com/api/swagger.json': localStorage.getItem('json_url')})
   }
 
   handleClick(e) {
@@ -209,12 +209,12 @@ class Admin extends React.Component {
       <Container>
         <Row style={styles}>
           <InputGroup>
-            <InputGroupAddon addonType="prepend">BACK-END-JSON-URL</InputGroupAddon>
+            <InputGroupAddon addonType="prepend">OAS(Swagger) JSON</InputGroupAddon>
             <Input 
               onChange={this.handle_json_url}
-              value={this.state.url}
+              value={this.state.url }
             />
-            <Button color="secondary" onClick={this.handleClick}>After input url click here to analyze</Button>
+            <Button color="secondary" onClick={this.handleClick}>Analyze OAS</Button>
             {
               this.state.discover === 1?
                 <Button style={btnstyle} onClick={this.handleDiscoverClick}>Discover relationship</Button>

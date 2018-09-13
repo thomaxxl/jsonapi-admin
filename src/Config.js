@@ -5,9 +5,14 @@ import InfoAction from './components/actions/InfoAction'
 
 import './style/style.css'
 import Cookies from 'universal-cookie';
+import defaultAPP from 'defaultConfig.json'
 
 var APP = JSON.parse(localStorage.getItem('json'))
-if (APP === null) APP = {}
+if (APP === null){
+    let default_app = JSON.stringify(defaultAPP)
+    //localStorage.setItem('json', default_app)
+    APP = {} 
+}
 
 
 const BaseUrl = 'http://thomaxxl.pythonanywhere.com'

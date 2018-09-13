@@ -56,7 +56,7 @@ class HeaderNavContainer extends React.Component {
                 </InputGroup>)
     if(this.props.inputflag.flag){
       INPUT =     (<InputGroup className="Left">
-                    <InputGroupAddon addonType="prepend">BACK-END-URL</InputGroupAddon>
+                    <InputGroupAddon addonType="prepend">Json:API Backend URL</InputGroupAddon>
                     <Input placeholder={this.props.inputflag.url===''?Param.URL:this.props.inputflag.url} onChange={this.change_url.bind(this)}/>
                   </InputGroup>)
     }
@@ -66,7 +66,7 @@ class HeaderNavContainer extends React.Component {
     // }
 
     // const login = Param.enable_login ?  <Login logged_in={logged_in}/> : 'Login'
-    const login = 'Login(config)'
+    const login = 'Admin'
 
     return (
      <div>
