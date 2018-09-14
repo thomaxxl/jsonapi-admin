@@ -7,7 +7,15 @@ import './style/style.css'
 import Cookies from 'universal-cookie';
 import defaultAPP from 'defaultConfig.json'
 
-var APP = JSON.parse(localStorage.getItem('json'))
+var APP = null
+
+try { 
+    APP = JSON.parse(localStorage.getItem('json'))
+}
+catch(err){
+
+}
+
 if (APP === null){
     let default_app = JSON.stringify(defaultAPP)
     //localStorage.setItem('json', default_app)

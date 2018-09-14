@@ -2,11 +2,39 @@ import React from 'react';
 import { connect } from 'react-redux'
 import * as Param from '../Config'
 import { Link } from 'react-router-dom'
+import {
+    TextArea, Button, Form
+  } from 'semantic-ui-react'
+  import toastr from 'toastr';
+
+import 'semantic-ui-css/semantic.min.css'
 
 class Home extends React.Component {
-    // constructor(props) {
-    //     super(props)
-    // }
+    constructor(props) {
+         super(props)
+         this.state = {
+            app_string : JSON.stringify(Param.APP,null,2)
+         }
+    }
+
+    updateConfig(){
+        let APP
+        try{
+            APP = JSON.parse(this.state.app_string)
+        }
+        catch(err){
+            toastr.error('Failed to parse JSON')
+            return
+        }
+        toastr.info('Updated Config')
+        localStorage.setItem('json', this.state.app_string)
+        Object.assign(Param.APP, APP)
+    }
+
+    handleOnchange(e) {
+        this.setState({app_string : e.target.value })
+    }
+
     render(){
         return (
             <div>
@@ -25,7 +53,9 @@ class Home extends React.Component {
                         </li>
                         <li>This webapp implements CRUD operations on the jsonapi at <a href={this.props.inputflag.url}>{this.props.inputflag.url}</a>. The interface is generated from the swagger configuration (json) of <a href={this.props.inputflag.url}>{this.props.inputflag.url}</a> </li>
                         <li>UI Configuration ( Genrated by the <Link to={ {pathname: "/Admin"} } >admin interface)</Link> ):
-                            <pre>{JSON.stringify(Param.APP,null,2)}</pre>
+                        <br/>
+                            <Button onClick={this.updateConfig.bind(this)}>Update</Button>
+                            <Form><TextArea onChange={this.handleOnchange.bind(this)} autoHeight>{this.state.app_string}</TextArea></Form>
                         </li>
                     </ul>
                 </div>

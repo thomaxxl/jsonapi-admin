@@ -3,7 +3,7 @@ import '../style/style.css'
 
 import * as Param from '../Config'
 import React, { Component } from 'react'
-import {  Route, BrowserRouter as Router} from 'react-router-dom'
+import {  Route, HashRouter as Router} from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import HeaderNavContainer from './HeaderNavContainer'
