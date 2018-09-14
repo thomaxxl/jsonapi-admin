@@ -11,6 +11,7 @@ import {
   Segment, 
   Header,
   List,
+  Tab
 } from 'semantic-ui-react'
 
 import Confactions from './confactions'
@@ -222,6 +223,13 @@ class Admin extends React.Component {
 
   render() {
     let collections = []
+    
+    const panes = [
+      { menuItem: 'Admin', render: () => <Tab.Pane>Admin</Tab.Pane> },
+      { menuItem: 'JSON', render: () => <Tab.Pane>JSON</Tab.Pane> }
+    ]
+
+
     if(Object.keys(this.props.json).length !== 0){
       Object.keys(this.props.json).map(function(key, index) {
         collections.push(key)
@@ -253,6 +261,8 @@ class Admin extends React.Component {
             }
           </InputGroup>
         </Row>
+        <Tab panes={panes} />
+
         <Grid>
           <Grid.Row className="rowstyle">
             <Grid.Column width={4}>

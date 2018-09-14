@@ -7,7 +7,7 @@ import {
   Grid,
   Form,
   Button,
-  Input,
+  Input
 } from 'semantic-ui-react'
 
 var stylefloat = {
@@ -21,6 +21,7 @@ var stylefloat1 = {
   marginTop: "10px",
   width: "55%"
 }
+
 
 class Otheroption extends React.Component {
   constructor(props) {
@@ -125,6 +126,7 @@ class Otheroption extends React.Component {
                 </div>
               )
             })}
+            
             <Button disabled={Object.keys(this.props.json).length !== 0?false:true} type='submit' style={stylefloat1}>Change config</Button>
           </Form>
         </Grid.Column>

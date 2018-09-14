@@ -3,11 +3,14 @@ import { connect } from 'react-redux'
 import * as Param from '../Config'
 import { Link } from 'react-router-dom'
 import {
-    TextArea, Button, Form
+    TextArea, Button, Form, Tab
   } from 'semantic-ui-react'
   import toastr from 'toastr';
 
 import 'semantic-ui-css/semantic.min.css'
+
+
+
 
 class Home extends React.Component {
     constructor(props) {
@@ -54,7 +57,8 @@ class Home extends React.Component {
                         <li>This webapp implements CRUD operations on the jsonapi at <a href={this.props.inputflag.url}>{this.props.inputflag.url}</a>. The interface is generated from the swagger configuration (json) of <a href={this.props.inputflag.url}>{this.props.inputflag.url}</a> </li>
                         <li>UI Configuration ( Genrated by the <Link to={ {pathname: "/Admin"} } >admin interface)</Link> ):
                         <br/>
-                            <Button onClick={this.updateConfig.bind(this)}>Update</Button>
+                            
+                          <Button onClick={this.updateConfig.bind(this)}>Update</Button>
                             <Form><TextArea onChange={this.handleOnchange.bind(this)} autoHeight>{this.state.app_string}</TextArea></Form>
                         </li>
                     </ul>
