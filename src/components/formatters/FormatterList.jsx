@@ -93,18 +93,23 @@ class ItemLink extends React.Component {
 
 function toManyFormatter(cell, row, col){
 
-  if(!cell || !cell.data){
+	if(!cell || !cell.data){
 		return <div/>
 	}
-
-	const items = cell.data.map(function(item){
-					let item_data = item
-					let result = '';
-					if(item_data){
-						result = <ItemLink item={item_data} />
-					}
-					return <div key={item_data.id}>{result}</div>
-	})
+	let items = ''
+	try{
+		items = cell.data.map(function(item){
+						let item_data = item
+						let result = '';
+						if(item_data){
+							result = <ItemLink item={item_data} />
+						}
+						return <div key={item_data.id}>{result}</div>
+		})
+	}
+	catch(err){
+		return <div>{JSON.stringify(cell.data)}</div>
+}
 	
 	return <div>{items}</div>
 }
