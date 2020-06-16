@@ -5,7 +5,6 @@ import inputReducer from './common/inputReducer';
 import analyzeReducer from './common/analyzeReducer';
 import ObjectReducer from './common/objectReducer'
 import selectedReducer from './common/selectedReducer';
-import configReducer from './common/configReducer'
 
 
 export default combineReducers({
@@ -15,5 +14,4 @@ export default combineReducers({
     analyzeReducer,
     object: ObjectReducer,
     selectedReducer,
-    configReducer,
 });

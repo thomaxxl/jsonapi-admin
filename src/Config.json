@@ -1,5 +1,5 @@
 {
-  "Person": {
+  "People": {
     "column": [
       {
         "text": "Name",
@@ -51,12 +51,12 @@
     "main_show":"name",
     "path": "/people",
     "API": "People",
-    "API_TYPE": "User",
+    "API_TYPE": "Person",
     "menu": "People",
     "Title": "People",
     "request_args" : { "include" : "books_read,books_written,reviews", "sort" : "name" }
   },
-  "Book": {
+  "Books": {
     "column": [
       {
         "text": "Title",
@@ -111,12 +111,12 @@
     "main_show":"title",
     "path": "/books",
     "API": "Books",
-    "API_TYPE": "Books",
+    "API_TYPE": "Book",
     "menu": "Books",
     "Title": "Books",
     "request_args" : { "include" : "reader,author,publisher,reviews" }
   },
-  "Review": {
+  "Reviews": {
     "column": [
       {
         "text": "Review",
@@ -126,7 +126,7 @@
         "sort": true
       },
       {
-        "text": "Person",
+        "text": "Reviewer",
         "dataField": "reader_id",
         "relation_url": "person",
         "type": "text",
@@ -153,12 +153,12 @@
     "main_show":"review",
     "path": "/reviews",
     "API": "Reviews",
-    "API_TYPE": "Reviews",
+    "API_TYPE": "Review",
     "menu": "Reviews",
     "Title": "Reviews",
-    "request_args" : { "include" : "person,book" }
+    "request_args" : { "include" : "reader,book" }
   },
-  "Publisher":{
+  "Publishers":{
     "column": [
       {
         "text": "Name",

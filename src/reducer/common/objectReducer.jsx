@@ -31,13 +31,14 @@ const ObjectReducer = (state = getInitialObject, action) => {
                 state[action.objectKey].data[order][action.dataField].data = action.item
                 return {...state}
             }
-            break;
         }
         case ActionType.SELECT_OPTION_RESPONSE: {
             state[action.route].select_option[action.objectKey] = action.data.data
             return state;
         }
+
         default: { return state; }
+        
     }
 };
 

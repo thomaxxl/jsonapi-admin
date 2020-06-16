@@ -23,12 +23,6 @@ const analyzeReducer = (state = {showmodal:false, spinner:false}, action) => {
             }
         }
 
-        case ActionType.SET_RELATIONSHIP_DATA_JSON: {
-          return {
-            ...state, spinner:false
-          }
-        }
-
         default: { return state; }
     }
 };
