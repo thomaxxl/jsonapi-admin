@@ -55,6 +55,8 @@ class Disco extends React.Component {
     }
 
     read_collection(url){
+        console.log(`fetching ${url}`)
+        return
         url = new URL(url)
         fetch(url)
                 .then(resp => resp.json())
