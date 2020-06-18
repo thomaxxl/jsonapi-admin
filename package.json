@@ -71,7 +71,7 @@
     "coverage": "react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject"
   },
-  "description": "[LIVE DEMO](http://www.blackbirdbits.com)",
+  "description": "jsonapi admin frontend",
   "main": "index.js",
   "repository": {
     "type": "git",
@@ -83,5 +83,5 @@
   "bugs": {
     "url": "https://github.com/thomaxxl/jsonapi-admin/issues"
   },
-  "homepage": "https://automat-c2/ja"
+  "homepage": "."
 }
