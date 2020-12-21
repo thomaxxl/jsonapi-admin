@@ -6,10 +6,10 @@ import BaseAction from './BaseAction'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import Field from '../fields/Field';
 import { Form } from 'reactstrap';
-import { APP } from '../../Config.jsx'
+import { APP, toastrPosition } from '../../Config.jsx'
 import toastr from 'toastr'
 import { faPencilAlt  } from '@fortawesome/fontawesome-free-solid'
-import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import * as ObjectAction from '../../action/ObjectAction'
 import * as ModalAction from '../../action/ModalAction'
 
@@ -40,7 +40,7 @@ class EditModal extends React.Component {
         
         var post = {};
         post.id = this.props.selectedId;
-        APP[this.props.objectKey].column.map(function(item, index) {
+        APP[this.props.objectKey].columns.map(function(item, index) {
             if(item.dataField && this.state[item.dataField] !== undefined){
                 post[item.dataField] = this.state[item.dataField]
             }
@@ -52,16 +52,16 @@ class EditModal extends React.Component {
         var limit = this.props.datas[this.props.objectKey].limit;
         
         this.props.action.saveAction(this.props.objectKey, post, offset, limit)
+            .then(()=> this.props.action.getAction(this.props.objectKey, offset, limit) )
             .then(()=>{
-                toastr.success('Saved', '', {positionClass: "toast-top-center"});
+                toastr.success('Saved', '', toastrPosition );
             });
     }
 
     renderAttributes(){
         let data = this.props.formdata.attributes
-        console.log(APP)
         return <Form>
-                    { APP[this.props.objectKey].column.map(function(item, index) {
+                    { APP[this.props.objectKey].columns.map(function(item, index) {
                             if( !data || item.dataField === undefined ){
                                 return <div key={index} />
                             }
@@ -74,6 +74,7 @@ class EditModal extends React.Component {
                                     column={item}
                                     // value={this.state[item.dataField] === undefined ? '':this.state[item.dataField]}
                                     placeholder={value}
+                                    onUpdate={(newValue) => this.setState({[item.dataField] : newValue}) }
                                     onChange={(event) => {
                                             if(event && event.target){
                                                 this.setState({[item.dataField] : event.target.value})

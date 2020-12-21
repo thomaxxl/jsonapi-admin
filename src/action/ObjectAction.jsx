@@ -1,7 +1,7 @@
 import * as ActionType from './ActionType';
 import ObjectApi from '../api/ObjectApi';
 
-// TODO: make the ActionTypes generic
+// actions processed by the objectReducer
 
 export const getResponse = data => ({
     type: ActionType.GET_RESPONSE,
@@ -40,12 +40,21 @@ export function saveAction(objectKey, object, offset, limit, dataField) {
         return ObjectApi.saveData(objectKey, object)
             .then((data) => {
                 if (object.id) {
-                    dispatch(updateExistingResponse(0,objectKey, object.id, dataField, object))
+                    if(data.id != object.id){
+                        console.warning(`Invalid id for ${object} in ${data}!`)
+                    }
+                    else{
+                        var updated = updateExistingResponse(ActionType.UPDATE_ATTR,objectKey, object.id, dataField, data.attributes)
+                        dispatch(updated)
+                    }
                 } else {
                     dispatch(addNewResponse())
                 }
+                // useless?
                 // dispatch(getAction(objectKey, offset, limit))
-                dispatch(getSingleResponse(data));
+                /*var resp = getSingleResponse(data)
+                let state = dispatch(resp);
+                console.log('saveaction end', state)*/
                 return data.id
             }).catch(error => {
                 throw error
@@ -54,6 +63,13 @@ export function saveAction(objectKey, object, offset, limit, dataField) {
     };
 }
 
+
+/*
+select options keep the value of the select dropdowns
+
+Book.author select options are stored in 
+Books
+*/
 export const updateSelectOptionResponse = (route, objectKey,data) => ({
     type: ActionType.SELECT_OPTION_RESPONSE,
     objectKey:objectKey,
@@ -63,33 +79,43 @@ export const updateSelectOptionResponse = (route, objectKey,data) => ({
 
 
 export function updateSelectOptionAction(route, objectKey, param, offset, limit) {
+      
     return function (dispatch) {
         return ObjectApi.search(objectKey, param, offset, limit)
             .then((data) => {
                 dispatch(updateSelectOptionResponse(route, objectKey, data[objectKey]))
+                return data
             })
     };
 }
 
 export function updateRelationshipAction(objectKey, id, rel_name, data, offset, limit) {
-    // return function (dispatch) {
-    //     return ObjectApi.updateRelationship(objectKey, id, rel_name, data)
-    //         .then(() => {
-    //             if (data && data.id) {
-    //                 if(data.action_type === 'one')dispatch(updateExistingResponse(1,objectKey,id,rel_name,data))
-    //                 else dispatch(updateExistingResponse(2,objectKey,id,rel_name,data))
-    //             } else {
-    //                 // dispatch(addNewResponse())
-    //             }
-    //         })
-    // };
+    /*
+        Called from ApiObjectContainer.handleSaveRelationship
 
-    //console.log(objectKey, id, rel_name, data)
-    ObjectApi.updateRelationship(objectKey, id, rel_name, data)
+        data: new value of the relationship
+    */
+    console.log(objectKey, id, rel_name, data, offset, limit)
+    //const rel_type = ObjectApi.getRelationshipType(objectKey, id, rel_name)
+    let rel_type = 'one'
+    if(Array.isArray(data)){
+        rel_type = 'many'
+    }
+    else if(data === null){
+        rel_type = 'one'
+    }
+    
+    data.action_type = rel_type
     return (dispatch) => {
-        if(data && data.action_type === 'one') dispatch(updateExistingResponse(1,objectKey,id,rel_name,data))
-        else dispatch(updateExistingResponse(2,objectKey,id,rel_name,data))
-        return Promise.resolve();
+        let api_data_payload = undefined
+        if(data && data.action_type === 'one'){
+            api_data_payload = dispatch(updateExistingResponse(ActionType.UPDATE_TOONE,objectKey,id,rel_name,data))
+        }
+        else {
+            api_data_payload = dispatch(updateExistingResponse(ActionType.UPDATE_TOMANY,objectKey,id,rel_name,data))
+        }
+        console.log(api_data_payload)
+        return ObjectApi.updateRelationship(objectKey, id, rel_name, data)
     }
 }
 
@@ -100,12 +126,12 @@ export const getSingleResponse = data => ({
 
 export function getSingleAction(objectKey, Id, requestArgs) {
     
-    
     return (dispatch) => {
-        
+        console.log('getSingleAction',objectKey, Id)       
         return ObjectApi.getItem(objectKey, Id, requestArgs)
             .then(data => {
                 dispatch(getSingleResponse(data));
+                return data;
             }).catch(error => {
                 throw error;
             });

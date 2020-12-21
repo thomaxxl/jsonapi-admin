@@ -27,20 +27,31 @@ import {
   InputGroupAddon,
   Input,
   DropdownItem } from 'reactstrap'
-import { faList as faRefresh } from '@fortawesome/fontawesome-free-solid'
-import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import { faList as faRefresh, faCog } from '@fortawesome/fontawesome-free-solid'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import ReactTooltip from 'react-tooltip';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import  { useState } from 'react';
 
 
-function setSMBPass(smbpasswd){
+var oldTimeout = setTimeout;
+
+window.setTimeout = function(callback, timeout) {
+  //console.log("timeout started", callback);
+  return oldTimeout(function() {
+    //console.log('timeout finished', callback);
+    callback();
+  }, timeout);
+}
+
+function setpasswd(passwdwd){
     
 }
 
 function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => oldTimeout(resolve, ms));
 }
+
 
 class Profile extends React.Component {
 
@@ -48,7 +59,7 @@ class Profile extends React.Component {
         super(props);
         this.state = {modal: false, setModal: false}
         this.toggle = this.toggle.bind(this)
-        this.setSMBPass = this.setSMBPass.bind(this)
+        this.setpasswd = this.setpasswd.bind(this)
         this.textInput = React.createRef();
         this.setPass = this.setPass.bind(this)
     }
@@ -58,20 +69,20 @@ class Profile extends React.Component {
         this.setState({modal: !this.state.modal}); if(e){e.stopPropagation()}
     }
 
-    setSMBPass(e){
+    setpasswd(e){
         let headers = api_config.configureHeaders();
         headers['Accept'] = 'application/json';
         headers['Content-Type'] = 'application/json';
 
-        fetch(api_config.baseUrl + '/smbpasswd', {
+        fetch(api_config.baseUrl + '/passwd', {
             method: 'POST',
             headers: headers,
             credentials: 'same-origin',
-            body: JSON.stringify({smbpasswd: this.state.smbpass})
+            body: JSON.stringify({passwdwd: this.state.passwd})
         }).then(function(response) {
             if (!response.ok) {
                 response.json().then(function(rsp_json) {
-                    toastr.error("Failed to change smb passwd: " + rsp_json.error)
+                    toastr.error("Failed to change passwd: " + rsp_json.error)
                 });
             }
             else{
@@ -83,7 +94,7 @@ class Profile extends React.Component {
 
     setPass(e){
         console.log(e.target.value)
-        this.setState({smbpass:e.target.value})
+        this.setState({passwd:e.target.value})
     }
 
     render(){
@@ -106,13 +117,14 @@ class Profile extends React.Component {
                         <dt>E-mail Address</dt>
                         <dd>{ui_config.email}</dd>
 
+                        <dt>Password</dt>
                         <dd><Input ref={this.textInput} type="password" onChange={this.setPass}/></dd>
                     </dl>
                 </Form>
 
             </ModalBody>
             <ModalFooter>
-              <Button type="submit" color="primary" onClick={this.setSMBPass.bind(this)}>Save</Button>{' '}
+              <Button type="submit" color="primary" onClick={this.setpasswd.bind(this)}>Save</Button>{' '}
               <Button color="secondary" onClick={this.toggle}>Cancel</Button>
             </ModalFooter>
           </Modal>
@@ -131,7 +143,7 @@ class HeaderNavContainer extends React.Component {
     }
     this.change_url = this.change_url.bind(this)
     this.refresh_all = this.refresh_all.bind(this)
-    //this.refresh = this.refresh.bind(this)
+    this.refresh = this.refresh.bind(this)
   }
 
   async preload(objectKey, spinner){
@@ -191,21 +203,23 @@ class HeaderNavContainer extends React.Component {
 
   componentDidMount(){
     
-    if (this.props.location.pathname.indexOf('/index') > 0 ){
-        setTimeout(() => this.preload('Analyses', true), 3000)
+    if (this.props.location.pathname.endsWith('/index')){
         return
     }
-    setTimeout(() => this.preload('Analyses', true), 1000)
     // Refresh all the objects every 5 minutes
-    this.interval = setInterval(() => this.refresh_all(), 1500000);
-    setInterval(() => document.location.reload(), 45000000);
-    /*setTimeout(function () { 
-      window.location.reload();
-    }, 1200 * 1000);*/
+    this.interval_api = setInterval(() => this.refresh_all(), 1500000);
   }
 
   componentWillUnmount() {
-    clearInterval(this.interval);
+    // remove all timeouts
+
+    clearInterval(this.interval_api);
+    clearInterval(this.interval_reload);
+
+    var id = window.setTimeout(function() {}, 0);
+    while (id--) {
+        window.clearTimeout(id); // will do nothing if no timeout with id is present
+    }
   }
 
   toggle() {
@@ -237,6 +251,10 @@ class HeaderNavContainer extends React.Component {
     }
   }
 
+  refresh_and_monitor(e){
+      this.refresh(e)
+  }
+
   render() {
 
     var currentStyle = {color:'white'} // todo move to css
@@ -256,9 +274,8 @@ class HeaderNavContainer extends React.Component {
          INPUT = ''
     }
 
-    //const login = Param.enable_login ?  <Login logged_in={false}/> : 'Login'
+    let login = ui_config.enable_login ?  <Login logged_in={false}/> : 'Login'
     
-    let login = "Login"//<Login logged_in={false}/>
     const parent = this
     const profile_link = <Profile/>
 
@@ -273,66 +290,94 @@ class HeaderNavContainer extends React.Component {
                         </DropdownItem>,
                         <DropdownItem key="api_link">
                             <a href={"/api/"} target="_blank">API</a>
-                        </DropdownItem>]
+                        </DropdownItem>,
+                        <DropdownItem key="logout_link">
+                          <a href="" onClick={this.undoClick.bind(this)}>{login}</a>
+                        </DropdownItem>
+                        ]
+
+    }
+    else {
+          admin_links = [ <DropdownItem key="profile_link">
+                             {profile_link}
+                          </DropdownItem>,
+                          <DropdownItem key="admin_link">
+                              <a href={"/admin/"} target="_blank">Admin</a>
+                          </DropdownItem>,
+                          <DropdownItem key="logout_link">
+                            <a href="" onClick={this.undoClick.bind(this)}>{login}</a>
+                          </DropdownItem>
+                          ]
+
+      
     }
 
+    let current = this.props.location.pathname
+    const navbar = this
+    const navlinks = Object.keys(APP).map(function(key, index){
+
+                          if(APP[key].hidden === true) {
+                              return <span key={index}/>
+                          }
+                          if(APP[key].hidden == "admin" && api_config.role != "admin") {
+                              return <span key={index}/>
+                          }
+                          let to_link = APP[key].path
+                          let classnames="collection_route"
+                          if(APP[key].roles){
+                              classnames +=  " with_roles"
+                          }
+                          if(APP[key].path === current){
+                              return <NavItem key = {index}>
+                                    <NavLink className={classnames} onClick={()=>navbar.preload(key, true)} replace activeClassName="current_nav" tag={RRNavLink} to={to_link} activeStyle={{color:'white'}}>
+                                        {APP[key].menu}
+                                    </NavLink>
+                                  </NavItem>
+                          }
+                          return <NavItem key = {index}>
+                                    <NavLink className={classnames} replace activeClassName="current_nav" tag={RRNavLink} to={to_link} activeStyle={{color:'white'}}>
+                                        {APP[key].menu}
+                                    </NavLink>
+                                  </NavItem>
+                          })
+
+    return <div className="ja-headernav">
+              <ReactTooltip id="headertt" />
+              <Navbar color="faded" light expand="md" className="navbar-dark navbar-inverse bg-dark">
+              <NavbarBrand replace tag={RRNavLink} to="/" >{navTitle}</NavbarBrand>
+                <NavbarToggler onClick={this.toggle} />
+                <Collapse isOpen={this.state.isOpen} navbar>
+                  <Nav navbar>
+                    {navlinks}
+                  </Nav>
+                  {INPUT}
+                  <Nav className="ml-auto" navbar>
+                     <NavItem>
+                      <NavLink href="#" onClick={this.refresh_and_monitor.bind(this)}><i className="fa fa-refresh" aria-hidden="true" data-for="headertt" data-tip={`Refresh view`}></i></NavLink>
+                     </NavItem>
+                     
+                    <UncontrolledDropdown nav inNavbar>
+                      <DropdownToggle nav caret>
+                        {/*<FontAwesomeIcon icon={faCog}></FontAwesomeIcon>*/}
+                      </DropdownToggle>
+                      <DropdownMenu right>
+                          {admin_links}
+                      </DropdownMenu>
+                    </UncontrolledDropdown>
+                  </Nav>
+                </Collapse>
+
+              </Navbar>
+              <div className="sweet-loading" id="c2_spinner">
+                <Spinner
+                      sizeUnit={"px"}
+                      size={8}
+                      color={'#ccc'}
+                      loading={this.props.spin} 
+                />
+              </div>
+          </div>
     
-    return (
-     <div className="ja-headernav">
-        <ReactTooltip id="headertt" />
-        <Navbar color="faded" light expand="md" className="navbar-dark navbar-inverse bg-dark">
-        <NavbarBrand replace tag={RRNavLink} to="/" >{navTitle}</NavbarBrand>
-          <NavbarToggler onClick={this.toggle} />
-          <Collapse isOpen={this.state.isOpen} navbar>
-            <Nav navbar>
-              {
-
-                Object.keys(APP).map(function(key, index){
-                    
-                    if(APP[key].hidden === true) {
-                        return <span key={index}/>
-                    }
-                    if(APP[key].hidden == "admin" && api_config.role != "admin") {
-                        return <span key={index}/>
-                    }
-                    return (<NavItem key = {index}>
-                              <NavLink replace tag={RRNavLink} to={APP[key].path}>
-                                  {APP[key].menu}
-                              </NavLink>
-                            </NavItem>)
-                })
-              }
-            </Nav>
-            {INPUT}
-            <Nav className="ml-auto" navbar>
-               <NavItem>
-                <NavLink href="#" onClick={this.refresh.bind(this)}><i className="fa fa-refresh" aria-hidden="true" data-for="headertt" data-tip={`Refresh view`}></i></NavLink>
-               </NavItem>
-               <NavItem>
-                <NavLink href="" onClick={this.undoClick.bind(this)}>{login}</NavLink>
-              </NavItem>
-              <UncontrolledDropdown nav inNavbar>
-                <DropdownToggle nav caret>
-                  {/* <FontAwesomeIcon icon={faCog}></FontAwesomeIcon> */}
-                </DropdownToggle>
-                <DropdownMenu right>
-                    {admin_links}
-                </DropdownMenu>
-              </UncontrolledDropdown>
-            </Nav>
-          </Collapse>
-
-        </Navbar>
-        <div className="sweet-loading" id="c2_spinner">
-                    <Spinner
-                          sizeUnit={"px"}
-                          size={8}
-                          color={'#ccc'}
-                          loading={this.props.spin} 
-                    />
-                    </div>
-      </div>
-    )
   }
 }
 

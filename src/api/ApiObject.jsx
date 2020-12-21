@@ -55,8 +55,8 @@ class ApiObject extends React.Component {
 
 		const item_id = this.props.item_id
 		const api_params = this.props.api_params ? this.props.api_params : {}
-		const store = configureStore()
-		const store_objects = store.getState()['object']
+		//const store = configureStore()
+		const store_objects = this.props.api_data //store.getState()['object']
 		const objectKey = this.props.objectKey
 		
 		if(!store_objects[objectKey]){
@@ -67,6 +67,8 @@ class ApiObject extends React.Component {
 		if(store_objects[objectKey].data){
 			const item = store_objects[objectKey].data.find(item => item.id == item_id)
 			if(item){
+				//console.log('APIOBj', store_objects[objectKey])
+				//console.log(item)
 				this.loadItem(item)
 				return
 			}
@@ -82,10 +84,10 @@ class ApiObject extends React.Component {
 			this.props.action.getSingleAction(objectKey, item_id, api_params)
 				.catch((error) => toastr.error(error))
 				.then(() => {
-					const item = this.props.api_data[objectKey].data.find(analysis => analysis.id == item_id)
+					const item = this.props.api_data[objectKey].data.find(item => item.id == item_id)
 					this.loadItem(item)
 				}),
-			2000 + Math.random() * 1000 // random delay so not everything is loaded at once
+			200 + Math.random() * 1000 // random delay so not everything is loaded at once
 			)
 		
 	}
@@ -114,12 +116,16 @@ class ApiObject extends React.Component {
 
   	loadItem(item){
   		if(this._isMounted && item){ // cfr. componentWillUnmount
-			this.setState({	id: item.id, 
-							type: item.type, 
-							attributes: item.attributes, 
-							relationships: item.relationships,
-							...item.attributes, 
-							...item.relationships})
+  			const state= {id: item.id, 
+					type: item.type, 
+					attributes: item.attributes, 
+					relationships: item.relationships,
+					...item.attributes, 
+					...item.relationships}
+			this.setState(state)
+		}
+		if(this.props.options?.callback){
+			this.props.options.callback(this)
 		}
   	}
 
@@ -132,7 +138,7 @@ class ApiObject extends React.Component {
                 toastr.error(error, '')
             })
         	.then((e) => console.log(e))
-            .then(toastr.success('Saved', ''))
+            .then(toastr.success('Saved Object', ''))
 
     }
 
@@ -148,9 +154,8 @@ class ApiObject extends React.Component {
     }
 
 	render(){
-		const name = this.state.attributes && this.state.attributes.name ? this.state.attributes.name : "default api object"
 		// TO be overwritten by subclasses
-		return <div>{name}</div>
+		return <div>Default API Object</div>
 	}
 
 	getattr(attr_name){
@@ -159,7 +164,7 @@ class ApiObject extends React.Component {
 }
 
 
-function get_ApiObject(key, item_id, details) {
+function get_ApiObject(key, item_id, options) {
 	/*
 		Create an ApiObject for the item with id from the collection specified by key
 	*/
@@ -170,7 +175,7 @@ function get_ApiObject(key, item_id, details) {
         api_data: state.object,
         inputflag: state.inputReducer,
         item_id: item_id,
-        details: details,
+        options: options,
         name : ownProps.name,
   		modalview: state.modalReducer.showmodal
     })
@@ -192,7 +197,7 @@ function get_ApiObject(key, item_id, details) {
 
 	let currentValue
 	function handleChange() {
-	   alert()
+	   
 	  let previousValue = currentValue
 	  currentValue = select(store.getState())
 
@@ -212,13 +217,13 @@ function get_ApiObject(key, item_id, details) {
     return Result
 }
 
-function get_ApiComponent(key, item_id, details, ref){
+function get_ApiComponent(key, item_id, options, ref){
 	/*
 		get attributes, eg name, from memoizedState
 
 		ref.current._reactInternalFiber.child.memoizedState.name
 	*/
-	const ApiObject =  get_ApiObject(key, item_id, details)
+	const ApiObject =  get_ApiObject(key, item_id, options)
 	return <ApiObject key={item_id} ref={ref}/>
 }
 

@@ -16,7 +16,7 @@ class LoginModal extends React.Component {
 
     this.state = {
       modal: props.logged_in,
-      username : username ? username : 'automat',
+      username : username ? username : 'user',
       password : '',
       token : token
     };
@@ -82,21 +82,20 @@ class LoginModal extends React.Component {
     var link
     var isOpen = false
     if(this.logged_in()){
-        link  = <span id="login" onClick={this.logout.bind(this)} data-for="headertt" data-tip={`log out ${username} `}>Logout</span>
+        link  = <span id="login" onClick={this.logout.bind(this)} >Logout</span>
     }
     else {
         link = <span id="login" onClick={this.toggle}>{this.props.logged_in ? 'Logout' : 'Login' }</span>
         isOpen = true
     }
 
-    const login_background = isOpen? <div id="login_background" /> : <div/>
-    const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
+    // hide the close button from the view
+    const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '-1500px', right: '-1500px' }} onClick={this.toggle}>&times;</button>;
 
     return (
       <div>
         {link}
-        {login_background}
-        <Modal id="login-modal" isOpen={isOpen} toggle={this.toggle} className={this.props.className} external={externalCloseBtn} contentClassName="login-content">
+        <Modal id="login-modal" fade={false} backdrop={true} isOpen={isOpen} toggle={this.toggle} className={this.props.className} external={externalCloseBtn} contentClassName="login-content" backdropClassName="login-backdrop">
           <ModalBody>
             <Form onKeyPress={this.handleKeyPress.bind(this)}>
               <FormGroup row>

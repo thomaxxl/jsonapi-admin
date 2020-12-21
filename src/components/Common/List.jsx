@@ -4,8 +4,8 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import * as Param from '../../Config';
-import { APP, FormatterList } from '../../Config.jsx';
-import cellEditFactory from 'react-bootstrap-table2-editor';
+import { APP, api_config, FormatterList } from '../../Config.jsx';
+import cellEditFactory, { Type } from 'react-bootstrap-table2-editor';
 import {connect} from 'react-redux'
 import {Config} from '../../Config.jsx'
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
@@ -16,7 +16,10 @@ import {
     faSquare,
     faMinusSquare
 } from '@fortawesome/free-regular-svg-icons';
-import FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { sync } from '../../api/ApiObject';
+import { bindActionCreators } from 'redux'
+import * as ObjectAction from '../../action/ObjectAction'
 
 
 // function resolveFormatter(value){
@@ -72,6 +75,12 @@ function dispatch_col_type(column){
         column.style = Object.assign({}, col_style, (column.style || {}) )
         column.headerStyle = Object.assign({}, col_style, (column.headerStyle || {}) )
     }
+    if(column.type === "text"){
+        column.type = "string"
+    }
+    if(column.type === "checkbox"){
+
+    }
 }
 
 let nameFilter;
@@ -90,21 +99,26 @@ const ff = textFilter({
     }
   })
 
+
 class List extends React.Component {
 
     constructor(props) {
         super(props)
-
-        const columns = APP[this.props.objectKey].column || []
-
+        this.reload = this.reload.bind(this)
+        const columns = APP[this.props.objectKey].columns || []
         let filtered_columns = columns.filter((col) => col.visible != false)
-
         this.columns = filtered_columns.map((column, index) => {
+
+            if(column.relationship){
+                column.relationship_name = column.relationship.name
+                column.relationship_key = column.relationship.target
+                column.relationship_type = APP[column.relationship_key].API_TYPE
+            }
+            column.attribute_name = column.dataField
             /*
                 merge the config column properties
                 with our property dict
             */
-
             if(column.formatter){
                 /*
                     Dispatch the formatter from string to function
@@ -113,7 +127,7 @@ class List extends React.Component {
                 */
 
                 let formatter_name = column.formatter
-                if(typeof column.formatter === 'string'){ // bah!, we only need to replace it once
+                if(typeof column.formatter === 'string'){ // bah!, we only need to replace it once though
                    column.formatter = FormatterList[formatter_name] //resolveFormatter(column.formatter)
                 }
                 if (!column.formatter){
@@ -123,15 +137,16 @@ class List extends React.Component {
                     column.location = this.props.location
                 }
             }
+            let formatter_name = column.headerFormatter
             if(column.headerFormatter){
-                let formatter_name = column.headerFormatter
                 if(typeof column.headerFormatter === 'string'){ // bah!, we only need to replace it once
                    column.headerFormatter = FormatterList[formatter_name] //resolveFormatter(column.formatter)
                 }
-                if (!column.headerFormatter){
-                    console.log(`formatter ${formatter_name} not found!`)
-                }
             }
+            if (!column.headerFormatter){
+                    console.log(`formatter ${formatter_name} not found!`)
+                    column.headerFormatter = FormatterList["defaultHeaderFormatter"]
+                }
             if(column.editor){
                 let editor_name = column.editor
                 if(typeof column.editor === 'string'){
@@ -146,8 +161,10 @@ class List extends React.Component {
                         row = row ? row : editorProps.row
                         column = column ? column : editorProps.column
                         value = value ? value : editorProps.value
-                        return  <EditorRenderer className="editable" { ...editorProps } row={row} column={column} value={ value }  /> 
+                        const onUpdate = (newValue) => {editorProps.onUpdate(newValue)}
+                        return  <EditorRenderer className="editable" onUpdate={onUpdate} row={row} column={column} value={value}  /> 
                     }
+                column.editable = true
             }
             if(!column.text){
                 column.text = column.name
@@ -176,14 +193,17 @@ class List extends React.Component {
             //                             }})
             // const ff = <JAFilter />
 
+            const formatExtraData = { "column" : column }
             column = Object.assign({}, { //filter: listFilter,
                                         delay: 100,
                                         editable : true,
                                         onSort: (field, order) => {
                                             console.log(field, order);
-                                        }
+                                        },
+                                        formatExtraData : formatExtraData
                                     },
                                     column)
+            
             return column
         }, this);
 
@@ -216,8 +236,41 @@ class List extends React.Component {
         this.props.onTableChange(page,sizePerPage);
     }
 
-    beforeSaveCell(args){
-        console.log('beforeSaveCell', args)
+    beforeSaveCell(oldValue, newValue, row, column){
+        console.log("beforeSaveCell", this.props.data)
+    }
+
+    async reload(item_id){
+        const objectKey = this.props.objectKey
+        const config  = APP[objectKey]
+        if(!config){
+            console.warn(`no config for ${objectKey}`)
+            return
+        }
+
+        console.log('RELOADD')
+        
+        let request_args = config.request_args ? config.request_args : {}
+        let offset = config.offset ? config.offset : 0
+        let limit = config.limit || api_config.limit ? config.limit || api_config.limit: 25
+        let getArgs = [ objectKey, item_id ]
+        //let result = await this.props.action.getAction(...getArgs).then(console.log(`Loaded ${objectKey}`))
+        console.log(getArgs)
+        await this.props.action.getSingleAction(...getArgs)
+                            .then(console.log(`RLoaded ${objectKey}.${item_id}`))
+        
+        getArgs = [ objectKey, offset, limit ]
+        //let result = await this.props.action.getAction(...getArgs).then(console.log(`Loaded ${objectKey}`))
+        await this.props.action.getAction(...getArgs)
+                            .then(console.log(`Loaded ${objectKey}`))
+        
+    
+        /*const objectKey = this.props.objectKey
+        let getArgs = [objectKey, item_id]
+        //let result = await this.props.action.getAction(...getArgs).then(console.log(`Loaded ${objectKey}`))
+        console.log('looooad')
+        await this.props.action.getSingleAction(...getArgs).then(console.log(`Loaded ${objectKey}.${item_id}`))
+        */
     }
 
     afterSaveCell(oldValue, newValue, row, column){
@@ -227,6 +280,8 @@ class List extends React.Component {
         else{
             this.props.handleSave(row, column.dataField)
         }
+
+        this.reload(row.id)
     }
 
     render() {
@@ -259,13 +314,13 @@ class List extends React.Component {
             clickToEdit: true,
             selectionRenderer: selectionRenderer,
             selectionHeaderRenderer: selectionHeaderRenderer,
-            selectColumnStyle: { backgroundColor: 'blue' },
-            headerColumnStyle: { backgroundColor: 'blue' }
+            //selectColumnStyle: { backgroundColor: 'blue' },
+            //headerColumnStyle: { backgroundColor: 'blue' }
         }
 
         const customTotal = (from, to, size) => (
           <span className="react-bootstrap-table-pagination-total">
-            Showing { from } to { to+1 } of { size } Results
+            Showing { from } to { to } of { size } Results
           </span>
         )
         const limit = this.props.data.limit
@@ -310,8 +365,14 @@ class List extends React.Component {
 }
 
 const mapStateToProps = (state, own_props) => ({
+    api_data: state.object,
     spin: state.analyzeReducer.spinner,
     select_option: state.object[own_props.objectKey].select_option
 })
 
-export default connect(mapStateToProps)(List);
+
+const mapDispatchToProps = dispatch => ({
+  action: bindActionCreators(ObjectAction, dispatch)
+})
+
+export default connect(mapStateToProps,mapDispatchToProps)(List);

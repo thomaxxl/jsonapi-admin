@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux'
 import * as ModalAction from '../../action/ModalAction'
 import BaseAction from './BaseAction'
 import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap'
-import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import toastr from 'toastr'
 
 class StatusModal extends React.Component {    
@@ -57,7 +57,7 @@ class StatusModal extends React.Component {
     }
 }
 
-class CustomAction extends BaseAction { 
+class InfoAction extends BaseAction { 
 
     constructor(props){
         super(props)
@@ -101,4 +101,4 @@ class CustomAction extends BaseAction {
     }   
 }
 
-export default CustomAction
+export {InfoAction}

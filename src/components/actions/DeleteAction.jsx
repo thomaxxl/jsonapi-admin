@@ -4,7 +4,7 @@ import { Button } from 'reactstrap';
 import BaseAction from './BaseAction'
 import toastr from 'toastr';
 import { faTrashAlt  } from '@fortawesome/fontawesome-free-solid'
-import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 
 
 class DeleteAction extends BaseAction{  

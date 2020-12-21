@@ -7,9 +7,9 @@ import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap'
 import { Form, FormGroup, Label, Input } from 'reactstrap'
 import Field from '../fields/Field';
 import { faPlay } from '@fortawesome/fontawesome-free-solid'
-import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import toastr from 'toastr'
-import {APP} from '../../Config'
+import {APP} from '../../Config.jsx'
 
 class CustomModal extends React.Component {    
     
@@ -32,7 +32,7 @@ class CustomModal extends React.Component {
                     <Label for="id">ID</Label>
                     <Input value={this.props.selectedId} disabled={true}/>
                     </FormGroup>
-                    {APP[this.props.objectKey].column.map(function(item,index){
+                    {APP[this.props.objectKey].columns.map(function(item,index){
                         return (<Field
                                     key={index}
                                     column={item} 

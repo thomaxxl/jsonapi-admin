@@ -32,7 +32,7 @@ class CreateModal extends React.Component {
 
     create() {
         var post = {};
-        APP[this.props.objectKey].column.map(function(item, index) {
+        APP[this.props.objectKey].columns.map(function(item, index) {
             if(item.dataField && this.state[item.dataField] !== undefined){
                 post[item.dataField] = this.state[item.dataField]
             }
@@ -60,7 +60,7 @@ class CreateModal extends React.Component {
     renderAttributes(){
 
         return <Form>
-                    { APP[this.props.objectKey].column.map(function(column, index) {
+                    { APP[this.props.objectKey].columns.map(function(column, index) {
                             if(column.readonly || column.relationship){
                                 //return <div>{column.text}</div>
                                 return <div/>

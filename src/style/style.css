@@ -1,18 +1,28 @@
+body{
+	font-size : 0.8rem;
+	/*color: red;*/
+}
+
 .container-fluid{
     margin: auto;
 }.react-bootstrap-table, .form-control .search {
-	font-size: 0.8em;
+	
 }
 
 .btn-group {
 	width : 100%;
 }
 
+.btn-group button {
+	font-size: 1rem;
+	padding-left: 0px;
+}
+
 .search{
 	position: absolute;
 	right: 0px;
-	font-size: 0.8em;
 	margin: 2px;
+	font-size: 0.8rem;
 }
 
 .textFilter{
@@ -22,13 +32,12 @@
 
 .column-filter{
 	color: #c2c2c2;
-	font-size: 0.8em;
 	margin-left: 0.4em;
 	margin-bottom: 0.4em;
 }
 
 .cell {
-	border: 1px solid red;
+	border: 1px solid blue;
 }
 
 .ja-popover {
@@ -48,6 +57,7 @@
 	
 }
 
+
 .table th, .table td {
 	padding: 0.7rem;
 }
@@ -63,7 +73,6 @@
 
 td.react-bootstrap-table-editing-cell input {
 	border: none;
-	font-size: 0.8em;
 }
 td.react-bootstrap-table-editing-cell input:focus {
 	border: none;
@@ -93,7 +102,7 @@ a {
 }
 
 .analyze-form{
-	font-size: 0.8em;
+	
 }
 
 .form-group{
@@ -101,7 +110,6 @@ a {
 }
 
 .page-item.active .page-link {
-	/*border: 1px solid red;*/
 }
 
 .from-label{
@@ -138,31 +146,6 @@ a {
 	color: black;
 }
 
-.inline-images .Images{
-	padding-left: 1.2em;
-	color: #aaa;
-	font-style: italic;
-}
-
-.inline-images div {
-	display: inline-block;
-}
-
-.automat_popover {
-    width: 60em;
-    background-color: white;
-    border: none;
-
-}
-
-.analysis_summary {
-    width: 100%;
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 12px;
-    border-radius: 0.3rem;
-}
-
 .popover-bodyX {
     background-color: white;
 
@@ -170,42 +153,75 @@ a {
 
 .popover-headerX {
 	margin: 0px;
+	border: 1px solid blue;
+	color: green;
 }
 
-.analysis_summary dl {
-  width: 100%;
-  overflow: hidden;
-  padding: 0;
-  margin: 0
-}
-.analysis_summary dt {
-  float: left;
-  width: 40%;
-  /* adjust the width; make sure the total of both is 100% */
-  padding: 0;
-  margin: 0
-}
-.analysis_summary dd {
-  float: left;
-  width: 60%;
-  /* adjust the width; make sure the total of both is 100% */
-  padding: 0;
-  margin: 0
+.table-bordered {
+	border-top: none;
+	font-size: 0.78rem;
 }
 
-.InvalidImage {
-	color: red;
+.table-bordered th {
+	border-left: 1px solid white;
+	border-right: 1px solid white;
+	border-top: none;
 }
 
-#c2_spinner{
-position: fixed;
-/*bottom: 0px;
-right: 0px;*/
 
-top: 15px;
-right: 50%;
-width: 100px;
-/*margin-top: -100px; /* Negative half of height. */
-margin-left: -50px; /* Negative half of width. */
+.even-row {
+	background-color: #f6f7f7;
+}
+
+.t-row {
+	border: 1px solid white;
+	border-left: 1px solid #white;
+
+}
+
+.t-row td {
+	border: 1px solid #f2f5f7;
+}
+
+.t-row td {
+	border: 1px solid #f2f5f7;
+}
+
+.t-row th {
+	border: none;
+}
+
+.table th, .table td {
+	padding: 0.3rem;
+}
+
+.t-row th:hover {
+	background-color: white;
+}
+
+.t-row:hover{
+	background-color: #e6e7e7;
+	border-bottom : 1px solid #ccc;
+}
+
+
+
+.ja-select .fa-w-14{
+	font-size: 1rem;
+}
+
+
+
+#pageDropDown {
+	font-size: 0.8rem
+}
+
+.ja-headernav {
+	font-size: 1rem;
+}
+
+.log_level{
+	display: inline;
+	color:red;
 }
 

@@ -7,15 +7,15 @@ import toastr from 'toastr';
 import { withRouter } from 'react-router'
 import { Row, Col } from 'reactstrap';
 import List from '../Common/List';
-import {APP, ActionList} from '../../Config.jsx';
+import {APP, ActionList, toasterPosition} from '../../Config.jsx';
 import { Input } from 'reactstrap'
 import { get_ApiObject } from '../../api/ApiObject';
+import Cookies from 'universal-cookie';
 import './style.css'
 // const DEFAULT_PAGE_SIZE = 50
 // const DEFAULT_PAGE_OFFSET = 0
 const WAIT_INTERVAL = 1200; // Timeout for the search
 const ENTER_KEY = 13;
-const toasterPosition =  {positionClass: "toast-bottom-right"}
 
 class ApiObjectContainer extends React.Component {
     /*
@@ -113,9 +113,14 @@ class ApiObjectContainer extends React.Component {
                 // }, Param.Timing);
             })
             .catch(error => {
-                toastr.error('Failed to retrieve data from back-end. Verify your configuration.','', { timeOut: 0 });   
+                const msg = 'Failed to retrieve data from back-end. Verify your configuration.'
+                console.warn(msg)
+                console.warn(error)
+                const cookies = new Cookies();
+                if(cookies.get("logged_in") === true){
+                    toastr.error(msg,'', { timeOut: 0 });   
+                }
                 clearInterval(this.timer);
-		console.error(error)
                 //this.props.history.push('/');
             })
     }
@@ -207,13 +212,13 @@ class ApiObjectContainer extends React.Component {
         console.debug('handleSave', column, dataField)
         var key = this.props.objectKey
         let saveArgs = [ this.props.objectKey, column, this.props.api_data[key].offset,  this.props.api_data[key].limit, dataField]
-        return this.props.action.saveAction(...saveArgs).catch(error => {
-                toastr.error(error, '', toasterPosition)
-            })
-            .then(get_ApiObject(key, column.id))
-            .then(toastr.success('saved', '', toasterPosition))
-            /*.then(this.getAction(this.props.api_data[key].offset,
-                                 this.props.api_data[key].limit))*/
+        return this.props.action.saveAction(...saveArgs)
+                .then(console.debug('hs',this.props.api_data))
+                .then(toastr.success('Saved', '', toasterPosition))
+                //.then(get_ApiObject(key, column.id))
+                .catch(error => {
+                    toastr.error(error, '', toasterPosition)
+                })
             
     }
 
@@ -221,26 +226,40 @@ class ApiObjectContainer extends React.Component {
         /*
             Save the modified relationship
         */
+       console.log(newValue)
+       console.log(column)
+        if(typeof newValue === 'string'){
+            /* 
+                newValue may be passed as a JSON String from the editorRenderer
+                this is a really stupid way of handling this, hopefully it can be removed in the future
+            */
+            try{
+                newValue = JSON.parse(newValue)
+            }
+            catch(err){
+                console.log(`Unable to parse json ${newValue}`)
+            }
+        }
         var key = this.props.objectKey
-        let rel_name = column.relation_url
+        let rel_name = column.relationship.name ? column.relationship.name : column.dataField
         let relArgs = [this.props.objectKey, row.id, rel_name, newValue, this.props.api_data[key].offset, this.props.api_data[key].limit]
-        console.log('handleSaveRelationship', newValue)
+        
         this.props.action.updateRelationshipAction(...relArgs)
-        .then((e) => console.log(e))
-        .catch(error => {
-                toastr.error(error, '', toasterPosition)
-            })
-        .then(toastr.success('Saved', '', toasterPosition))
-
-            //.then(this.getAction())
+            .catch(error => {
+                    toastr.error(error, '', toasterPosition)
+                })
+            .then(toastr.success('Saved', '', toasterPosition))
+            .then(console.log('hsr',relArgs, this.props.api_data[this.props.objectKey]))
+            .then(this.props.action.getSingleAction(this.props.objectKey,row.id))
     }
 
     render() {
+        const list_data = this.props.api_data[this.props.objectKey]
         if(this.props.item.container){
             const Container = this.props.item.container
-            return <Container data={this.props.api_data[this.props.objectKey]}
+            return <Container data={list_data}
                               onChange={this.handleSearch}
-                              search={this.props.api_data[this.props.objectKey].search} />
+                              search={list_data.search} />
         }
         return (
             <div className="container-fluid">
@@ -253,19 +272,19 @@ class ApiObjectContainer extends React.Component {
                         </div>
                     </Col>
                     <Col sm={4}>
-                        <SearchInput onChange={this.handleSearch} search={this.props.api_data[this.props.objectKey].search}/>
+                        <SearchInput onChange={this.handleSearch} search={list_data.search}/>
                     </Col>
                 </Row>
 
                 <Row>
                     <Col sm={12}>
-                        <List data={this.props.api_data[this.props.objectKey]} 
+                        <List data={list_data} 
                               actions={this.actions}
                               objectKey={this.props.objectKey}
                               handleRowSelect={this.handleRowSelect.bind(this)} 
                               columns={this.props.item.column}
                               selectedIds={this.state.selectedIds}
-                              filter={this.props.api_data[this.props.objectKey].filter}
+                              filter={list_data.filter}
                               onChange={this.handleSearch.bind(this)}
                               handleSave={this.handleSave.bind(this)}
                               handleSaveRelationship={this.handleSaveRelationship.bind(this)}

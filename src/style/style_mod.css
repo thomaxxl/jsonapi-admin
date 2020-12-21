@@ -1,0 +1,502 @@
+.btn-none {
+	background-color: white;
+}
+
+.btn-none:hover {
+	background-color: #343a40;
+	color: #f7f7f7;
+}
+
+.checkbox_desc {
+	margin-left: 1.2em;
+}
+
+.form-group{
+
+}
+
+.page-item.active .page-link {
+}
+
+.from-label{
+	font-weight: bold;
+}
+
+.RelationDeleteIcon {
+	margin-left: 0.6em;
+}
+
+.editable{
+	cursor: pointer;
+	font-weight: bold;
+}
+
+.logframe {
+	border: none;
+	height: 1024px;
+	width: 100%;
+}
+
+ul {list-style-type: square;}
+ul a {
+	
+}
+
+.modal ul a {
+	font-weight: bold;
+	color: #212529;
+}
+
+.container-fluid a {
+	color: #212529;
+}
+
+.popover a {
+	color: #212529;
+}
+
+.select-control {
+	width : 20em;
+}
+
+.react-bootstrap-table .col-md-12{
+	width : 100%;
+}
+
+
+.container a {
+	color: black;
+	font-weight: bold;
+}
+
+.progress {
+	display: inline;
+}
+
+.progress-bar {
+	display: inline;
+}
+
+.more-button {
+	margin-top: 8px;
+	border: none;
+	background-color: white;
+}
+
+
+.more-button:hover {
+	background-color: #ccc;
+}
+
+.search {
+}
+
+
+.popover{
+	max-width: 1000em;
+	border: 0px solid orange;
+	background-color: #eee;
+	height: 40px;
+}
+
+.popover-body{
+
+    background-color: white;
+}
+
+
+.active {
+	color: white;
+}
+
+
+@media screen and (min-width: 768px) {
+	#a_modal{
+          width: 90%; /* New width for default modal */
+          max-width: 100%;
+        }
+}
+
+@media screen and (min-width: 768px) {
+        .modal-dialog {
+          width: 8700px; /* New width for default modal */
+        }
+        .modal-sm {
+          width: 350px; /* New width for small modal */
+        }
+    }
+
+@media screen and (min-width: 992px) {
+    .modal-lg {
+      width: 3950px; /* New width for large modal */
+    }
+}
+
+
+.logframe {
+
+}
+
+#login_background{
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: black;
+  opacity: 1;
+  width: 100%;
+  height: 100%;
+  z-index: 1040;
+}
+
+#btn-login {
+	width: 100%;
+}
+
+nav a {
+	color: #212529;
+}
+
+#lang_select_container {
+	
+}
+
+#lang_select{
+	display: inline;
+	width: 5em;
+	margin-left: 900px;
+}
+
+.langspan {
+	padding-right: 0.5em;
+	margin-right: 0.5em;
+}
+
+.langspan.current:hover {
+	color: #ccc;
+	text-decoration: none;
+	cursor: none;
+}
+
+.langspan:hover {
+	color: blue;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+
+/*
+	avoid table resize when the scrollbar is added dynamically
+	for ex.: popover shows => scrollbar is added => table resizes
+	scrollbar width is 17px but the table has a margin too
+*/
+html {
+/*overflow-y:scroll;*/
+}
+
+body {
+    width: calc(100vw);
+    height: 100vh;
+    border-right: 17px solid #f3f3f3;
+}
+
+nav {
+	width: calc(100vw);
+	/*border-right: 17px solid #343a40;*/
+	border-right: 17px solid #404040;
+}
+
+
+input[type=checkbox] {
+	/*position: absolute;
+	opacity: 0;
+	cursor: pointer;
+	background-color: #eee;*/
+}
+
+.arow {
+	background-color: red;
+}
+
+
+#c2_spinner{
+position: fixed;
+/*bottom: 0px;
+right: 0px;*/
+
+top: 15px;
+right: 50%;
+width: 100px;
+/*margin-top: -100px; /* Negative half of height. */
+margin-left: -50px; /* Negative half of width. */
+}
+
+
+.custom_A{
+	display: block;
+	padding-left: 2em;
+}
+
+.custom_A dt {
+	font-weight: normal;
+}
+
+.custom_A .form-control {
+	display: inline;
+	right: 1em;
+	width: 50%;
+}
+
+.custom_options {
+	cursor: pointer;
+	color: blue;
+	font-style: italic;
+	font-size: 0.8em;
+	padding-left: 1em;
+}
+
+
+.inactive-setting {
+	color: grey;
+}
+
+.active-setting:hover {
+	text-decoration: underline;
+}
+
+select.form-control {
+	display: inline;
+	width: auto;
+}
+
+
+.container-full {
+  margin: 0 auto;
+  width: 100%;
+}
+
+.disableGroup {
+	color: #ccc;
+	margin-left: 1.5em;
+}
+
+.disableGroup:hover {
+	color: red;
+	cursor: pointer;
+}
+
+.selectAll:hover {
+	color: red;
+	cursor: pointer;
+}
+
+
+.react-bootstrap-table-pagination-total {
+	font-size: 0.75em;
+	color: #888;
+	margin-left: 1.2em;
+}
+
+.filter {
+	display: none;
+}
+
+.nav-link{
+	cursor: pointer;
+}
+
+
+.debug {
+	color: #888;
+}
+
+.debug pre{
+	color: #888;
+}
+
+.AxiomViewer {
+	padding: 3em;
+	height: 100%;
+	font-size: 1.2em;
+	font-weight: bold;
+
+}
+
+.axiom_detail{
+	font-size: 1em;
+	font-weight: normal;	
+}
+
+.strikethrough{
+	text-decoration: line-through;	
+}
+
+.dot {
+  height: 0.8em;
+  width: 0.8em;
+  background-color: black;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.red{
+	background-color: #bbb;
+}
+
+.green{
+	background-color: #2a2;
+}
+
+
+
+.empty-icon{
+	color: white;
+}
+
+
+
+.is_comment{
+	color: #777;
+	font-style: italic;
+}
+
+.ops_name {
+	font-weight: normal;
+	color: #666;
+	font-style: italic;
+	padding-left: 0.8em;
+}
+
+/*.case-popover pre{
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"
+}*/
+
+.last_screen {
+	padding-left: 2em;
+	width: 100%;
+}
+
+.last_screen_av{
+	padding-left: 2em;		
+}
+
+.each-slide {
+	text-align: center;
+}
+
+#ss-fader > .react-slideshow-container + div.indicators > div {
+	margin: 1px;
+	width: 4px;
+	height: 16px;
+	background: #ddd;
+	border-radius: 10%;
+}
+
+#ss-fader > .react-slideshow-container + div.indicators > div.active {
+	background: black;
+}
+
+#ss-fader > .react-slideshow-container + div.indicators > div:hover {
+	background: #666;
+}
+
+.screenshot-error {
+	color: #666;
+	font-style: italic;
+	padding-top: 2em;
+	padding-bottom: 2em;
+}
+
+.clickable {
+	cursor: pointer;
+	margin-left: 1em;
+}
+
+.xw_download:hover{
+	color: red;
+	border: 2px solid red;
+}
+
+.ax_download:hover{
+	color: red;
+}
+
+.overview_icon{
+	font-size: 0.8em;
+	margin-bottom: 0.8em;
+}
+
+.info {
+	color: #ccc;
+	margin-left: 0.4em;
+	font-size: 1em;
+}
+
+td .info {
+	visibility: hidden;
+	width: 2em;
+	max-width: 2em;
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+    display: inline-block;
+}
+
+.t-row td:hover .info {
+	visibility: visible;
+	display: inline-block;
+	color: #ccc;
+	font-size: 1em;
+}
+
+.t-row td:hover .info:hover{
+	color: #26b;
+}
+
+.info:hover{
+	color: #26b;
+}
+
+
+
+.headerFilter{
+	text-align: right;
+	display: none;	
+}
+
+.headerFilter{
+	
+}
+
+.current_nav {
+	color: white;
+}
+
+.overflow_span{
+	overflow: visible;
+	white-space: nowrap;
+	overflow-wrap: anywhere;
+}
+
+.results_ul {
+	padding-left : 1em;
+}
+
+.login-modal {
+	border: 10px solid red;
+	color: red;
+}
+
+.login-backdrop{
+	opacity:1  !important;
+}
+
+nav .navbar-nav li a.with_roles{
+  color: #94a5d2 !important;
+}
+
+nav .navbar-nav li a.with_roles:hover{
+  color: white !important;
+}

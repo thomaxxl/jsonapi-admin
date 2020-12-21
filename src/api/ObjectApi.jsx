@@ -2,7 +2,7 @@
     The ObjectApi defines the CRUD methods on the API backend
 */
 import React from 'react';
-import { APP, api_config } from '../Config.jsx';
+import { APP, Config } from '../Config.jsx';
 import { buildApi, get, post, patch, destroy } from 'redux-bees';
 import toastr from 'toastr'
 import Cookies from 'universal-cookie';
@@ -24,6 +24,7 @@ const apiEndpoints = {
   updateData:    { method: patch,   path: '/:key/:id' },
   updateRelationship_one: { method: patch,   path: '/:key/:id/:rel_name' },
   updateRelationship_many: { method:patch, path: '/:key/:key_id/:rel_name'},
+  updateRelationship_many_add: { method:post, path: '/:key/:key_id/:rel_name'},
   updateRelationship_delete: { method:destroy, path: '/:key/:key_id/:rel_name/:rel_id'},
   destroyData:   { method: destroy, path: '/:key/:id' },
 };
@@ -31,7 +32,7 @@ const apiEndpoints = {
 
 // Get the API url stored in the cookie
 const cookies = new Cookies()
-let api_url = cookies.get('api_url') ? cookies.get('api_url') : api_config.URL
+let api_url = cookies.get('api_url') ? cookies.get('api_url') : Config.api_config.URL
 localStorage.setItem('url',api_url)
  
 /* 
@@ -52,10 +53,10 @@ localStorage.setItem('url',api_url)
 
     etc. (check the API swagger to view the available endpoints for each object)
 */
-let api = buildApi(apiEndpoints, api_config);
+let api = buildApi(apiEndpoints, Config.api_config);
 
 function change_backend_url(url){
-    let new_config=Object.assign({}, api_config, {baseUrl:url})
+    let new_config=Object.assign({}, Config.api_config, {baseUrl:url})
     api = buildApi(apiEndpoints,new_config);
 }
 
@@ -64,7 +65,7 @@ let getInitialObject = () => {
     Object.keys(APP).map(function(key, index) {
         initObj[key] = {
             offset: 0,
-            limit: api_config.limit || 25,
+            limit: Config.api_config.limit || 25,
             data: [],
             count: 0,
             filter: {},
@@ -95,8 +96,8 @@ class ObjectApi{
 
         if(!dataId){
             console.log('No dataId for', objectKey)
-
         }
+
         change_backend_url(localStorage.getItem('url'));
         let result = new Promise((resolve) => {
 
@@ -106,8 +107,11 @@ class ObjectApi{
             if(requestArgs){
                 request_args = Object.assign(request_args, requestArgs)
             }
-
             api.getItem(request_args).then((result)=>{
+                if(!result){
+                    toastr.error("ObjectApi Error")
+                    return
+                }
                 const data = result.body.data
                 const included = result.body.included
                 const existingDataIndex = api_objects[objectKey].data.findIndex(data => data.id === dataId)
@@ -127,6 +131,24 @@ class ObjectApi{
         return wrapped_Promise(result)
     }
 
+    static getRelationshipType(objectKey, item_id, rel_name){
+        const item_idx = api_objects[objectKey].data.findIndex(item => item.id === item_id)
+        const item = api_objects[objectKey].data[item_idx]
+        if(! item?.relationships[rel_name]?.data){
+            console.warn(`Item not found: ${objectKey} ${item_id} ${rel_name}`)
+            console.log(api_objects)
+            throw "Item relationship not found"
+        }
+        console.log(rel_name)
+        console.log(item.relationships)
+        if(Array.isArray(item.relationships[rel_name].data)){
+            //tomany relationship : []
+            return 'many'
+        }
+        // toone relationship : null or {}
+        return 'one';
+
+    }
 
     static getCollection(objectKey, offset, limit, queryArgs) {
         /*
@@ -139,10 +161,11 @@ class ObjectApi{
         }
         if(limit === undefined){
             // todo: get the current limit
-            limit = api_config.limit || 25
+            limit = Config.api_config.limit || 25
         }
         change_backend_url(localStorage.getItem('url'));
         let result = new Promise ((resolve,reject)=>{
+
                 var search = api_objects[objectKey].search;
                 var func = null;
                 var post_args = {}
@@ -209,16 +232,18 @@ class ObjectApi{
             Save or create an item to the backend
         */
         //change_backend_url(localStorage.getItem('url'));
+        console.log('ObjectApi.saveData', data)
         let result = new Promise((resolve, reject) => {
             var attributes = {}
-            APP[objectKey].column.map(function(item, index) {
-                if(item.dataField && !item.readonly){
-
+            APP[objectKey].columns.map(function(item, index) {
+                // only attributes/ columns set in config.json will be used
+                if(item.dataField && !item.readonly && data[item.dataField] !== undefined){
                     attributes[item.dataField] = data[item.dataField]
                 }
                 return 0;
             });
             
+            console.log(attributes)
             if (data.id) {
                 /*
                     id is specified => update the item with the given id
@@ -232,9 +257,19 @@ class ObjectApi{
                     id: data.id,
                     key: APP[objectKey].API},
                     {data: item_data})
-                .then(()=>{
+                .then((resp)=>{
+                    const existingDataIndex = api_objects[objectKey].data.findIndex(item => item.id === data.id)
+                    if(resp.status == 201 && resp.body.data){
+                        // update the attributes with the response data
+                        const updated = resp.body.data
+                        const existing_item_index = api_objects[objectKey].data.findIndex(item => item.id === updated.id)
+                        if(existing_item_index){
+                            api_objects[objectKey].data[existing_item_index].attributes = updated.attributes
+                        }
+
+                    }
                     resolve(data);
-                })
+                }).then(add_to_store(item_data))
             } else {
                 /*
                     No id specified => create a new item
@@ -301,10 +336,14 @@ class ObjectApi{
         /*
             Update a relationship, which can be either to-one or a to-many
         */
+        const action_type = data === null || data.action_type === 'one' ? 'one' : 'many'
+        delete data['action_type']
+        const api_data = {id: data.id, type: data.type}
+        console.log('updateRelationship', objectKey, id, rel_name, data)
         change_backend_url(localStorage.getItem('url'));
         var func,post_args, request_args
         let result =  new Promise ((resolve)=>{
-            if(data === null || data.action_type === 'one'){
+            if(action_type == 'one'){
                 func = api.updateRelationship_one
                 post_args = { data : data }
                 request_args = { key: APP[objectKey].API , id: id, rel_name : rel_name }
@@ -314,10 +353,13 @@ class ObjectApi{
             }
             else{
                 func = api.updateRelationship_many
-                post_args = {data:data}
+                post_args = {data: data}
                 request_args = { key: APP[objectKey].API , key_id: id, rel_name : rel_name } 
                 func( request_args, post_args ).then((result)=>{
-                    resolve(Object.assign({}, result.body));
+                    if(result)
+                    {
+                        resolve(Object.assign({}, result.body));
+                    }
                 })
             }
         })
@@ -347,28 +389,38 @@ class ObjectApi{
         /*
             Call the api method "search" 
         */
-
+        if(!APP[objectKey]){
+            console.warn(`Invalid APP Key ${objectKey}`)
+            alert(objectKey)
+            return
+        }
+        console.log(filter)
+        if(filter === null){
+            filter = {}
+        }
         change_backend_url(localStorage.getItem('url'));
+        
         let result = new Promise ((resolve)=>{
                 var func = api.search;
-                var post_args = {
-                    "meta":{
-                        "method":"search",
-                        "args": filter
-                    }
-                }
-                console.log(APP)
-                console.log(objectKey)
+                var post_args = {  "meta":{
+                                        "args" : filter
+                                    }
+                                }
                 let request_args = Object.assign({ key: APP[objectKey].API,
                                                     "page[offset]": offset,
                                                     "page[limit]": limit
                                                   },
                                                  APP[objectKey].request_args ? APP[objectKey].request_args : {}, 
                                                  queryArgs)
+                console.log(post_args)
+                
                 func( request_args,
                       post_args
                     )
                 .then((result)=>{
+                    if(!result){
+                        return
+                    }
                     api_objects[objectKey] = {
                         offset: api_objects[objectKey].offset,
                         limit: api_objects[objectKey].limit,
@@ -385,13 +437,13 @@ class ObjectApi{
 }
 
 
-function type2route(type){
+function type2route_(type){
     /*
         the api data is stored in the redux store under their routes
         here we convert the type to the appropriate route
     */
-    for(let key of Object.keys(api_config.APP)){
-        if(api_config.APP[key].API_TYPE == type){
+    for(let key of Object.keys(Config.api_config.APP)){
+        if(Config.api_config.APP[key].API_TYPE == type){
             return type
         }
     }
@@ -403,29 +455,32 @@ function type2route(type){
         the api data is stored in the redux store under their routes
         here we convert the type to the appropriate route
     */
-    for(let key of Object.keys(api_config.APP)){
-        if(api_config.APP[key].API_TYPE == type){
+    for(let key of Object.keys(Config.api_config.APP)){
+        if(Config.api_config.APP[key].API_TYPE == type){
             return key
         }
     }
-    // console.warn(`Invalid API object type ${type}: No Route, check Config.json`)
+    console.warn(`Invalid API object type ${type}: No Route, check Config.json`)
 }
 
 
 function add_to_store(item){
     const route = type2route(item.type)
     if(api_objects[route] === undefined){
-        console.warn(`Invalid route ${route} for ${route} (${item.type})`)
-        console.log(api_objects)
+        console.warn(`Invalid route ${route} for ${item.type}`)
         return
     }
+    let exists = false
     for(let stored_item of api_objects[route].data){
         if(item.id == stored_item.id){
             // item is already in the store
-            return
+            stored_item.attributes = item.attributes
+            exists = true
         }
     }
-    api_objects[route].data.push(item)
+    if(!exists){
+        api_objects[route].data.push(item)
+    }
 }
 
 function mapIncludes(api_data){
@@ -481,7 +536,7 @@ function mapIncludes(api_data){
                     for(let related of relationship.data){
                         for(let included_item of included){
                             add_to_store(included_item)
-                            if(related.id === included_item.id){
+                            if(related.id === included_item.id && related.type === included_item.type){
                                 related['attributes'] = included_item.attributes
                             }
                         }
@@ -492,7 +547,7 @@ function mapIncludes(api_data){
                     var related = relationship.data
                     for(let included_item of included){
                         add_to_store(included_item)
-                        if(related.id === included_item.id){
+                        if(related.id === included_item.id && related.type === included_item.type){
                             relationship.data['attributes'] = included_item.attributes
                             //console.log('FOUND::',related['attributes'])
                         }
@@ -506,7 +561,6 @@ function mapIncludes(api_data){
             item[attr] = val
         }
     }
-    console.log(api_objects)
     return api_data
 }
 
@@ -520,8 +574,18 @@ function jsonapi2bootstrap(jsonapi_data,objectKey){
         /* map the attributes inline :
             item = { id: .. , attributes : {...} } ==> item = { id: ... , attr1: ... , attr2: ... }
         */
-        let item_data = {route:objectKey, id : item.id, type: item.type, relationships: item.relationships, included: jsonapi_data.included, attributes: item.attributes}
-        data.push(item_data)
+        let exists = false
+        for(let existing of data){
+            if(item.id === existing.id){
+                exists = true
+                break
+            }
+        }
+        if(!exists){
+            let item_data = {route:objectKey, id : item.id, relationships: item.relationships, included: jsonapi_data.included, attributes: item.attributes}
+            data.push(item_data)
+        }
+        else{console.error(`duplicate data!`, item)}
     }
     jsonapi_data.data = data
     mapIncludes(jsonapi_data) 

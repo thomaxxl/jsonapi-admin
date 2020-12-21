@@ -3,14 +3,13 @@
     Here the routes and Header are created, based on the Config.json
 */
 import './style/bootstrapstyle.css'
+import '../style/style_mod.css'
 import '../style/style.css'
-import {APP} from '../Config.jsx'
+import {APP, HeaderNavContainer, Home} from '../Config.jsx'
 import React, { Component } from 'react'
 import {  Route, Switch, HashRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import HeaderNavContainer from './HeaderNavContainer'
-import Home from './Home'
 import ApiObjectContainer from './ApiObjectContainer/ApiObjectContainer'
 import * as ObjectAction from '../action/ObjectAction'
 import * as ModalAction from '../action/ModalAction'
@@ -40,7 +39,7 @@ function genCollectionRoute(key) {
     
     const Results = connect(mapStateToProps, mapDispatchToProps)(ApiObjectContainer)
     const path = APP[key].path +'/'
-    return <Route key={key + '_key'}  path={path} component={Results} name={key}/>
+    return <Route sensitive key={key + '__key'}  path={path} component={Results} name={key}/>
 }
 
 function genItemRoute(key) {
@@ -69,11 +68,11 @@ function genItemRoute(key) {
     const Results = connect(mapStateToProps, mapDispatchToProps)(Viewer)
     const item_path = `${component_info.path}/:itemId`
     const action_path = `${item_path}/:actionId`
-    return <Route sensitive key={item_path} path={item_path} component={Results}>sdqdf</Route>
+    return <Route sensitive key={item_path} path={item_path} component={Results}></Route>
 }
 
 function genHome(){
-    const mapStateToProps = state => ({        
+    const mapStateToProps = state => ({ 
         api_data: state.object,
         inputflag: state.inputReducer
     })
@@ -99,11 +98,12 @@ class App extends Component {
             collectionRoutes : routes specified by the APP "path" attributes (cfr. Config.json)
         */
         const collectionRoutes = Object.keys(APP).map((key) => [genItemRoute(key), genCollectionRoute(key)] )
+        const home = genHome()
         return <HashRouter>
                   <div>
                       <HeaderNavContainer/>
                       <Switch>
-                          {genHome()}
+                          {home}
                           {collectionRoutes}
                       </Switch>
                   </div>

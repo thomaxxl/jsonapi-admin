@@ -32,7 +32,7 @@ class CustomModal extends React.Component {
                     <Label for="id">ID</Label>
                     <Input value={this.props.selectedId} disabled={true}/>
                     </FormGroup>
-                    {Config.APP[this.props.objectKey].column.map(function(item,index){
+                    {Config.APP[this.props.objectKey].columns.map(function(item,index){
                         return (<Field
                                     key={index}
                                     column={item} 
